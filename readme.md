@@ -2,10 +2,10 @@ Flame is an ActionScript library that provides a number of useful UI controls, c
 
 The API is heavily inspired by .NET Framework.
 
-### License
+## License
 The code is released under the [Microsoft Public License (MS-PL)](http://opensource.org/licenses/MS-PL). 
 
-### Features
+## Features
 #### Collections
 Provides wrapper classes that expose a Vector as a collection that can be accessed and manipulated using the methods and properties of the ICollectionView or IList interfaces. 
 
@@ -27,7 +27,7 @@ Provides both Spark and MX controls for single/multi-file uploading, checkbox gr
 #### Utilities
 Provides a few utility classes to work with Array, Vector, ByteArray, Date, and String types as well as methods for data conversion.
 
-### Build
+## Build
 The library can be compiled using Ant:
 
 	ant -f <Path to the project>/build.xml -Dbasedir=<Path to the project>
