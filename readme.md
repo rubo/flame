@@ -24,3 +24,9 @@ Provides both Spark and MX controls for single/multi-file uploading, checkbox gr
 
 ### Utilities
 Provides a few utility classes to work with Array, Vector, ByteArray, Date, and String types as well as methods for data conversion.
+
+### How to build
+
+The library can be built using Ant:
+	ant -f <Path to the project>/build.xml -Dbasedir=<Path to the project>
+Note that it is required to define an environment variable FLEX_HOME pointing to the Flex SDK 4.6 directory.
