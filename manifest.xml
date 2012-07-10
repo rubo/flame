@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<componentPackage>
+	<component id="CheckBoxGroupValidator" class="flame.validators.CheckBoxGroupValidator" />
+    <component id="CompareValidator" class="flame.validators.CompareValidator" />
+    <component id="CreditCardValidator" class="flame.validators.CreditCardValidator" />
+    <component id="CurrencyValidator" class="flame.validators.CurrencyValidator" />
+    <component id="DateValidator" class="flame.validators.DateValidator" />
+    <component id="EmailValidator" class="flame.validators.EmailValidator" />
+    <component id="NumberValidator" class="flame.validators.NumberValidator" />
+    <component id="PhoneNumberValidator" class="flame.validators.PhoneNumberValidator" />
+    <component id="RadioButtonGroupValidator" class="flame.validators.RadioButtonGroupValidator" />
+    <component id="RegExpValidator" class="flame.validators.RegExpValidator" />
+    <component id="SocialSecurityValidator" class="flame.validators.SocialSecurityValidator" />
+    <component id="StringValidator" class="flame.validators.StringValidator" />
+    <component id="TimeSpanFormatter" class="flame.formatters.TimeSpanFormatter" />
+    <component id="VectorCollection" class="flame.collections.VectorCollection" />
+    <component id="VectorList" class="flame.collections.VectorList" />
+    <component id="ZipCodeValidator" class="flame.validators.ZipCodeValidator" />
+</componentPackage>

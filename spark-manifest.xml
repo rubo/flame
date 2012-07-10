@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<componentPackage>
+	<component id="AdvancedComboBox" class="flame.controls.spark.AdvancedComboBox" />
+	<component id="AdvancedDropDownList" class="flame.controls.spark.AdvancedDropDownList" />
+	<component id="AdvancedTabBar" class="flame.controls.spark.AdvancedTabBar" />
+	<component id="AdvancedTabBarButton" class="flame.controls.spark.AdvancedTabBarButton" />
+	<component id="AdvancedTabBarHorizontalLayout" class="flame.controls.spark.layouts.AdvancedTabBarHorizontalLayout" />
+	<component id="CheckBoxGroup" class="flame.controls.spark.CheckBoxGroup" />
+	<component id="CollapsiblePanel" class="flame.controls.spark.CollapsiblePanel" />
+	<component id="Dialog" class="flame.controls.spark.Dialog" />
+	<component id="FileLoader" class="flame.controls.spark.FileLoader" />
+    <component id="FileUploader" class="flame.controls.spark.FileUploader" />
+    <component id="FlowLayout" class="flame.controls.spark.layouts.FlowLayout" />
+	<component id="MultiFileUploader" class="flame.controls.spark.MultiFileUploader" />
+</componentPackage>

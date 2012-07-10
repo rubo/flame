@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<project default="build" name="flame">
+	
+	<property environment="env" />
+	<property name="bin.output.dir" value="bin" />
+	<property name="docs.output.dir" value="asdoc-output" />
+	<property name="FLEX_HOME" value="${env.FLEX_HOME}" />
+	<property name="flex.libs.dir" value="${FLEX_HOME}${file.separator}frameworks${file.separator}libs" />
+	<property name="flex.player.dir" value="${flex.libs.dir}${file.separator}player${file.separator}11.1" />
+	<property name="jvm.args" value="-Xmx1024m" />
+	<property name="source.dir" value="src" />
+	
+	<taskdef classpath="${FLEX_HOME}${file.separator}ant${file.separator}lib${file.separator}flexTasks.jar" resource="flexTasks.tasks" />
+	
+	<target depends="cleanup, docs" name="build" />
+	
+	<target name="cleanup">
+		<echo level="info" message="Cleaning up the output directories..." />
+		<delete failonerror="false" includeemptydirs="true">
+			<fileset dir="${bin.output.dir}" />
+			<fileset dir="${docs.output.dir}" />
+		</delete>
+	</target>
+	
+	<target name="library">
+		<echo level="info" message="Building..." />
+		<compc allow-source-path-overlap="true" debug="false" fork="true" locale="en_US" optimize="false"
+			output="${bin.output.dir}${file.separator}flame.swc">
+			<external-library-path dir="${flex.player.dir}" includes="playerglobal.swc" />
+			<external-library-path dir="${flex.libs.dir}">
+				<include name="framework.swc" />
+				<include name="textLayout.swc" />
+				<include name="spark.swc" />
+				<include name="sparkskins.swc" />
+				<include name="rpc.swc" />
+				<include name="charts.swc" />
+				<include name="spark_dmv.swc" />
+				<include name="osmf.swc" />
+				<include name="advancedgrids.swc" />
+				<include name="authoringsupport.swc" />
+				<include name="core.swc" />
+				<include name="flash-integration.swc" />
+			</external-library-path>
+			<external-library-path dir="${flex.libs.dir}${file.separator}mx" includes="mx.swc" />
+			<include-file name="assets.swf" path="assets${file.separator}flash${file.separator}assets.swf" />
+			<include-file name="defaults.css" path="assets${file.separator}css${file.separator}defaults.css" />
+			<include-namespaces uri="library://flame" />
+			<include-namespaces uri="library://flame/mx" />
+			<include-namespaces uri="library://flame/spark" />
+			<include-resource-bundles bundle="flameLocale" />
+			<include-resource-bundles bundle="flameLocaleInvariant" />
+			<include-sources dir="${source.dir}" includes="*" />
+			<jvmarg line="${jvm.args}" />
+			<!-- Start: Workaround for the bug SDK-28711 -->
+			<namespace manifest="${FLEX_HOME}${file.separator}frameworks${file.separator}mx-manifest.xml" uri="library://ns.adobe.com/flex/mx" />
+			<namespace manifest="${FLEX_HOME}${file.separator}frameworks${file.separator}mxml-2009-manifest.xml" uri="http://ns.adobe.com/mxml/2009" />
+		    <namespace manifest="${FLEX_HOME}${file.separator}frameworks${file.separator}mxml-manifest.xml" uri="http://www.adobe.com/2006/mxml" />
+			<namespace manifest="${FLEX_HOME}${file.separator}frameworks${file.separator}spark-manifest.xml" uri="library://ns.adobe.com/flex/spark" />
+			<!-- End -->
+			<namespace manifest="manifest.xml" uri="library://flame" />
+			<namespace manifest="mx-manifest.xml" uri="library://flame/mx" />
+			<namespace manifest="spark-manifest.xml" uri="library://flame/spark" />
+			<source-path path-element="${source.dir}" />
+			<source-path path-element="assets${file.separator}resources${file.separator}invariants" />
+			<source-path path-element="assets${file.separator}resources${file.separator}locales${file.separator}{locale}" />
+		</compc>
+	</target>
+	
+	<target depends="library" name="docs">
+		<echo level="info" message="Generating docs..." />
+		<property name="docs.title" value="Flame Library Reference Documentation" />
+		<asdoc failonerror="true" fork="true" keep-xml="true" lenient="true" main-title="${docs.title}"
+			output="${docs.output.dir}" package-description-file="packages.xml" warnings="false" window-title="${docs.title}">
+			<doc-sources path-element="${source.dir}" />
+			<external-library-path dir="${flex.player.dir}" includes="playerglobal.swc" />
+			<external-library-path dir="${flex.libs.dir}">
+				<include name="framework.swc" />
+				<include name="textLayout.swc" />
+				<include name="spark.swc" />
+				<include name="sparkskins.swc" />
+				<include name="rpc.swc" />
+				<include name="charts.swc" />
+				<include name="spark_dmv.swc" />
+				<include name="osmf.swc" />
+				<include name="advancedgrids.swc" />
+				<include name="authoringsupport.swc" />
+				<include name="core.swc" />
+				<include name="flash-integration.swc" />
+			</external-library-path>
+			<external-library-path dir="${flex.libs.dir}${file.separator}mx" includes="mx.swc" />
+			<jvmarg line="${jvm.args}" />
+			<!-- Start: Workaround for the bug SDK-28711 -->
+			<namespace manifest="${FLEX_HOME}${file.separator}frameworks${file.separator}mx-manifest.xml" uri="library://ns.adobe.com/flex/mx" />
+			<namespace manifest="${FLEX_HOME}${file.separator}frameworks${file.separator}mxml-2009-manifest.xml" uri="http://ns.adobe.com/mxml/2009" />
+		    <namespace manifest="${FLEX_HOME}${file.separator}frameworks${file.separator}mxml-manifest.xml" uri="http://www.adobe.com/2006/mxml" />
+			<namespace manifest="${FLEX_HOME}${file.separator}frameworks${file.separator}spark-manifest.xml" uri="library://ns.adobe.com/flex/spark" />
+			<!-- End -->
+			<namespace manifest="manifest.xml" uri="library://flame" />
+			<namespace manifest="mx-manifest.xml" uri="library://flame/mx" />
+			<namespace manifest="spark-manifest.xml" uri="library://flame/spark" />
+			<source-path path-element="${source.dir}" />
+        </asdoc>
+		<echo level="info" message="Updating the SWC with docs..." />
+		<zip destfile="${bin.output.dir}${file.separator}flame.swc" update="true">
+			<zipfileset dir="${docs.output.dir}${file.separator}tempdita" prefix="docs">
+				<include name="*.*" />
+				<exclude name="ASDoc_Config.xml" />
+				<exclude name="overviews.xml" />
+			</zipfileset>
+		</zip>
+		<delete dir="${docs.output.dir}${file.separator}tempdita" failonerror="false" includeemptydirs="true" />
+	</target>
+	
+</project>

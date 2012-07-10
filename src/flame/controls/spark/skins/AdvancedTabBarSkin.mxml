@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+//  Copyright 2011 Ruben Buniatyan. All rights reserved.
+//	Copyright 2008 Adobe Systems Incorporated. All rights reserved.
+//
+//  This source is subject to the license agreement accompanying it.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!--- 
+	The default skin class for AdvancedTabBar component.
+	The AdvancedTabBarButtons created by the AdvancedTabBarSkin use the AdvancedTabBarButtonSkin class.
+	
+	@see flame.controls.spark.AdvancedTabBarButton
+	@see flame.controls.spark.skins.AdvancedTabBarButtonSkin
+-->
+<s:Skin xmlns:fb="http://ns.adobe.com/flashbuilder/2009" xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
+	xmlns:flames="library://flame/spark" alpha.disabled="0.5">
+	
+	<!-- host component -->
+	<fx:Metadata>
+		/**
+		 * @copy spark.skins.spark.ApplicationSkin#hostComponent
+		 */
+		[HostComponent("flame.controls.spark.AdvancedTabBar")]
+	</fx:Metadata>
+    
+    <fx:Script fb:purpose="styling">
+	<![CDATA[ 
+
+        import mx.core.UIComponent;
+			
+		//--------------------------------------------------------------------------
+		//
+		//  Protected methods
+		//
+		//--------------------------------------------------------------------------
+
+        /**
+         *  @private
+         *  Push the cornerRadius style to the item renderers.
+         */
+        protected override function updateDisplayList(unscaledWidth:Number, unscaleHeight:Number):void
+        {
+            const numElements:int = dataGroup.numElements;
+            const cornerRadius:int = hostComponent.getStyle("cornerRadius");
+			
+            for (var i:int = 0; i < numElements; i++)
+            {
+                var elt:UIComponent = dataGroup.getElementAt(i) as UIComponent;
+                
+				if (elt)
+                    elt.setStyle("cornerRadius", cornerRadius);
+            }
+                    
+            super.updateDisplayList(unscaledWidth, unscaledHeight);
+        }
+		
+    ]]>            
+    </fx:Script>
+    
+    <s:states>
+		
+        <s:State name="normal" />
+		
+        <s:State name="disabled" />
+		
+    </s:states>
+    <!--- @copy spark.components.SkinnableDataContainer#dataGroup -->
+    <s:DataGroup id="dataGroup" height="100%" width="100%">
+		
+		<s:layout>
+			
+			<flames:AdvancedTabBarHorizontalLayout gap="-1" resizeTabToFit="true" variableTabWidth="true" />
+			
+		</s:layout>
+		
+        <s:itemRenderer>
+			
+            <fx:Component>
+				
+                <flames:AdvancedTabBarButton skinClass="flame.controls.spark.skins.AdvancedTabBarButtonSkin" />
+				
+            </fx:Component>
+			
+        </s:itemRenderer>
+		
+    </s:DataGroup>
+    
+</s:Skin>

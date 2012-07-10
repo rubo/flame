@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+//  Copyright 2011 Ruben Buniatyan. All rights reserved.
+//
+//  This source is subject to the license agreement accompanying it.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+The default skin class for the AdvancedTabBarButton Close button.  
+
+@see flame.controls.spark.AdvancedTabBarButton
+-->
+<s:SparkButtonSkin xmlns:fb="http://ns.adobe.com/flashbuilder/2009" xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
+	alpha.disabled="0.5" minHeight="16" minWidth="16">
+	
+	<!-- host component -->
+	<fx:Metadata>
+		/** 
+		* @copy spark.skins.spark.ApplicationSkin#hostComponent
+		*/
+		[HostComponent("spark.components.Button")]
+	</fx:Metadata>
+	<!-- states -->
+	<s:states>
+		
+		<s:State name="up" />
+		
+		<s:State name="over" />
+		
+		<s:State name="down" />
+		
+		<s:State name="disabled" />
+		
+	</s:states>
+	
+	<s:Rect height="16" width="16">
+		
+		<s:fill>
+			
+			<s:SolidColor alpha="0" />
+			
+		</s:fill>
+		
+	</s:Rect>
+	
+	<s:Path data="M 6 0 L 6 6 L 0 6 L 6 0" horizontalCenter="0" verticalCenter="0">
+		
+		<s:fill>
+			
+			<s:SolidColor color="#000000" />
+			
+		</s:fill>
+		
+	</s:Path>
+	
+</s:SparkButtonSkin>

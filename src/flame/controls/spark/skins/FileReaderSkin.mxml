@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+//  Copyright 2011 Ruben Buniatyan. All rights reserved.
+//
+//  This source is subject to the license agreement accompanying it.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+	The default skin class for FileReader component.
+	
+	@see flame.controls.spark.FileLoader
+	@see flame.controls.spark.FileUploader
+-->
+<s:SparkSkin xmlns:fb="http://ns.adobe.com/flashbuilder/2009" xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:mx="library://ns.adobe.com/flex/mx"
+	xmlns:s="library://ns.adobe.com/flex/spark" alpha.disabled="0.5">
+	
+	<!-- host component -->
+	<fx:Metadata>
+		/**
+		 * @copy spark.skins.spark.ApplicationSkin#hostComponent
+		 */
+		[HostComponent("flame.controls.spark.FileReader")]
+	</fx:Metadata>
+	
+	<fx:Script fb:purpose="styling">
+	<![CDATA[
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Protected methods
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 * @private
+		 */
+		protected override function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
+		{
+			button.styleName = getStyle("buttonStyleName");
+			button.width = getStyle("buttonWidth");
+			
+			group.width = getStyle("textWidth");
+			
+			hGroup.gap = getStyle("gap");
+			
+			progressBar.styleName = getStyle("progressStyleName");
+			
+			textInput.styleName = getStyle("textStyleName");
+			
+			super.updateDisplayList(unscaledWidth, unscaledHeight);
+		}
+		
+	]]>
+	</fx:Script>
+	
+	<s:states>
+		
+		<s:State name="normal" />
+		
+		<s:State name="disabled" />
+		
+	</s:states>
+	<!--- @private -->
+	<s:HGroup id="hGroup" width="100%">
+		<!--- @private -->
+		<s:Group id="group">
+			<!--- Defines the label of the selected file name. -->
+			<s:TextInput id="textInput" width="100%" />
+			<!--- Defines the progress bar of loading/uploading operation. -->
+			<mx:ProgressBar id="progressBar" width="100%" />
+			
+		</s:Group>
+		<!--- Defines the button to initiate load, upload, or cancel. -->
+		<s:Button id="button" />
+		
+	</s:HGroup>
+	
+</s:SparkSkin>

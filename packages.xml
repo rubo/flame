@@ -1,0 +1,133 @@
+<?xml version="1.0"?>
+<overviews>
+	<packages>
+		<package name="flame.collections">
+			<description>
+				<![CDATA[The flame.collections package contains the classes for the Flex collection components.]]>
+			</description>
+			<shortDescription>
+				<![CDATA[The flame.collections package contains the classes for the Flex collection components.]]>
+			</shortDescription>
+		</package>
+		<package name="flame.config">
+			<description>
+				<![CDATA[The flame.config package contains types for handling configuration data.]]>
+			</description>
+			<shortDescription>
+				<![CDATA[The flame.config package contains types for handling configuration data.]]>
+			</shortDescription>
+		</package>
+		<package name="flame.controls">
+			<description>
+				<![CDATA[The flame.controls package contains the Flex user-interface controls.]]>
+			</description>
+			<shortDescription>
+				<![CDATA[The flame.controls package contains the Flex user-interface controls.]]>
+			</shortDescription>
+		</package>
+		<package name="flame.controls.events">
+			<description>
+				<![CDATA[The flame.controls.events package contains the classes that define Flex event objects for the user-interface controls.]]>
+			</description>
+			<shortDescription>
+				<![CDATA[The flame.controls.events package contains the classes that define Flex event objects for the user-interface controls.]]>
+			</shortDescription>
+		</package>
+		<package name="flame.controls.mx">
+			<description>
+				<![CDATA[The flame.controls.mx package contains the MX component classes.]]>
+			</description>
+			<shortDescription>
+				<![CDATA[The flame.controls.mx package contains the MX component classes.]]>
+			</shortDescription>
+		</package>
+		<package name="flame.controls.spark">
+			<description>
+				<![CDATA[The flame.controls.spark package contains the Spark component classes.]]>
+			</description>
+			<shortDescription>
+				<![CDATA[The flame.controls.spark package contains the Spark component classes.]]>
+			</shortDescription>
+		</package>
+		<package name="flame.controls.spark.layouts">
+			<description>
+				<![CDATA[The flame.controls.spark.layouts package contains the Spark layout classes.]]>
+			</description>
+			<shortDescription>
+				<![CDATA[The flame.controls.spark.layouts package contains the Spark layout classes.]]>
+			</shortDescription>
+		</package>
+		<package name="flame.controls.spark.skins">
+			<description>
+				<![CDATA[The flame.controls.spark.skins package contains the base classes used by Spark skin classes.]]>
+			</description>
+			<shortDescription>
+				<![CDATA[The flame.controls.spark.skins package contains the base classes used by Spark skin classes.]]>
+			</shortDescription>
+		</package>
+		<package name="flame.core">
+			<description>
+				<![CDATA[The flame.core package contains the fundamental classes and base classes.]]>
+			</description>
+			<shortDescription>
+				<![CDATA[The flame.core package contains the fundamental classes and base classes.]]>
+			</shortDescription>
+		</package>
+		<package name="flame.crypto">
+			<description>
+				<![CDATA[The flame.crypto package provides cryptographic services, including secure encoding and decoding of data, as well as many other operations, such as hashing, random number generation, and message authentication.]]>
+			</description>
+			<shortDescription>
+				<![CDATA[The flame.crypto package provides cryptographic services.]]>
+			</shortDescription>
+		</package>
+		<package name="flame.crypto.asn1">
+			<description>
+				<![CDATA[The flame.crypto.asn1 package contains classes to support Abstract Syntax Notation One (ASN.1) encoding and decoding using the Distinguished Encoding Rules (DER).]]>
+			</description>
+			<shortDescription>
+				<![CDATA[The flame.crypto.asn1 package contains classes to support ASN.1 encoding and decoding.]]>
+			</shortDescription>
+		</package>
+		<package name="flame.formatters">
+			<description>
+				<![CDATA[The flame.formatters package contains classes to support data formatting.]]>
+			</description>
+			<shortDescription>
+				<![CDATA[The flame.formatters package contains classes to support data formatting.]]>
+			</shortDescription>
+		</package>
+		<package name="flame.numerics">
+			<description>
+				<![CDATA[The flame.numerics package contains numeric types that complement the numeric primitives, such as int, uint, and Number, that are defined by the Flash Player.]]>
+			</description>
+			<shortDescription>
+				<![CDATA[The flame.numerics package contains numeric types that complement the native numeric primitives, such as int, uint, and Number.]]>
+			</shortDescription>
+		</package>
+		<package name="flame.serialization">
+			<description>
+				<![CDATA[The flame.serialization package contains classes that can be used for serializing and deserializing objects.]]>
+			</description>
+			<shortDescription>
+				<![CDATA[The flame.serialization package contains classes that can be used for serializing and deserializing objects.]]>
+			</shortDescription>
+		</package>
+		<package name="flame.utils">
+			<description>
+				<![CDATA[The flame.utils package contains the utility classes.]]>
+			</description>
+			<shortDescription>
+				<![CDATA[The flame.utils package contains the utility classes.]]>
+			</shortDescription>
+		</package>
+		<package name="flame.validators">
+			<description>
+				<![CDATA[The flame.validators package contains classes to support data validation.]]>
+			</description>
+			<shortDescription>
+				<![CDATA[The flame.validators package contains classes to support data validation.]]>
+			</shortDescription>
+		</package>
+	</packages>
+</overviews>

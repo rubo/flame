@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+//  Copyright 2011 Ruben Buniatyan. All rights reserved.
+//	Copyright 2008 Adobe Systems Incorporated. All rights reserved.
+//
+//  This source is subject to the license agreement accompanying it.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!--- 
+	The default skin class for AdvancedTabBarButton component.  
+	
+	@see flame.controls.spark.AdvancedTabBarButton
+-->
+<s:SparkButtonSkin xmlns:fb="http://ns.adobe.com/flashbuilder/2009" xmlns:fx="http://ns.adobe.com/mxml/2009"
+	xmlns:s="library://ns.adobe.com/flex/spark" alpha.disabled="0.5" creationComplete="creationCompleteHandler(event);"
+	minWidth="21" minHeight="21" styleName="advancedTab">
+	
+	<!-- host component -->
+	<fx:Metadata>
+		/**
+		 * @copy spark.skins.spark.ApplicationSkin#hostComponent
+		 */
+		[HostComponent("flame.controls.spark.AdvancedTabBarButton")]
+	</fx:Metadata>
+    
+    <fx:Script fb:purpose="styling">
+	<![CDATA[
+		import flame.controls.TabClosePolicy;
+		
+		import mx.core.IVisualElement;
+		
+		import flame.controls.spark.AdvancedTabBarButton;
+		
+		import mx.core.ILayoutElement;
+		import mx.core.UIComponent;
+		import mx.events.FlexEvent;
+		
+		import spark.components.TabBar;
+
+		//--------------------------------------------------------------------------
+		//
+		//  Fields
+		//
+		//--------------------------------------------------------------------------
+		
+        private static const _exclusions:Array = [ "labelDisplay" ];
+		
+		private var _cornerRadius:Number = 4;
+        
+		//--------------------------------------------------------------------------
+		//
+		//  Public methods
+		//
+		//--------------------------------------------------------------------------
+		
+        /**
+         * @private
+         */
+        public override function get colorizeExclusions():Array
+		{
+			return _exclusions;
+		}
+        
+		//--------------------------------------------------------------------------
+		//
+		//  Protected methods
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 * @private
+		 */
+		protected function creationCompleteHandler(event:FlexEvent):void
+		{
+			if (iconDisplay == null)
+				ILayoutElement(labelDisplay).left = ILayoutElement(labelDisplay).right = closeButton.width + closeButton.right + 6;
+			else
+				ILayoutElement(IVisualElement(labelDisplay).parent).right = closeButton.width;
+		}
+		
+        /**
+         * @private
+         */
+        protected override function initializationComplete():void
+        {
+            useChromeColor = true;
+			
+            super.initializationComplete();
+        }
+		
+		/**
+		 *  @private
+		 */
+		protected override function updateDisplayList(unscaledWidth:Number, unscaleHeight:Number):void
+		{
+			updateCornerRadius();
+			
+			updateSelectedHighlight(unscaledWidth, unscaledHeight);
+			
+			updateBorderTop(unscaledWidth, unscaledHeight);
+			
+			switch (AdvancedTabBarButton(hostComponent).closePolicy)
+			{
+				case TabClosePolicy.ALWAYS:
+					
+					closeButton.visible = true;
+					break;
+					
+				case TabClosePolicy.ROLL_OVER:
+					
+					closeButton.visible = currentState == "over" || currentState == "overAndSelected";
+					break;
+					
+				case TabClosePolicy.SELECTED:
+					
+					closeButton.visible = currentState == "upAndSelected" || currentState == "overAndSelected" || currentState == "downAndSelected";
+					break;
+					
+				default:
+					
+					closeButton.visible = false;
+					break;
+			}
+			
+			if (iconDisplay == null)
+				ILayoutElement(labelDisplay).left = ILayoutElement(labelDisplay).right = closeButton.width + closeButton.right + 6;
+			else
+				ILayoutElement(IVisualElement(labelDisplay).parent).right = closeButton.width;
+			
+			super.updateDisplayList(unscaledWidth, unscaledHeight);
+		}
+
+		//--------------------------------------------------------------------------
+		//
+		//  Private methods
+		//
+		//--------------------------------------------------------------------------
+        
+		/**
+		 *  @private
+		 *  This function creates the path data used by borderTop and selectedHighlight.
+		 */
+		private function createPathData(isBorder:Boolean):String
+		{
+			var left:Number = 0;
+			var right:Number = width;
+			var top:Number = 0.5;
+			var bottom:Number = height;
+			
+			var a:Number = _cornerRadius * 0.292893218813453;
+			var s:Number = _cornerRadius * 0.585786437626905;
+			
+			// If the path is for the highlight,
+			// Draw the vertical part of the selected tab highlight that's rendered 
+			// with alpha=0.07.  The s:Path is configured to include only the left and 
+			// right edges of an s:Rect, along with the top left,right rounded corners. 
+			// Otherwise, we draw a full path.
+			var path:String =
+				"M " + left + " " + bottom +
+				" L " + left + " " + (top + _cornerRadius) +
+				" Q " + left + " " + (top + s) + " " + (left + a) + " " + (top + a) +
+				" Q " + (left + s) + " " + top + " " + (left + _cornerRadius) + " " + top +
+				(isBorder ? " L " : " M ") + (right - _cornerRadius) + " " + top +
+				" Q " + (right - s) + " " + top + " " + (right - a) + " " + (top + a) +
+				" Q " + right + " " + (top + s) + " " + right + " " + (top + _cornerRadius) +
+				" L " + right + " " + bottom;
+			
+			return path;
+		}
+		
+        /**
+         *  @private
+         *  The borderTop s:Path is just a s:Rect with the bottom edge left out.
+         *  Given the rounded corners per the cornerRadius style, the result is 
+         *  roughly an inverted U with the specified width, height, and cornerRadius.
+         * 
+         *  Circular arcs are drawn with two curves per flash.display.Graphics.GraphicsUtil.
+        */
+        private function updateBorderTop(width:Number, height:Number):void
+        {
+            // Generate path data and lay it out. The path is not being layout by the default BasicLayout of this skin
+            // since we excluded it from the layout.
+            var path:String = createPathData(true);
+			
+            borderTop.data = path;
+			
+            borderTop.setLayoutBoundsSize(width, height, false);
+            borderTop.setLayoutBoundsPosition(0, 0, false);
+        }
+        
+		/**
+		 *  @private
+		 *  The cornerRadius style is specified by the TabBar, not the button itself.   
+		 * 
+		 *  Rather than bind the corner radius properties of the s:Rect's in the markup 
+		 *  below to hostComponent.owner.getStyle("cornerRadius"), we reset them here, 
+		 *  each time a change in the value of the style is detected.  Note that each 
+		 *  corner radius property is explicitly initialized to the default value of 
+		 *  the style; the initial value of the private cornerRadius property.
+		 */
+		private function updateCornerRadius():void
+		{
+			var cr:Number = getStyle("cornerRadius");
+			
+			if (_cornerRadius != cr)
+			{
+				_cornerRadius = cr;
+				
+				fill.topLeftRadiusX = _cornerRadius;
+				fill.topRightRadiusX = _cornerRadius;
+				
+				lowlight.topLeftRadiusX = _cornerRadius;
+				lowlight.topRightRadiusX = _cornerRadius;
+				
+				highlight.topLeftRadiusX = _cornerRadius;
+				highlight.topRightRadiusX = _cornerRadius;
+				
+				highlightStroke.topLeftRadiusX = _cornerRadius;
+				highlightStroke.topRightRadiusX = _cornerRadius;
+			}
+		}
+		
+        /**
+         *  @private
+         *  Draw the selected highlight strokes.  The highlight is the same shape as the tab's
+         *  border and is inset just within the border.   It must be rendererd with three separate paths, 
+         *  since the top leg is rendered with two horizontal lines, with different stroke 
+         *  alpha values, and the left and right vertical legs are rendered with a third alpha value.
+         *  
+         *  Circular arcs are drawn with two curves per flash.display.Graphics.GraphicsUtil.
+         */
+        private function updateSelectedHighlight(width:Number, height:Number):void
+        {
+            if (selectedHighlightV)
+			{
+	            var left:Number = 0;
+	            var right:Number = width;
+	            
+	            // Generate path data and lay it out. The path is not being layout by the default BasicLayout of this skin
+	            // since we excluded it from the layout.
+	            var path:String = createPathData(false);
+				
+	            selectedHighlightV.data = path;
+				
+	            selectedHighlightV.setLayoutBoundsSize(width - 2, height - 2, false);
+	            selectedHighlightV.setLayoutBoundsPosition(1, 1, false);
+	            
+	            // Configure the left/right sides of the two horizontal lines, defined with
+	            // s:Rects, that appear at the top of the selected highlight.
+	            
+	            // SDK-26127: Use the ILayoutElement APIs, instead of setting explicitly x/y/width/height as
+	            // this method is called from updateDisplayList() and it should not affect the 
+	            // explicit sizes (and therefore the measured sizes) or trigger a new layout pass.
+	            selectedHighlightH1.setLayoutBoundsSize(width - 2 * _cornerRadius, 1, false);
+	            selectedHighlightH1.setLayoutBoundsPosition(_cornerRadius, 1, false);
+	            selectedHighlightH2.setLayoutBoundsSize(width - 2 * _cornerRadius, 1, false);
+	            selectedHighlightH2.setLayoutBoundsPosition(_cornerRadius, 2, false);
+			}
+        }  
+	]]>
+    </fx:Script>
+    
+    <!-- states -->
+    <s:states>
+		
+        <s:State name="up" />
+		
+        <s:State name="over" stateGroups="overStates" />
+		
+        <s:State name="down" stateGroups="downStates" />
+		
+        <s:State name="disabled" stateGroups="disabledStates" />
+		
+        <s:State name="upAndSelected" stateGroups="selectedStates, selectedUpStates" />
+		
+        <s:State name="overAndSelected" stateGroups="overStates, selectedStates" />
+		
+        <s:State name="downAndSelected" stateGroups="downStates, selectedStates" />
+		
+        <s:State name="disabledAndSelected" stateGroups="selectedUpStates, disabledStates, selectedStates" />
+		
+    </s:states>
+    <!--- @private fill -->
+    <s:Rect id="fill" bottom="1" height="22" left="1" right="1" top="1" topLeftRadiusX="4" topRightRadiusX="4" width="70">
+        
+		<s:fill>
+			
+            <s:LinearGradient rotation="90">
+				
+                <s:GradientEntry alpha="0.85" alpha.overAndSelected="1" color="#FFFFFF"
+					 color.downStates="#AAAAAA" color.overStates="#BBBDBD" color.selectedUpStates="#BBBDBD" />
+				
+                <s:GradientEntry alpha="0.85" alpha.overAndSelected="1" color="#D8D8D8" color.downStates="#929496"
+                	color.over="#9FA0A1" color.overAndSelected="#8E8F90" color.selectedUpStates="#9FA0A1" />
+				
+            </s:LinearGradient>
+			
+        </s:fill>
+		
+    </s:Rect>
+    <!--- @private fill lowlight -->
+    <s:Rect id="lowlight" bottom="1" left="1" right="1" top="1" topLeftRadiusX="4" topRightRadiusX="4">
+		
+        <s:fill>
+			
+            <s:LinearGradient rotation="270">
+				
+                <s:GradientEntry alpha="0.0627" color="#000000" ratio="0.0" />
+				
+                <s:GradientEntry alpha="0.0099" color="#000000" ratio="0.48" />
+				
+                <s:GradientEntry alpha="0" color="#000000" ratio="0.48001" />
+				
+            </s:LinearGradient>
+			
+        </s:fill>
+		
+    </s:Rect>
+    <!--- @private fill highlight -->
+    <s:Rect id="highlight" bottom="1" left="1" right="1" top="1" topLeftRadiusX="4" topRightRadiusX="4">
+		
+        <s:fill>
+			
+            <s:LinearGradient rotation="90">
+				
+                <s:GradientEntry alpha="0.33" alpha.downStates="0.12" alpha.overStates="0.22" alpha.selectedUpStates="0.22"
+					color="#FFFFFF" ratio="0.0" />
+				
+                <s:GradientEntry alpha="0.33" alpha.downStates="0.12" alpha.overStates="0.22" alpha.selectedUpStates="0.22"
+					color="#FFFFFF" ratio="0.48" />
+                
+				<s:GradientEntry alpha="0" color="#FFFFFF" ratio="0.48001" />
+				
+            </s:LinearGradient>
+			
+        </s:fill>
+		
+    </s:Rect>
+    <!--- @private highlight stroke (all states except down) -->
+    <s:Rect id="highlightStroke" bottom="1" excludeFrom="downStates" left="1" right="1" top="1" topLeftRadiusX="4" topRightRadiusX="4">
+		
+        <s:stroke>
+			
+            <s:LinearGradientStroke rotation="90" weight="1">
+				
+                <s:GradientEntry color="#FFFFFF" alpha.overStates="0.22" alpha.selectedUpStates="0.33" />
+				
+                <s:GradientEntry color="#D8D8D8" alpha.overStates="0.22" alpha.selectedUpStates="0.33" />
+				
+            </s:LinearGradientStroke>
+			
+        </s:stroke>
+		
+    </s:Rect>
+    <!--- @private highlight stroke, selected tab, alpha=0.0 when not selected.
+		Set includeInLayout="false" as we regenerate the path data and lay out the path in
+		the updateDisplayList() override and we don't want it to affect measurement. -->
+    <s:Path id="selectedHighlightV" bottom="1" includeInLayout="false" left="1" right="1" top="1">
+        
+		<s:stroke>
+			
+            <s:SolidColorStroke alpha="0.0" alpha.downStates="0.15" alpha.overAndSelected="0.15" alpha.selectedUpStates="0.15"
+				color="#000000" weight="1" />
+			
+        </s:stroke>
+		
+    </s:Path>
+    <!--- @private -->
+    <s:Rect id="selectedHighlightH1" height="1" includeInLayout="false" top="1">
+		
+        <s:fill>
+			
+            <s:SolidColor alpha="0.0" alpha.downStates="0.25" alpha.overAndSelected="0.25"
+				alpha.selectedUpStates="0.25" color="#000000" />
+			
+        </s:fill>
+		
+    </s:Rect>
+    <!--- @private -->
+    <s:Rect id="selectedHighlightH2" height="1" includeInLayout="false" top="2">
+		
+        <s:fill>
+			
+            <s:SolidColor alpha="0.0" alpha.downStates="0.15" alpha.overAndSelected="0.15"
+				alpha.selectedUpStates="0.15" color="#000000" />
+			
+        </s:fill>
+		
+    </s:Rect>  
+    <!--- @private border - put on top of the fill so it doesn't disappear when scale is less than 1 -->
+    <s:Line id="borderBottom" bottom="0" left="0" right="0">
+		
+        <s:stroke>
+			
+            <s:SolidColorStroke alpha="0.75" alpha.down="0.85" alpha.selectedStates="0.5"
+				color="#000000" color.selectedStates="#434343" weight="1" />
+			
+        </s:stroke>
+		
+    </s:Line>
+    <!--- @private Set includeInLayout="false" as we regenerate the path data and lay out the path in
+        the updateDisplayList() override and we don't want it to affect measurement. -->
+    <s:Path id="borderTop" bottom="0" includeInLayout="false" left="0" right="0" top="0">
+		
+        <s:stroke>
+			
+            <s:LinearGradientStroke rotation="90" weight="1">
+				
+                <s:GradientEntry alpha="0.5625" alpha.down="0.6375" alpha.selectedStates="0.6375" color="#000000" />
+				
+                <s:GradientEntry alpha="0.75" alpha.down="0.85" alpha.selectedStates="0.85" color="#000000" />
+				
+            </s:LinearGradientStroke>
+			
+        </s:stroke>
+		
+    </s:Path>
+    <!--- @copy spark.components.supportClasses.ButtonBase#labelDisplay -->
+    <s:Label id="labelDisplay" bottom="2" horizontalCenter="0" left="10" maxDisplayedLines="1" right="10"
+		textAlign="center" top="2" verticalAlign="middle" verticalCenter="1" />
+	<!--- Defines the button to close the tab. -->
+	<s:Button id="closeButton" right="4" skinClass="flame.controls.spark.skins.AdvancedTabBarCloseButtonSkin" verticalCenter="0" />
+	<!--- Defines the drop indicator shown on tab drag-and-drop. -->
+	<s:BitmapImage id="dropIndicator" maxHeight="5" maxWidth="9"
+		source="{styleManager.getStyleDeclaration('.advancedTab').getStyle('dropIndicator')}" visible="false" />
+    
+</s:SparkButtonSkin>

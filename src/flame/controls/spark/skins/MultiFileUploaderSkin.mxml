@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+////////////////////////////////////////////////////////////////////////////////
+//
+//  Copyright 2011 Ruben Buniatyan. All rights reserved.
+//
+//  This source is subject to the license agreement accompanying it.
+//
+////////////////////////////////////////////////////////////////////////////////
+-->
+<!---
+	The default skin class for MultiFileUploader component.
+	
+	@see flame.controls.spark.MultiFileUploader
+-->
+<s:SparkSkin xmlns:fb="http://ns.adobe.com/flashbuilder/2009" xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
+	alpha.disabled="0.5">
+	
+	<!-- host component -->
+	<fx:Metadata>
+		/**
+		 * @copy spark.skins.spark.ApplicationSkin#hostComponent
+		 */
+		[HostComponent("flame.controls.spark.MultiFileUploader")]
+	</fx:Metadata>
+	
+	<fx:Script fb:purpose="styling">
+	<![CDATA[
+		
+		//--------------------------------------------------------------------------
+		//
+		//  Protected methods
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 * @private
+		 */
+		protected override function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
+		{
+			browseButton.styleName = removeButton.styleName = getStyle("buttonStyleName");
+			browseButton.width = removeButton.width = getStyle("buttonWidth");
+			
+			fileList.styleName = getStyle("listStyleName");
+			fileList.width = getStyle("listWidth");
+			
+			hGroup.gap = vGroup.gap = getStyle("gap");
+			
+			super.updateDisplayList(unscaledWidth, unscaledHeight);
+		}
+		
+	]]>
+	</fx:Script>
+	
+	<s:states>
+		
+		<s:State name="normal" />
+		
+		<s:State name="disabled" />
+		
+	</s:states>
+	<!--- @private -->
+	<s:HGroup id="hGroup" height="100%" width="100%">
+		<!--- Defines the list of selected files. -->
+		<s:List id="fileList" height="100%" width="100%">
+			
+			<s:layout>
+				
+				<s:VerticalLayout horizontalAlign="contentJustify" requestedRowCount="1" />
+				
+			</s:layout>
+			
+		</s:List>
+		<!--- @private -->
+		<s:VGroup id="vGroup">
+			<!--- Defines the button to browse files. -->
+			<s:Button id="browseButton" />
+			<!--- Defines the button to remove the selected file from the list. -->
+			<s:Button id="removeButton" />
+			
+		</s:VGroup>
+		
+	</s:HGroup>
+	
+</s:SparkSkin>

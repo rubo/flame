@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<componentPackage>
+	<component id="AdvancedComboBox" class="flame.controls.mx.AdvancedComboBox" />
+	<component id="AdvancedList" class="flame.controls.mx.AdvancedList" />
+	<component id="AdvancedTabBar" class="flame.controls.mx.AdvancedTabBar" />
+	<component id="AdvancedTabNavigator" class="flame.controls.mx.AdvancedTabNavigator" />
+	<component id="CheckBoxGroup" class="flame.controls.mx.CheckBoxGroup" />
+    <component id="CollapsiblePanel" class="flame.controls.mx.CollapsiblePanel" />
+    <component id="Dialog" class="flame.controls.mx.Dialog" />
+    <component id="FileLoader" class="flame.controls.mx.FileLoader" />
+    <component id="FileUploader" class="flame.controls.mx.FileUploader" />
+    <component id="LinkBar" class="flame.controls.mx.LinkBar" />
+    <component id="LinkButton" class="flame.controls.mx.LinkButton" />
+    <component id="MultiFileUploader" class="flame.controls.mx.MultiFileUploader" />
+    <component id="ToggleButtonBar" class="flame.controls.mx.ToggleButtonBar" />
+    <component id="Tree" class="flame.controls.mx.Tree" />
+    <component id="WatermarkTextArea" class="flame.controls.mx.WatermarkTextArea" />
+    <component id="WatermarkTextInput" class="flame.controls.mx.WatermarkTextInput" />
+</componentPackage>

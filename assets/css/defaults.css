@@ -1,0 +1,95 @@
+/*//////////////////////////////////////////////////////////////////////////////
+//
+//  Copyright 2010 Ruben Buniatyan. All rights reserved.
+//
+//  This source is subject to the license agreement accompanying it.
+//
+//////////////////////////////////////////////////////////////////////////////*/
+
+@namespace flames "library://flame/spark";
+@namespace flamemx "library://flame/mx";
+
+flamemx|AdvancedTabBar
+{
+	tab-style-name: "advancedTab";
+}
+
+flamemx|CollapsiblePanel
+{
+	collapse-button-disabled-skin: Embed(source="assets.swf", symbol="collapseButtonDisabled");
+	collapse-button-down-skin: Embed(source="assets.swf", symbol="collapseButtonDown");
+	collapse-button-over-skin: Embed(source="assets.swf", symbol="collapseButtonOver");
+	collapse-button-up-skin: Embed(source="assets.swf", symbol="collapseButtonUp");
+	expand-button-disabled-skin: Embed(source="assets.swf", symbol="expandButtonDisabled");
+	expand-button-down-skin: Embed(source="assets.swf", symbol="expandButtonDown");
+	expand-button-over-skin: Embed(source="assets.swf", symbol="expandButtonOver");
+	expand-button-up-skin: Embed(source="assets.swf", symbol="expandButtonUp");
+}
+
+flamemx|FileLoader
+{
+	horizontal-gap: 6;
+}
+
+flamemx|FileUploader
+{
+	horizontal-gap: 6;
+}
+
+flamemx|MultiFileUploader
+{
+	horizontal-gap: 6;
+	vertical-gap: 6;
+}
+
+flamemx|WatermarkTextArea
+{
+	watermark-style-name: "watermark";
+}
+
+flamemx|WatermarkTextInput
+{
+	watermark-style-name: "watermark";
+}
+
+flames|AdvancedTabBar
+{
+	skin-class: ClassReference("flame.controls.spark.skins.AdvancedTabBarSkin");
+}
+
+flames|CollapsiblePanel
+{
+	skin-class: ClassReference("flame.controls.spark.skins.CollapsiblePanelSkin");
+}
+
+flames|FileLoader, flames|FileUploader
+{
+	gap: 6;
+	skin-class: ClassReference("flame.controls.spark.skins.FileReaderSkin");
+}
+
+flames|MultiFileUploader
+{
+	gap: 6;
+	skin-class: ClassReference("flame.controls.spark.skins.MultiFileUploaderSkin");
+}
+
+.advancedTab
+{
+	close-button-style-name: "tabCloseButton";
+	close-button-height: 11;
+	close-button-width: 11;
+	drop-indicator: Embed(source="assets.swf", symbol="tabDropIndicator");
+}
+
+.tabCloseButton
+{
+	down-skin: Embed(source="assets.swf", symbol="tabCloseButtonDown");
+	over-skin: Embed(source="assets.swf", symbol="tabCloseButtonOver");
+	up-skin: Embed(source="assets.swf", symbol="tabCloseButtonUp");
+}
+
+.watermark
+{
+	color: #999999;
+}
