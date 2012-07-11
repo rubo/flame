@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-////////////////////////////////////////////////////////////////////////////////
-//
-//  Copyright 2011 Ruben Buniatyan. All rights reserved.
-//
-//  This source is subject to the license agreement accompanying it.
-//
-////////////////////////////////////////////////////////////////////////////////
+
+	Copyright 2011 Ruben Buniatyan. All rights reserved.
+	
+	This source is subject to the license agreement accompanying it.
+
 -->
 <!---
 	The default skin class for MultiFileUploader component.

@@ -1,4 +1,11 @@
 <?xml version="1.0"?>
+<!--
+
+	Copyright 2011 Ruben Buniatyan. All rights reserved.
+	
+	This source is subject to the license agreement accompanying it.
+
+-->
 <componentPackage>
 	<component id="AdvancedComboBox" class="flame.controls.mx.AdvancedComboBox" />
 	<component id="AdvancedList" class="flame.controls.mx.AdvancedList" />

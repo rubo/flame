@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8" ?>
+<!--
+
+	Copyright 2011 Ruben Buniatyan. All rights reserved.
+	
+	This source is subject to the license agreement accompanying it.
+
+-->
 <project default="build" name="flame">
 	
 	<property environment="env" />

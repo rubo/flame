@@ -1,4 +1,11 @@
 <?xml version="1.0"?>
+<!--
+
+	Copyright 2011 Ruben Buniatyan. All rights reserved.
+	
+	This source is subject to the license agreement accompanying it.
+
+-->
 <componentPackage>
 	<component id="CheckBoxGroupValidator" class="flame.validators.CheckBoxGroupValidator" />
     <component id="CompareValidator" class="flame.validators.CompareValidator" />
