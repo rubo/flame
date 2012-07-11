@@ -43,9 +43,11 @@ package flame.crypto
 		private var _blockSizeBytes:int;
 		private var _decIndex:Vector.<int> = new Vector.<int>();
 		private var _decKeyExpansion:Vector.<int> = new Vector.<int>();
+		private var _depadBuffer:ByteArray;
 		private var _encIndex:Vector.<int> = new Vector.<int>();
 		private var _encKeyExpansion:Vector.<int> = new Vector.<int>();
 		private var _useEncryptMode:Boolean;
+		private var _inputBlockSize:int;
 		private var _iv:ByteArray;
 		private var _ivState:ByteArray;
 		private var _key:ByteArray;
@@ -55,6 +57,7 @@ package flame.crypto
 		private var _nbnr:int;
 		private var _nk:int;
 		private var _nr:int;
+		private var _outputBlockSize:int;
 		private var _padding:uint;
 		
 		//--------------------------------------------------------------------------
@@ -111,8 +114,8 @@ package flame.crypto
 			if (key == null)
 				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "key" ]));
 			
-			_blockSizeBits = mode == CipherMode.CFB ? feedbackSize : blockSize;
-		    _blockSizeBytes = _blockSizeBits >> 3;
+			_blockSizeBits = blockSize;
+		    _blockSizeBytes = blockSize >> 3;
 		    
 		    _key = ByteArrayUtil.copy(key);
 		    _key.endian = Endian.LITTLE_ENDIAN;
@@ -124,7 +127,11 @@ package flame.crypto
 		    _padding = padding;
 			_useEncryptMode = useEncryptMode;
 		    
-		    if (mode != CipherMode.CBC && mode != CipherMode.CFB && mode != CipherMode.ECB)
+		    if (mode == CipherMode.CBC || mode == CipherMode.ECB)
+				_inputBlockSize = _outputBlockSize = _blockSizeBytes;
+			else if (mode == CipherMode.CFB)
+				_inputBlockSize = _outputBlockSize = feedbackSize >> 3;
+			else
 		    	throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidCipherMode"));
 		    
 			if (mode == CipherMode.CBC || mode == CipherMode.CFB)
@@ -132,7 +139,7 @@ package flame.crypto
 				if (iv == null)
 					throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "iv" ]));
 				
-				if (iv.length != blockSize >> 3)
+				if (iv.length != _blockSizeBytes)
 					throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidIVSize"));
 				
 				_iv = ByteArrayUtil.copy(iv);
@@ -205,7 +212,7 @@ package flame.crypto
 			if (inputOffset < 0)
 				throw new RangeError(_resourceManager.getString("flameLocale", "argOutOfRangeNonNegative", [ "inputOffset" ]));
 			
-			if (inputCount <= 0 || inputCount % inputBlockSize != 0 ||  inputCount > inputBuffer.length)
+			if (inputCount <= 0 || inputCount % _inputBlockSize != 0 ||  inputCount > inputBuffer.length)
 				throw new RangeError(_resourceManager.getString("flameLocale", "argInvalidValue", [ "inputCount" ]));
 			
 			if (inputBuffer.length - inputCount < inputOffset)
@@ -215,17 +222,42 @@ package flame.crypto
 			var inputEndian:String = inputBuffer.endian;
 			var inputPosition:uint = inputBuffer.position;
 			var outputEndian:String = outputBuffer.endian;
-			var outputPosition:uint = outputBuffer.position;
+			var inputToProcess:int;
 			
 			inputBuffer.endian = outputBuffer.endian = Endian.LITTLE_ENDIAN;
 			
-			count = _useEncryptMode ? encryptBlock(inputBuffer, inputOffset, inputCount, outputBuffer, outputOffset, false)
-				: decryptBlock(inputBuffer, inputOffset, inputCount, outputBuffer, outputOffset, false);
+			if (_useEncryptMode)
+				count = encryptBlock(inputBuffer, inputOffset, inputCount, outputBuffer, outputOffset, false);
+			else if (_padding == PaddingMode.NONE || _padding == PaddingMode.ZEROS)
+				count = decryptBlock(inputBuffer, inputOffset, inputCount, outputBuffer, outputOffset, false);
+			else if (_depadBuffer == null)
+			{
+				_depadBuffer = new ByteArray();
+				_depadBuffer.endian = Endian.LITTLE_ENDIAN;
+				
+				inputToProcess = inputCount - _inputBlockSize;
+				
+				_depadBuffer.writeBytes(inputBuffer, inputOffset + inputToProcess, _inputBlockSize);
+				
+				count = decryptBlock(inputBuffer, inputOffset, inputToProcess, outputBuffer, outputOffset, false);
+			}
+			else
+			{
+				decryptBlock(_depadBuffer, 0, _depadBuffer.length, outputBuffer, outputOffset, false);
+				
+				outputOffset += _outputBlockSize;
+				
+				inputToProcess = inputCount - _inputBlockSize;
+				
+				_depadBuffer.clear();
+				_depadBuffer.writeBytes(inputBuffer, inputOffset + inputToProcess, _inputBlockSize);
+				
+				count = decryptBlock(inputBuffer, inputOffset, inputToProcess, outputBuffer, outputOffset, false) + _outputBlockSize;
+			}
 			
 			inputBuffer.endian = inputEndian;
 			inputBuffer.position = inputPosition;
 			outputBuffer.endian = outputEndian;
-			outputBuffer.position = outputPosition;
 			
 			return count;
 		}
@@ -287,10 +319,23 @@ package flame.crypto
 			}
 			else
 			{
-				if (inputCount % inputBlockSize)
+				if (inputCount % _inputBlockSize)
 					throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoDecryptInvalidDataSize"));
 				
-				decryptBlock(inputBuffer, inputOffset, inputCount, buffer, 0, true);
+				if (_depadBuffer == null)
+					decryptBlock(inputBuffer, inputOffset, inputCount, buffer, 0, true);
+				else
+				{
+					var temp:ByteArray = new ByteArray();
+					temp.endian = Endian.LITTLE_ENDIAN;
+					
+					temp.writeBytes(_depadBuffer);
+					temp.writeBytes(inputBuffer, inputOffset, inputCount);
+					
+					temp.position = 0;
+					
+					decryptBlock(temp, 0, temp.length, buffer, 0, true);
+				}
 			}
 			
 			inputBuffer.endian = inputEndian;
@@ -328,7 +373,7 @@ package flame.crypto
 		 */
 		public function get inputBlockSize():int
 		{
-			return _blockSizeBytes;
+			return _inputBlockSize;
 		}
 		
 		/**
@@ -336,7 +381,7 @@ package flame.crypto
 		 */
 		public function get outputBlockSize():int
 		{
-			return _blockSizeBytes;
+			return _outputBlockSize;
 		}
 		
 		//--------------------------------------------------------------------------
@@ -351,6 +396,8 @@ package flame.crypto
 		 */
 		internal function reset():void
 		{
+			_depadBuffer = null;
+			
 			if (_mode == CipherMode.CBC || _mode == CipherMode.CFB)
 			{
 				_ivState.clear();
@@ -367,7 +414,7 @@ package flame.crypto
 	    //
 	    //--------------------------------------------------------------------------
 	    
-		private function decryptBlock(inputBuffer:ByteArray, inputOffset:int, inputCount:int, outputBuffer:ByteArray, outputOffset:int, isFinal:Boolean):int
+		private function decryptBlock(inputBuffer:ByteArray, inputOffset:int, inputCount:int, outputBuffer:ByteArray, outputOffset:int, finalize:Boolean):int
 		{
 			var modeIsCFB:Boolean = _mode == CipherMode.CFB;
             var state:Vector.<int> = new Vector.<int>();
@@ -375,7 +422,7 @@ package flame.crypto
             
 	        inputBuffer.position = inputOffset;
 	        
-	        for (var i:int = 0, j:int, k:int = _nbnr; i < inputCount; i += _blockSizeBytes, k = _nbnr)
+	        for (var i:int = 0, j:int, k:int = _nbnr; i < inputCount; i += _inputBlockSize, k = _nbnr)
 	        {
 				if (modeIsCFB)
 	        		_ivState.position = 0;
@@ -446,7 +493,7 @@ package flame.crypto
 	            }
 	        }
 			
-			if (isFinal)
+			if (finalize)
 				switch (_padding)
 		        {
 		            case PaddingMode.ANSIX923:
@@ -455,15 +502,13 @@ package flame.crypto
 		                
 						var last:int = outputBuffer[outputBuffer.length - 1];
 		                
-		                if (last > outputBuffer.length || last > _blockSizeBytes || last == 0)
+		                if (last > outputBuffer.length || last > _inputBlockSize || last == 0)
 		                	throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidPadding"));
 		                
 		                ByteArrayUtil.removeBytes(outputBuffer, outputBuffer.length - last, last);
 		        }
 	        
-	        outputBuffer.position = outputOffset;
-	        
-	        return isFinal ? outputBuffer.length : inputCount;
+	        return finalize ? outputBuffer.length : inputCount;
 		}
 		
 		private function decryptState(state:Vector.<int>):Vector.<int>
@@ -504,7 +549,7 @@ package flame.crypto
 		        {
 		            case PaddingMode.ANSIX923:
 		                
-		                byteCount = _blockSizeBytes - inputCount % _blockSizeBytes;
+		                byteCount = _inputBlockSize - inputCount % _inputBlockSize;
 		                
 		                inputBuffer.length += byteCount - 1;
 		                inputBuffer[inputBuffer.length] = byteCount;
@@ -512,39 +557,41 @@ package flame.crypto
 		                
 		            case PaddingMode.ISO10126:
 		                
-		                byteCount = _blockSizeBytes - inputCount % _blockSizeBytes;
+		                byteCount = _inputBlockSize - inputCount % _inputBlockSize;
 		                
-		                ByteArrayUtil.addBytes(inputBuffer, RandomNumberGenerator.getBytes(byteCount - 1));
+						var rng:ByteArray =  RandomNumberGenerator.getBytes(byteCount - 1);
+						
+						if (rng != null)
+		                	ByteArrayUtil.addBytes(inputBuffer, rng);
 		                
 						inputBuffer[inputBuffer.length] = byteCount;
 		                break;
 		                
 		            case PaddingMode.NONE:
 		                
-		                if (inputCount % _blockSizeBytes == 0)
+		                if (inputCount % _inputBlockSize == 0)
 		                    break;
 		                
 		                throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoEncryptInvalidDataSize"));
 		            
 		            case PaddingMode.PKCS7:
 		                
-		                byteCount = _blockSizeBytes - inputCount % _blockSizeBytes;
+		                byteCount = _inputBlockSize - inputCount % _inputBlockSize;
 		                
 		                ByteArrayUtil.addBytes(inputBuffer, ByteArrayUtil.repeat(byteCount, byteCount));
 		                break;
 		                
 		            case PaddingMode.ZEROS:
 		                
-		                if (inputCount % _blockSizeBytes != 0)
-		                    inputBuffer.length += _blockSizeBytes - inputCount % _blockSizeBytes;
+		                if (inputCount % _inputBlockSize != 0)
+		                    inputBuffer.length += _inputBlockSize - inputCount % _inputBlockSize;
 		                    
 		                break;
 		        }
 	        
 	        inputBuffer.position = inputOffset;
-			outputBuffer.position = outputOffset;
 			
-	        for (var i:int = 0, j:int, count:int = inputCount + byteCount; i < count; i += _blockSizeBytes)
+	        for (var i:int = 0, j:int, count:int = inputCount + byteCount; i < count; i += _inputBlockSize)
 	        {
 				if (modeIsCBCorCFB)
 					_ivState.position = 0;
@@ -593,8 +640,6 @@ package flame.crypto
 	                outputBuffer.writeInt(temp[j]);
 	            }
 	        }
-	        
-	        outputBuffer.position = outputOffset;
 	        
 	        return inputCount + byteCount;
 		}
