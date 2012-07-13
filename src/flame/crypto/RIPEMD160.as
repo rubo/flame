@@ -99,6 +99,8 @@ package flame.crypto
 			var data:ByteArray = new ByteArray();
 	        var paddedLength:int = ((((bufferLength << 3) + 64) >> 9) + 1) << 6;
        		
+			_buffer.readBytes(data);
+			
 			data.endian = _buffer.endian;
         	data[bufferLength] |= 0x80;
 	        data.length = paddedLength;
