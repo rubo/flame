@@ -77,13 +77,13 @@ package flame.crypto
 		 * <tr><th>Parameter value</th><th>Algorithm implementation</th></tr>
 		 * <tr><td>flame.crypto::HMAC</td><td>flame.crypto.HMACSHA1</td></tr>
 		 * <tr><td>flame.crypto::KeyedHashAlgorithm</td><td>flame.crypto.HMACSHA1</td></tr>
-		 * <tr><td>MD5, flame.crypto::MD5</td><td>flame.crypto.HMACMD5</td></tr>
-		 * <tr><td>RIPEMD160, RIPEMD-160, flame.crypto::RIPEMD160</td><td>flame.crypto.HMACRIPEMD160</td></tr>
-		 * <tr><td>SHA1, SHA-1, flame.crypto::SHA1</td><td>flame.crypto.HMACSHA1</td></tr>
-		 * <tr><td>SHA224, SHA-224, flame.crypto::SHA224</td><td>flame.crypto.HMACSHA224</td></tr>
-		 * <tr><td>SHA256, SHA-256, flame.crypto::SHA256</td><td>flame.crypto.HMACSHA256</td></tr>
-		 * <tr><td>SHA384, SHA-384, flame.crypto::SHA384</td><td>flame.crypto.HMACSHA384</td></tr>
-		 * <tr><td>SHA512, SHA-512, flame.crypto::SHA512</td><td>flame.crypto.HMACSHA512</td></tr>
+		 * <tr><td>HMACMD5, HMAC-MD5, flame.crypto::HMACMD5</td><td>flame.crypto.HMACMD5</td></tr>
+		 * <tr><td>HMACRIPEMD160, HMAC-RIPEMD160, HMAC-RIPEMD-160, flame.crypto::HMACRIPEMD160</td><td>flame.crypto.HMACRIPEMD160</td></tr>
+		 * <tr><td>HMACSHA1, HMAC-SHA1, HMAC-SHA-1, flame.crypto::HMACSHA1</td><td>flame.crypto.HMACSHA1</td></tr>
+		 * <tr><td>HMACSHA224, HMAC-SHA224, HMAC-SHA-224, flame.crypto::HMACSHA224</td><td>flame.crypto.HMACSHA224</td></tr>
+		 * <tr><td>HMACSHA256, HMAC-SHA256, HMAC-SHA-256, flame.crypto::HMACSHA256</td><td>flame.crypto.HMACSHA256</td></tr>
+		 * <tr><td>HMACSHA384, HMAC-SHA384, HMAC-SHA-384, flame.crypto::HMACSHA384</td><td>flame.crypto.HMACSHA384</td></tr>
+		 * <tr><td>HMACSHA512, HMAC-SHA512, HMAC-SHA-512, flame.crypto::HMACSHA512</td><td>flame.crypto.HMACSHA512</td></tr>
 		 * </table></p>
 
 		 * @return A new instance of the specified HMAC implementation.
