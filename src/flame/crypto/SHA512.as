@@ -228,11 +228,11 @@ package flame.crypto
 	            _sha512State[7] = _sha512State[7].add(h);
 	        }
 			
-			var bytesAvailabe:int = _buffer.bytesAvailable;
+			var bytesAvailable:int = _buffer.bytesAvailable;
 			
-			_buffer.readBytes(_buffer, 0, bytesAvailabe);
+			_buffer.readBytes(_buffer, 0, bytesAvailable);
 			
-			_buffer.length = bytesAvailabe;
+			_buffer.length = bytesAvailable;
 			_buffer.position = 0;
 		}
 	}
