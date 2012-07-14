@@ -25,8 +25,10 @@ package flame.crypto
 			if (byteArray.length > length)
 			{
 				var i:int = 0;
+				var count:int = byteArray.length - length;
 				
-				for (var count:int = byteArray.length - length; i < count && byteArray[i] == 0; i++);
+				while (i < count && byteArray[i] == 0)
+					i++;
 				
 				if (i > 0)
 					ByteArrayUtil.removeBytes(byteArray, 0, i);

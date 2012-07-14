@@ -106,7 +106,10 @@ package flame.crypto
 				if (db[i] != _label[i])
 					throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidPadding"));
 			
-			for (i = hashSize; db[i] == 0; i++);
+			i = hashSize;
+			
+			while (db[i] == 0)
+				i++;
 			
 			if (db[i] != 1)
 				throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidPadding"));

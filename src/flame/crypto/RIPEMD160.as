@@ -657,8 +657,8 @@ package flame.crypto
 				bb += (cc ^ dd ^ ee) + _x[11];
 				bb = aa + (bb << 11 | bb >>> 21);
 				dd = dd << 10 | dd >>> 22;
-				
 				dd += c + _md160State[1];
+				
 				_md160State[1] = _md160State[2] + d + ee;
 				_md160State[2] = _md160State[3] + e + aa;
 				_md160State[3] = _md160State[4] + a + bb;

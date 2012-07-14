@@ -1993,7 +1993,8 @@ package flame.numerics
 			if (_length > _bits.length)
 				_length = _bits.length;
 			
-			for (; _length > 0 && _bits[_length - 1] == value; _length--);
+			while (_length > 0 && _bits[_length - 1] == value)
+				_length--;
 		}
 		
 		/**

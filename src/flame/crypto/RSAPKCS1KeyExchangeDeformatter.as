@@ -77,8 +77,10 @@ package flame.crypto
 			if (buffer[0] == 0 && buffer[1] == 2)
 			{
 				var i:int = 2;
+				var count:int = buffer.length;
 				
-				for (var count:int = buffer.length; i < count && buffer[i] != 0; i++);
+				while (i < count && buffer[i] != 0)
+					i++;
 				
 				if (i < 10 || i == count)
 					throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidPadding"));

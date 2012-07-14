@@ -104,7 +104,8 @@ package flame.crypto
 	    	var tP:BigInteger = t.mod(_p).modPow(_dP, _p);
 	    	var tQ:BigInteger = t.mod(_q).modPow(_dQ, _q);
 	    	
-	    	for (; tP.compareTo(tQ) < 0; tP = tP.add(_p));
+	    	while (tP.compareTo(tQ) < 0)
+				tP = tP.add(_p);
 	    	
 			return CryptoUtil.ensureLength(tP.subtract(tQ).multiply(_inverseQ).mod(_p).multiply(_q).add(tQ).toByteArray(), _keySize >> 3);
 	    }
