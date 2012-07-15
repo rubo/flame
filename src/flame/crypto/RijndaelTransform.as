@@ -39,8 +39,7 @@ package flame.crypto
 		
 		private static var _resourceManager:IResourceManager = ResourceManager.getInstance();
 		
-		private var _blockSizeBits:int;
-		private var _blockSizeBytes:int;
+		private var _blockSize:int;
 		private var _decIndex:Vector.<int> = new Vector.<int>();
 		private var _decKeyExpansion:Vector.<int> = new Vector.<int>();
 		private var _depadBuffer:ByteArray;
@@ -49,7 +48,6 @@ package flame.crypto
 		private var _useEncryptMode:Boolean;
 		private var _inputBlockSize:int;
 		private var _iv:ByteArray;
-		private var _ivState:ByteArray;
 		private var _key:ByteArray;
 		private var _mode:uint;
 		private var _nb:int;
@@ -59,6 +57,7 @@ package flame.crypto
 		private var _nr:int;
 		private var _outputBlockSize:int;
 		private var _padding:uint;
+		private var _state:ByteArray;
 		
 		//--------------------------------------------------------------------------
 	    //
@@ -114,8 +113,7 @@ package flame.crypto
 			if (key == null)
 				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "key" ]));
 			
-			_blockSizeBits = blockSize;
-		    _blockSizeBytes = blockSize >> 3;
+		    _blockSize = blockSize >> 3;
 		    
 		    _key = ByteArrayUtil.copy(key);
 		    _key.endian = Endian.LITTLE_ENDIAN;
@@ -128,7 +126,7 @@ package flame.crypto
 			_useEncryptMode = useEncryptMode;
 		    
 		    if (mode == CipherMode.CBC || mode == CipherMode.ECB)
-				_inputBlockSize = _outputBlockSize = _blockSizeBytes;
+				_inputBlockSize = _outputBlockSize = _blockSize;
 			else if (mode == CipherMode.CFB)
 				_inputBlockSize = _outputBlockSize = feedbackSize >> 3;
 			else
@@ -139,14 +137,14 @@ package flame.crypto
 				if (iv == null)
 					throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "iv" ]));
 				
-				if (iv.length != _blockSizeBytes)
+				if (iv.length != _blockSize)
 					throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidIVSize"));
 				
 				_iv = ByteArrayUtil.copy(iv);
 				_iv.endian = Endian.LITTLE_ENDIAN;
 				
-				_ivState = ByteArrayUtil.copy(iv);
-				_ivState.endian = Endian.LITTLE_ENDIAN;
+				_state = ByteArrayUtil.copy(iv);
+				_state.endian = Endian.LITTLE_ENDIAN;
 			}
 			
 		    _decIndex.length = _encIndex.length = _nb * 3;
@@ -400,11 +398,10 @@ package flame.crypto
 			
 			if (_mode == CipherMode.CBC || _mode == CipherMode.CFB)
 			{
-				_ivState.clear();
+				_state.clear();
+				_state.writeBytes(_iv);
 				
-				_iv.readBytes(_ivState);
-				
-				_iv.position = _ivState.position = 0;
+				_state.position = 0;
 			}
 		}
 		
@@ -416,84 +413,90 @@ package flame.crypto
 	    
 		private function decryptBlock(inputBuffer:ByteArray, inputOffset:int, inputCount:int, outputBuffer:ByteArray, outputOffset:int, finalize:Boolean):int
 		{
-			var modeIsCFB:Boolean = _mode == CipherMode.CFB;
+			var isCBCMode:Boolean = _mode == CipherMode.CBC;
+			var isCFBMode:Boolean = _mode == CipherMode.CFB;
+			var shiftSize:int;
             var state:Vector.<int> = new Vector.<int>();
             var temp:Vector.<int> = new Vector.<int>();
             
 	        inputBuffer.position = inputOffset;
+			outputBuffer.position = outputOffset;
 	        
-	        for (var i:int = 0, j:int, k:int = _nbnr; i < inputCount; i += _inputBlockSize, k = _nbnr)
+			if (isCFBMode)
+				shiftSize = _blockSize - _inputBlockSize;
+			
+	        for (var i:int = 0, j:int, offset:int = inputOffset; i < inputCount; i += _inputBlockSize)
 	        {
-				if (modeIsCFB)
-	        		_ivState.position = 0;
-	        	
-	            for (j = 0; j < _nb; j++, k++)
-	            {
-	                switch (_mode)
-	                {
-	                    case CipherMode.CBC:
-	                    case CipherMode.ECB:
-	                        
-	                        state[j] = inputBuffer.readInt();
-	                        break;
-	                        
-	                    case CipherMode.CFB:
-	                        
-	                        state[j] = _ivState.readInt();
-	                        break;
-	                }
-	            }
-	            
-	            switch (_mode)
-	            {
-	                case CipherMode.CBC:
-						
-						temp = decryptState(state);
-						
-						_ivState.position = 0;
-						inputBuffer.position -= _nb << 2;
-						break;
-					
-	                case CipherMode.ECB:
-	                    
-	                    temp = decryptState(state);
-	                    break;
-	                    
-	                case CipherMode.CFB:
-	                    
-	                    temp = encryptState(state);
-						
-						_ivState.position = 0;
-	                    break;
-	            }
-	            
+				if (isCFBMode)
+					_state.position = 0;
+				
 	            for (j = 0; j < _nb; j++)
-	            {
-	                switch (_mode)
-	                {
-	                    case CipherMode.CBC:
-	                        
-	                        temp[j] ^= _ivState.readInt();
-	                        _ivState.position -= 4;
-	                        
-	                        _ivState.writeInt(inputBuffer.readInt());
-	                        break;
-	                        
-	                    case CipherMode.CFB:
-	                        
-	                        var t:int = inputBuffer.readInt();
-	                        
-	                        temp[j] ^= t;
-	                        
-	                        _ivState.writeInt(t);
-	                        break;
-	                }
-	                
-	                outputBuffer.writeInt(temp[j]);
-	            }
+					state[j] = isCFBMode ? _state.readInt() : inputBuffer.readInt();
+	            
+				if (isCFBMode)
+				{
+					temp = encryptState(state);
+					
+					inputBuffer.position = offset;
+					_state.position = 0;
+					
+					for (j = 0; j < _nb; j++)
+					{
+						if (inputBuffer.position >= offset + _inputBlockSize)
+							break;
+						
+						outputBuffer.writeByte(temp[j] & 0xFF ^ inputBuffer.readByte());
+						
+						if (inputBuffer.position >= offset + _inputBlockSize)
+							break;
+						
+						outputBuffer.writeByte(temp[j] >>> 8 & 0xFF ^ inputBuffer.readByte());
+						
+						if (inputBuffer.position >= offset + _inputBlockSize)
+							break;
+						
+						outputBuffer.writeByte(temp[j] >>> 16 & 0xFF ^ inputBuffer.readByte());
+						
+						if (inputBuffer.position >= offset + _inputBlockSize)
+							break;
+						
+						outputBuffer.writeByte(temp[j] >>> 24 & 0xFF ^ inputBuffer.readByte());
+					}
+					
+					for (j = 0; j < shiftSize; j++)
+						_state.writeByte(_state[j + _inputBlockSize]);
+					
+					_state.writeBytes(inputBuffer, offset, _inputBlockSize);
+					
+					offset += _inputBlockSize;
+				}
+				else
+				{
+					temp = decryptState(state);
+					
+					if (isCBCMode)
+					{
+						_state.position = 0;
+						inputBuffer.position -= _nb << 2;
+					}
+					
+					for (j = 0; j < _nb; j++)
+					{
+						if (isCBCMode)
+						{
+							temp[j] ^= _state.readInt();
+							_state.position -= 4;
+							
+							_state.writeInt(inputBuffer.readInt());
+						}
+						
+						outputBuffer.writeInt(temp[j]);
+					}
+				}
 	        }
 			
 			if (finalize)
+			{
 				switch (_padding)
 		        {
 		            case PaddingMode.ANSIX923:
@@ -502,13 +505,16 @@ package flame.crypto
 		                
 						var last:int = outputBuffer[outputBuffer.length - 1];
 		                
-		                if (last > outputBuffer.length || last > _inputBlockSize || last == 0)
+		                if (last > outputBuffer.length || last > _inputBlockSize || last <= 0)
 		                	throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidPadding"));
 		                
 		                ByteArrayUtil.removeBytes(outputBuffer, outputBuffer.length - last, last);
 		        }
+				
+				return outputBuffer.length;
+			}
 	        
-	        return finalize ? outputBuffer.length : inputCount;
+	        return inputCount;
 		}
 		
 		private function decryptState(state:Vector.<int>):Vector.<int>
@@ -539,8 +545,10 @@ package flame.crypto
 		
 		private function encryptBlock(inputBuffer:ByteArray, inputOffset:int, inputCount:int, outputBuffer:ByteArray, outputOffset:int, finalize:Boolean):int
 		{
-			var byteCount:int = 0;
-			var modeIsCBCorCFB:Boolean = _mode == CipherMode.CBC || _mode == CipherMode.CFB;
+			var isCBCMode:Boolean = _mode == CipherMode.CBC;
+			var isCFBMode:Boolean = _mode == CipherMode.CFB;
+			var padSize:int = 0;
+			var shiftSize:int;
             var state:Vector.<int> = new Vector.<int>();
             var temp:Vector.<int> = new Vector.<int>();
             
@@ -549,22 +557,22 @@ package flame.crypto
 		        {
 		            case PaddingMode.ANSIX923:
 		                
-		                byteCount = _inputBlockSize - inputCount % _inputBlockSize;
+		                padSize = _inputBlockSize - inputCount % _inputBlockSize;
 		                
-		                inputBuffer.length += byteCount - 1;
-		                inputBuffer[inputBuffer.length] = byteCount;
+		                inputBuffer.length += padSize - 1;
+		                inputBuffer[inputBuffer.length] = padSize;
 		                break;
 		                
 		            case PaddingMode.ISO10126:
 		                
-		                byteCount = _inputBlockSize - inputCount % _inputBlockSize;
+		                padSize = _inputBlockSize - inputCount % _inputBlockSize;
 		                
-						var rng:ByteArray =  RandomNumberGenerator.getBytes(byteCount - 1);
+						var rng:ByteArray =  RandomNumberGenerator.getBytes(padSize - 1);
 						
 						if (rng != null)
 		                	ByteArrayUtil.addBytes(inputBuffer, rng);
 		                
-						inputBuffer[inputBuffer.length] = byteCount;
+						inputBuffer[inputBuffer.length] = padSize;
 		                break;
 		                
 		            case PaddingMode.NONE:
@@ -576,9 +584,9 @@ package flame.crypto
 		            
 		            case PaddingMode.PKCS7:
 		                
-		                byteCount = _inputBlockSize - inputCount % _inputBlockSize;
+		                padSize = _inputBlockSize - inputCount % _inputBlockSize;
 		                
-		                ByteArrayUtil.addBytes(inputBuffer, ByteArrayUtil.repeat(byteCount, byteCount));
+		                ByteArrayUtil.addBytes(inputBuffer, ByteArrayUtil.repeat(padSize, padSize));
 		                break;
 		                
 		            case PaddingMode.ZEROS:
@@ -590,58 +598,76 @@ package flame.crypto
 		        }
 	        
 	        inputBuffer.position = inputOffset;
+			outputBuffer.position = outputOffset;
 			
-	        for (var i:int = 0, j:int, count:int = inputCount + byteCount; i < count; i += _inputBlockSize)
+			if (isCFBMode)
+				shiftSize = _blockSize - _inputBlockSize;
+			
+	        for (var i:int = 0, j:int, offset:int = inputOffset, count:int = inputCount + padSize; i < count; i += _inputBlockSize)
 	        {
-				if (modeIsCBCorCFB)
-					_ivState.position = 0;
+				if (isCBCMode || isCFBMode)
+					_state.position = 0;
 	        	
 	            for (j = 0; j < _nb; j++)
-	            {
-	                switch (_mode)
-	                {
-	                    case CipherMode.CBC:
-	                        
-	                        state[j] = inputBuffer.readInt() ^ _ivState.readInt();
-	                        break;
-	                        
-	                    case CipherMode.CFB:
-	                        
-	                        state[j] = _ivState.readInt();
-	                        break;
-	                        
-	                    case CipherMode.ECB:
-	                        
-	                        state[j] = inputBuffer.readInt();
-	                        break;
-	                }
-	            }
+				{
+                    state[j] = isCFBMode ? _state.readInt() : inputBuffer.readInt();
+						
+					if (isCBCMode)
+						state[j] ^= _state.readInt();
+				}
 	            
 	            temp = encryptState(state);
 	            
-				if (modeIsCBCorCFB)
-	            	_ivState.position = 0;
-	            
-	            for (j = 0; j < _nb; j++)
-	            {
-	                switch (_mode)
-	                {
-	                    case CipherMode.CBC:
-	                        
-							_ivState.writeInt(temp[j]);
-	                        break;
-	                        
-	                    case CipherMode.CFB:
-	                        
-							_ivState.writeInt(temp[j] ^= inputBuffer.readInt());
-	                        break;
-	                }
-	                
-	                outputBuffer.writeInt(temp[j]);
-	            }
+				if (isCFBMode)
+				{
+					inputBuffer.position = offset;
+					_state.position = 0;
+					
+					for (j = 0; j < _nb; j++)
+					{
+						if (inputBuffer.position >= offset + _inputBlockSize)
+							break;
+						
+						outputBuffer.writeByte(temp[j] & 0xFF ^ inputBuffer.readByte());
+						
+						if (inputBuffer.position >= offset + _inputBlockSize)
+							break;
+						
+						outputBuffer.writeByte(temp[j] >>> 8 & 0xFF ^ inputBuffer.readByte());
+						
+						if (inputBuffer.position >= offset + _inputBlockSize)
+							break;
+						
+						outputBuffer.writeByte(temp[j] >>> 16 & 0xFF ^ inputBuffer.readByte());
+						
+						if (inputBuffer.position >= offset + _inputBlockSize)
+							break;
+						
+						outputBuffer.writeByte(temp[j] >>> 24 & 0xFF ^ inputBuffer.readByte());
+					}
+					
+					for (j = 0; j < shiftSize; j++)
+						_state.writeByte(_state[j + _inputBlockSize]);
+					
+					_state.writeBytes(outputBuffer, i, _inputBlockSize);
+					
+					offset += _inputBlockSize;
+				}
+				else
+				{
+					_state.position = 0;
+					
+					for (j = 0; j < _nb; j++)
+					{
+						if (isCBCMode)
+							_state.writeInt(temp[j]);
+						
+						outputBuffer.writeInt(temp[j]);
+					}
+				}
 	        }
 	        
-	        return inputCount + byteCount;
+	        return inputCount + padSize;
 		}
 		
 		private function encryptState(state:Vector.<int>):Vector.<int>
@@ -670,9 +696,7 @@ package flame.crypto
 		
 		private function generateKeyExpansion():void
 		{
-			var bitLength:int = _key.length << 3;
-        
-	        switch (_blockSizeBits > bitLength ? _blockSizeBits : bitLength)
+	        switch (Math.max(_blockSize, _key.length) << 3)
 	        {
 	            case 128:
 	                
