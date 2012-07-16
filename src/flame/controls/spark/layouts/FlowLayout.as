@@ -133,60 +133,6 @@ package flame.controls.spark.layouts
 		/**
 		 * @inheritDoc
 		 */
-		public override function measure():void
-		{
-			checkVirtualLayout();
-			
-			var layoutTarget:GroupBase = target;
-			
-			if (layoutTarget == null ||  isNaN(layoutTarget.getExplicitOrMeasuredWidth()))
-				return;
-			
-			var contentWidth:Number = layoutTarget.getExplicitOrMeasuredWidth() - _paddingLeft - _paddingRight;
-			var element:ILayoutElement;
-			var height:Number = 0;
-			var rowHeight:Number = 0;
-			var x:Number = 0;
-			var y:Number = 0;
-			
-			for (var i:int = 0, count:int = layoutTarget.numElements; i < count; i++)
-			{
-				element = layoutTarget.getElementAt(i);
-				
-				if (element == null || !element.includeInLayout)
-					continue;
-				
-				var elementHeight:Number = element.getPreferredBoundsHeight();
-				var elementWidth:Number = element.getPreferredBoundsWidth();
-				
-				if (x + elementWidth > contentWidth)
-				{
-					x = 0;
-					
-					if (i > 0)
-					{
-						y += rowHeight + _verticalGap;
-						
-						rowHeight = 0;
-					}
-				}
-				
-				rowHeight = Math.max(rowHeight, elementHeight);
-				
-				height = Math.max(height, y + rowHeight);
-				
-				x += elementWidth + _horizontalGap;
-			}
-			
-			height += _paddingBottom + _paddingTop;
-			
-			layoutTarget.measuredHeight = height;
-			layoutTarget.measuredWidth = layoutTarget.getExplicitOrMeasuredWidth();
-		}
-		
-		/**
-		 * @inheritDoc
-		 */
 		public override function updateDisplayList(width:Number, height:Number):void
 		{
 			checkVirtualLayout();
@@ -254,16 +200,14 @@ package flame.controls.spark.layouts
 			}
 			
 			contentHeight += _paddingBottom;
-			contentWidth += paddingRight;
+			contentWidth += _paddingRight;
+			
+			layoutTarget.explicitHeight = layoutTarget.measuredHeight = clipAndEnableScrolling ? height : contentHeight;
 			
 			layoutTarget.setContentSize(contentWidth, contentHeight);
 			
 			if (layoutTarget.getExplicitOrMeasuredWidth() != width)
-			{
-				layoutTarget.width = width;
-				
 				invalidateTargetSizeAndDisplayList();
-			}
 		}
 		
 		//--------------------------------------------------------------------------
