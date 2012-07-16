@@ -45,7 +45,7 @@ package flame.crypto
 		private var _depadBuffer:ByteArray;
 		private var _encIndex:Vector.<int> = new Vector.<int>();
 		private var _encKeyExpansion:Vector.<int> = new Vector.<int>();
-		private var _useEncryptMode:Boolean;
+		private var _feedbackSize:int;
 		private var _inputBlockSize:int;
 		private var _iv:ByteArray;
 		private var _key:ByteArray;
@@ -58,6 +58,7 @@ package flame.crypto
 		private var _outputBlockSize:int;
 		private var _padding:uint;
 		private var _state:ByteArray;
+		private var _useEncryptMode:Boolean;
 		
 		//--------------------------------------------------------------------------
 	    //
@@ -113,9 +114,10 @@ package flame.crypto
 			if (key == null)
 				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "key" ]));
 			
-		    _blockSize = blockSize >> 3;
+			_blockSize = _inputBlockSize = _outputBlockSize = blockSize >> 3;
+			_feedbackSize = feedbackSize >> 3;
 		    
-		    _key = ByteArrayUtil.copy(key);
+			_key = ByteArrayUtil.copy(key);
 		    _key.endian = Endian.LITTLE_ENDIAN;
 		    
 		    _mode = mode;
@@ -124,13 +126,6 @@ package flame.crypto
 		    _nk = key.length >> 2;
 		    _padding = padding;
 			_useEncryptMode = useEncryptMode;
-		    
-		    if (mode == CipherMode.CBC || mode == CipherMode.ECB)
-				_inputBlockSize = _outputBlockSize = _blockSize;
-			else if (mode == CipherMode.CFB)
-				_inputBlockSize = _outputBlockSize = feedbackSize >> 3;
-			else
-		    	throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidCipherMode"));
 		    
 			if (mode == CipherMode.CBC || mode == CipherMode.CFB)
 			{
@@ -146,6 +141,8 @@ package flame.crypto
 				_state = ByteArrayUtil.copy(iv);
 				_state.endian = Endian.LITTLE_ENDIAN;
 			}
+			else if (mode != CipherMode.ECB)
+				throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidCipherMode"));
 			
 		    _decIndex.length = _encIndex.length = _nb * 3;
 		    _decIndex.fixed = _encIndex.fixed = true;
@@ -423,9 +420,9 @@ package flame.crypto
 			outputBuffer.position = outputOffset;
 	        
 			if (isCFBMode)
-				shiftSize = _blockSize - _inputBlockSize;
+				shiftSize = _blockSize - _feedbackSize;
 			
-	        for (var i:int = 0, j:int, offset:int = inputOffset; i < inputCount; i += _inputBlockSize)
+	        for (var i:int = 0, j:int, offset:int = inputOffset, count:int = inputCount / (isCFBMode ? _feedbackSize : _inputBlockSize); i < count; i++)
 	        {
 				if (isCFBMode)
 					_state.position = 0;
@@ -442,33 +439,33 @@ package flame.crypto
 					
 					for (j = 0; j < _nb; j++)
 					{
-						if (inputBuffer.position >= offset + _inputBlockSize)
+						if (inputBuffer.position >= offset + _feedbackSize)
 							break;
 						
 						outputBuffer.writeByte(temp[j] & 0xFF ^ inputBuffer.readByte());
 						
-						if (inputBuffer.position >= offset + _inputBlockSize)
+						if (inputBuffer.position >= offset + _feedbackSize)
 							break;
 						
 						outputBuffer.writeByte(temp[j] >>> 8 & 0xFF ^ inputBuffer.readByte());
 						
-						if (inputBuffer.position >= offset + _inputBlockSize)
+						if (inputBuffer.position >= offset + _feedbackSize)
 							break;
 						
 						outputBuffer.writeByte(temp[j] >>> 16 & 0xFF ^ inputBuffer.readByte());
 						
-						if (inputBuffer.position >= offset + _inputBlockSize)
+						if (inputBuffer.position >= offset + _feedbackSize)
 							break;
 						
 						outputBuffer.writeByte(temp[j] >>> 24 & 0xFF ^ inputBuffer.readByte());
 					}
 					
 					for (j = 0; j < shiftSize; j++)
-						_state.writeByte(_state[j + _inputBlockSize]);
+						_state.writeByte(_state[j + _feedbackSize]);
 					
-					_state.writeBytes(inputBuffer, offset, _inputBlockSize);
+					_state.writeBytes(inputBuffer, offset, _feedbackSize);
 					
-					offset += _inputBlockSize;
+					offset += _feedbackSize;
 				}
 				else
 				{
@@ -601,9 +598,9 @@ package flame.crypto
 			outputBuffer.position = outputOffset;
 			
 			if (isCFBMode)
-				shiftSize = _blockSize - _inputBlockSize;
+				shiftSize = _blockSize - _feedbackSize;
 			
-	        for (var i:int = 0, j:int, offset:int = inputOffset, count:int = inputCount + padSize; i < count; i += _inputBlockSize)
+	        for (var i:int = 0, j:int, offset:int = inputOffset, count:int = (inputCount + padSize) / (isCFBMode ? _feedbackSize : _inputBlockSize); i < count; i++)
 	        {
 				if (isCBCMode || isCFBMode)
 					_state.position = 0;
@@ -625,33 +622,33 @@ package flame.crypto
 					
 					for (j = 0; j < _nb; j++)
 					{
-						if (inputBuffer.position >= offset + _inputBlockSize)
+						if (inputBuffer.position >= offset + _feedbackSize)
 							break;
 						
 						outputBuffer.writeByte(temp[j] & 0xFF ^ inputBuffer.readByte());
 						
-						if (inputBuffer.position >= offset + _inputBlockSize)
+						if (inputBuffer.position >= offset + _feedbackSize)
 							break;
 						
 						outputBuffer.writeByte(temp[j] >>> 8 & 0xFF ^ inputBuffer.readByte());
 						
-						if (inputBuffer.position >= offset + _inputBlockSize)
+						if (inputBuffer.position >= offset + _feedbackSize)
 							break;
 						
 						outputBuffer.writeByte(temp[j] >>> 16 & 0xFF ^ inputBuffer.readByte());
 						
-						if (inputBuffer.position >= offset + _inputBlockSize)
+						if (inputBuffer.position >= offset + _feedbackSize)
 							break;
 						
 						outputBuffer.writeByte(temp[j] >>> 24 & 0xFF ^ inputBuffer.readByte());
 					}
 					
 					for (j = 0; j < shiftSize; j++)
-						_state.writeByte(_state[j + _inputBlockSize]);
+						_state.writeByte(_state[j + _feedbackSize]);
 					
-					_state.writeBytes(outputBuffer, i, _inputBlockSize);
+					_state.writeBytes(outputBuffer, i * _feedbackSize, _feedbackSize);
 					
-					offset += _inputBlockSize;
+					offset += _feedbackSize;
 				}
 				else
 				{
