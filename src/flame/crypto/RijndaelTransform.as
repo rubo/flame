@@ -652,7 +652,8 @@ package flame.crypto
 				}
 				else
 				{
-					_state.position = 0;
+					if (isCBCMode)
+						_state.position = 0;
 					
 					for (j = 0; j < _nb; j++)
 					{
