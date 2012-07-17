@@ -14,8 +14,7 @@ package flame.crypto
 	 * Performs symmetric encryption and decryption using the Advanced Encryption Standard (AES) algorithm.
 	 * This class cannot be inherited.
 	 * <p>The AES algorithm is essentially the Rijndael symmetric algorithm with a fixed block size and iteration count.
-	 * This class functions the same way as the Rijndael class but limits blocks to 128 bits
-	 * and does not allow feedback modes.</p>
+	 * This class functions the same way as the Rijndael class but limits blocks to 128 bits.</p>
 	 * 
 	 * @see flame.crypto.Rijndael
 	 */
