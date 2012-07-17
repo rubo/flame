@@ -1,27 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
-  <includeClasses>
-    <classEntry path="flame.crypto.ECPointWNAFMultiplier"/>
-    <classEntry path="flame.crypto.ECPointMultiplier"/>
-    <classEntry path="flame.crypto.ECDSA"/>
-    <classEntry path="flame.crypto.ECDSASignatureFormatter"/>
-    <classEntry path="flame.crypto.ECDSASignatureDeformatter"/>
-    <classEntry path="flame.crypto.KeyBLOBFormat"/>
-    <classEntry path="flame.crypto.asn1.ASN1Object"/>
-    <classEntry path="flame.crypto.asn1.ASN1Construct"/>
-    <classEntry path="flame.crypto.asn1.ASN1Primitive"/>
-    <classEntry path="flame.crypto.asn1.ASN1UTCTime"/>
-    <classEntry path="flame.crypto.asn1.ASN1GeneralizedTime"/>
-    <classEntry path="flame.crypto.asn1.ASN1Null"/>
-    <classEntry path="flame.crypto.asn1.ASN1Sequence"/>
-    <classEntry path="flame.crypto.asn1.ASN1Set"/>
-    <classEntry path="flame.crypto.asn1.ASN1StringBase"/>
-    <classEntry path="flame.crypto.asn1.ASN1GenericPrimitive"/>
-    <classEntry path="flame.crypto.asn1.ASN1GenericConstruct"/>
-    <classEntry path="flame.crypto.asn1.ASN1Error"/>
-    <classEntry path="flame.crypto.asn1.ASN1Tag"/>
-    <classEntry path="flame.controls.spark.layouts.FlowLayout"/>
-  </includeClasses>
+  <includeClasses/>
   <includeResources/>
   <namespaceManifests/>
 </flexLibProperties>

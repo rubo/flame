@@ -15,9 +15,11 @@
 	<property name="flex.libs.dir" value="${FLEX_HOME}${file.separator}frameworks${file.separator}libs" />
 	<property name="flex.player.dir" value="${flex.libs.dir}${file.separator}player${file.separator}11.1" />
 	<property name="jvm.args" value="-Xmx1024m" />
+	<property name="reports.output.dir" value="reports-output" />
 	<property name="source.dir" value="src" />
 	
 	<taskdef classpath="${FLEX_HOME}${file.separator}ant${file.separator}lib${file.separator}flexTasks.jar" resource="flexTasks.tasks" />
+	<taskdef classpath="build${file.separator}flexUnitTasks-4.1.0-8.jar" resource="flexUnitTasks.tasks" />
 	
 	<target depends="cleanup, docs" name="build" />
 	
@@ -26,11 +28,12 @@
 		<delete failonerror="false" includeemptydirs="true">
 			<fileset dir="${bin.output.dir}" />
 			<fileset dir="${docs.output.dir}" />
+			<fileset dir="${reports.output.dir}" />
 		</delete>
 	</target>
 	
 	<target name="library">
-		<echo level="info" message="Building..." />
+		<echo level="info" message="Building the library..." />
 		<compc allow-source-path-overlap="true" debug="false" fork="true" locale="en_US" optimize="false"
 			output="${bin.output.dir}${file.separator}flame.swc">
 			<external-library-path dir="${flex.player.dir}" includes="playerglobal.swc" />
@@ -64,20 +67,35 @@
 		    <namespace manifest="${FLEX_HOME}${file.separator}frameworks${file.separator}mxml-manifest.xml" uri="http://www.adobe.com/2006/mxml" />
 			<namespace manifest="${FLEX_HOME}${file.separator}frameworks${file.separator}spark-manifest.xml" uri="library://ns.adobe.com/flex/spark" />
 			<!-- End -->
-			<namespace manifest="manifest.xml" uri="library://flame" />
-			<namespace manifest="mx-manifest.xml" uri="library://flame/mx" />
-			<namespace manifest="spark-manifest.xml" uri="library://flame/spark" />
+			<namespace manifest="build${file.separator}manifest.xml" uri="library://flame" />
+			<namespace manifest="build${file.separator}mx-manifest.xml" uri="library://flame/mx" />
+			<namespace manifest="build${file.separator}spark-manifest.xml" uri="library://flame/spark" />
 			<source-path path-element="${source.dir}" />
 			<source-path path-element="assets${file.separator}resources${file.separator}invariants" />
 			<source-path path-element="assets${file.separator}resources${file.separator}locales${file.separator}{locale}" />
 		</compc>
 	</target>
 	
-	<target depends="library" name="docs">
+	<target depends="library" name="test">
+		<echo level="info" message="Building the test application..." />
+		<mxmlc file="src-test${file.separator}flame${file.separator}tests${file.separator}TestApplication.mxml"
+			fork="true" locale="en_US" optimize="true" output="${bin.output.dir}${file.separator}flame-test.swf">
+			<jvmarg line="${jvm.args}" />
+			<library-path append="true" dir="${bin.output.dir}" includes="flame.swc" />
+			<library-path append="true" dir="libs" includes="*.swc" />
+			<source-path path-element="src-test" />
+		</mxmlc>
+		<mkdir dir="${reports.output.dir}" />
+		<echo level="info" message="Starting tests..." />
+		<flexunit haltonfailure="true" player="flash" swf="${bin.output.dir}${file.separator}flame-test.swf"
+			toDir="${reports.output.dir}" verbose="true" />
+	</target>
+	
+	<target depends="test" name="docs">
 		<echo level="info" message="Generating docs..." />
 		<property name="docs.title" value="Flame Library Reference Documentation" />
 		<asdoc failonerror="true" fork="true" keep-xml="true" lenient="true" main-title="${docs.title}"
-			output="${docs.output.dir}" package-description-file="packages.xml" warnings="false" window-title="${docs.title}">
+			output="${docs.output.dir}" package-description-file="build${file.separator}packages.xml" warnings="false" window-title="${docs.title}">
 			<doc-sources path-element="${source.dir}" />
 			<external-library-path dir="${flex.player.dir}" includes="playerglobal.swc" />
 			<external-library-path dir="${flex.libs.dir}">
@@ -102,9 +120,9 @@
 		    <namespace manifest="${FLEX_HOME}${file.separator}frameworks${file.separator}mxml-manifest.xml" uri="http://www.adobe.com/2006/mxml" />
 			<namespace manifest="${FLEX_HOME}${file.separator}frameworks${file.separator}spark-manifest.xml" uri="library://ns.adobe.com/flex/spark" />
 			<!-- End -->
-			<namespace manifest="manifest.xml" uri="library://flame" />
-			<namespace manifest="mx-manifest.xml" uri="library://flame/mx" />
-			<namespace manifest="spark-manifest.xml" uri="library://flame/spark" />
+			<namespace manifest="build${file.separator}manifest.xml" uri="library://flame" />
+			<namespace manifest="build${file.separator}mx-manifest.xml" uri="library://flame/mx" />
+			<namespace manifest="build${file.separator}spark-manifest.xml" uri="library://flame/spark" />
 			<source-path path-element="${source.dir}" />
         </asdoc>
 		<echo level="info" message="Updating the SWC with docs..." />
