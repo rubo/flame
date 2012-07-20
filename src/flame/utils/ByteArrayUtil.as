@@ -181,49 +181,13 @@ package flame.utils
 		}
 		
 		/**
-		 * Inserts a byte into the ByteArray at the specified index.
-		 * 
-		 * @param byteArray The ByteArray to instert to.
-		 * 
-		 * @param index The zero-based index at which the new bytes should be inserted.
-		 * 
-		 * @param byte The byte to insert into the <code>byteArray</code> parameter.
-		 * 
-		 * @throws ArgumentError <code>byteArray</code> parameter is <code>null</code>.
-		 * 
-		 * @throws RangeError <code>index</code> parameter is less than zero,
-		 * or greater than the value of the <code>length</code> property of the <code>byteArray</code> parameter.
-		 */
-		public static function insertByte(byteArray:ByteArray, index:int, byte:int):void
-		{
-			if (byteArray == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "byteArray" ]));
-			
-			if (index < 0 || index > byteArray.length)
-				throw new RangeError(_resourceManager.getString("flameLocale", "argOutOfRangeInsert", [ "index" ]));
-			
-			var buffer:ByteArray = new ByteArray();
-			var position:uint = byteArray.position;
-			
-			byteArray.position = index;
-			byteArray.readBytes(buffer);
-			
-			byteArray.length = index;
-			
-			byteArray.writeByte(byte);
-			byteArray.writeBytes(buffer);
-			
-			byteArray.position = position;
-		}
-		
-		/**
 		 * Inserts a range of bytes into the ByteArray at the specified index.
 		 * 
 		 * @param byteArray The ByteArray to instert to.
 		 * 
 		 * @param index The zero-based index at which the new bytes should be inserted.
 		 * 
-		 * @param bytes The ByteArray whose bytes should be inserted into the <code>byteArray</code> parameter.
+		 * @param bytes The byte or the ByteArray whose bytes should be inserted into the <code>byteArray</code> parameter.
 		 * 
 		 * @throws ArgumentError Thrown in the following situations:<ul>
 		 * <li><code>byteArray</code> parameter is <code>null</code>.</li>
@@ -232,8 +196,10 @@ package flame.utils
 		 * 
 		 * @throws RangeError <code>index</code> parameter is less than zero,
 		 * or greater than the value of the <code>length</code> property of the <code>byteArray</code> parameter.
+		 * 
+		 * @throws TypeError <code>bytes</code> paramater has an invalid type.
 		 */
-		public static function insertBytes(byteArray:ByteArray, index:int, bytes:ByteArray):void
+		public static function insertBytes(byteArray:ByteArray, index:int, bytes:*):void
 		{
 			if (byteArray == null)
 				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "byteArray" ]));
@@ -244,6 +210,9 @@ package flame.utils
 			if (bytes == null)
 				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "bytes" ]));
 			
+			if (!(bytes is ByteArray) && !(bytes is int))
+				throw new TypeError(_resourceManager.getString("flameLocale", "argInvalidValue", [ "bytes" ]));
+			
 			var buffer:ByteArray = new ByteArray();
 			var position:uint = byteArray.position;
 			
@@ -252,7 +221,11 @@ package flame.utils
 			
 			byteArray.length = index;
 			
-			byteArray.writeBytes(bytes);
+			if (bytes is ByteArray)
+				byteArray.writeBytes(bytes);
+			else
+				byteArray.writeByte(bytes);
+				
 			byteArray.writeBytes(buffer);
 			
 			byteArray.position = position;
