@@ -10,7 +10,6 @@ package flame.crypto
 {
 	import flame.numerics.BigInteger;
 	
-	import flash.utils.ByteArray;
 	import flash.utils.getQualifiedClassName;
 	
 	import mx.resources.IResourceManager;
@@ -78,8 +77,13 @@ package flame.crypto
 			
 			var xml:XML =
 				<{rootElement} xmlns={ROOT_NAMESPACE}>
-					{writeDomainParameters(parameters, parameters.keySize)}
-					{writePublicKey(parameters)}
+					<{DOMAIN_PARAMETERS_ELEMENT}>
+						<{NAMED_CURVE_ELEMENT} {URN_ATTRIBUTE}={URN_ATTRIBUTE_PREFIX + ECCParameters.getCurveOIDByKeySize(parameters.keySize)} />
+					</{DOMAIN_PARAMETERS_ELEMENT}>
+					<{PUBLIC_KEY_ELEMENT}>
+						<{X_ELEMENT} {VALUE_ATTRIBUTE}={new BigInteger(parameters.x, true)} xsi:Type="PrimeFieldElemType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+						<{Y_ELEMENT} {VALUE_ATTRIBUTE}={new BigInteger(parameters.y, true)} xsi:Type="PrimeFieldElemType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
+					</{PUBLIC_KEY_ELEMENT}>
 				</{rootElement}>;
 			
 			return xml.toXMLString();
@@ -151,40 +155,6 @@ package flame.crypto
 			parameters.y = CryptoUtil.ensureLength(new BigInteger(y.toString()).toByteArray(), keySizeInBytes);
 			
 			return parameters;
-		}
-		
-		private static function writeDomainParameters(parameters:ECCParameters, keySize:int):XML
-		{
-			var xml:XML =
-				<{DOMAIN_PARAMETERS_ELEMENT}>
-					<{NAMED_CURVE_ELEMENT} {URN_ATTRIBUTE}={URN_ATTRIBUTE_PREFIX + ECCParameters.getCurveOIDByKeySize(keySize)} />
-				</{DOMAIN_PARAMETERS_ELEMENT}>;
-			
-			return xml;
-		}
-		
-		private static function writePublicKey(parameters:ECCParameters):XML
-		{
-			var buffer:ByteArray = new ByteArray();
-			
-			buffer.writeByte(0);
-			buffer.writeBytes(parameters.x);
-			
-			var x:String = new BigInteger(buffer).toString();
-			
-			buffer.clear();
-			buffer.writeByte(0);
-			buffer.writeBytes(parameters.y);
-			
-			var y:String = new BigInteger(buffer).toString();
-			
-			var xml:XML =
-				<{PUBLIC_KEY_ELEMENT}>
-					<{X_ELEMENT} {VALUE_ATTRIBUTE}={x} xsi:Type="PrimeFieldElemType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
-					<{Y_ELEMENT} {VALUE_ATTRIBUTE}={y} xsi:Type="PrimeFieldElemType" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" />
-				</{PUBLIC_KEY_ELEMENT}>;
-			
-			return xml;
 		}
 	}
 }
