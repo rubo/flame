@@ -425,20 +425,9 @@ package flame.crypto
 		 */
 		internal function validate():Boolean
 		{
-			var buffer:ByteArray = new ByteArray();
 			var domainParameters:ECDomainParameters = ECDomainParametersCache.getParametersByKeySize(keySize);
-			
-			buffer.writeByte(0);
-			buffer.writeBytes(this.x);
-			
-			var x:BigInteger = new BigInteger(buffer);
-			
-			buffer.clear();
-			
-			buffer.writeByte(0);
-			buffer.writeBytes(this.y);
-			
-			var y:BigInteger = new BigInteger(buffer);
+			var x:BigInteger = new BigInteger(this.x, true);
+			var y:BigInteger = new BigInteger(this.y, true);
 			
 			return y.flame_internal::square().mod(domainParameters.q)
 				.equals(x.pow(3).add(x.multiply(domainParameters.a)).add(domainParameters.b).mod(domainParameters.q));

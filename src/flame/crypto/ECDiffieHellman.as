@@ -67,27 +67,30 @@ package flame.crypto
 		 * Initializes a new instance of the ECDiffieHellman class
 		 * with the specified key size or key parameters.
 		 * 
-		 * @param keySize The size of the key to use in bits.
+		 * @param key If the parameter type is int, it specifies the size of the key to use, in bits.
+		 * If the parameter type is ECCParameters, it specifies the key parameters to be passed.
 		 * 
-		 * @param parameters The key parameters to be passed.
+		 * @throws flame.crypto.CryptoError <code>key</code> parameter specifies an invalid length.
 		 * 
-		 * @throws flame.crypto.CryptoError <code>keySize</code> specifies an invalid length.
+		 * @throws TypeError <code>key</code> paramater has an invalid type.
 		 */
-		public function ECDiffieHellman(keySize:int = 256, parameters:ECCParameters = null)
+		public function ECDiffieHellman(key:* = 256)
 		{
 			super();
 			
 			_legalKeySizes = new <KeySizes>[ new KeySizes(256, 384, 128), new KeySizes(521, 521, 0) ];
 			_legalKeySizes.fixed = true;
 			
-			if (parameters == null)
+			if (key is int)
 			{
-				setKeySize(keySize);
+				setKeySize(key);
 				
 				generateKeyParameters();
 			}
+			else if (key is ECCParameters)
+				importParameters(key);
 			else
-				importParameters(parameters);
+				throw new TypeError(_resourceManager.getString("flameLocale", "argInvalidValue", [ "key" ]));
 		}
 		
 		//--------------------------------------------------------------------------
@@ -126,19 +129,8 @@ package flame.crypto
 			if (otherPartyPublicParameters.keySize != _keySize)
 				throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoECCKeySizeMismatch"));
 			
-			var buffer:ByteArray = new ByteArray();
-			
-			buffer.writeByte(0);
-			buffer.writeBytes(otherPartyPublicParameters.x);
-			
-			var x:BigInteger = new BigInteger(buffer);
-			
-			buffer.clear();
-			
-			buffer.writeByte(0);
-			buffer.writeBytes(otherPartyPublicParameters.y);
-			
-			var y:BigInteger = new BigInteger(buffer);
+			var x:BigInteger = new BigInteger(otherPartyPublicParameters.x, true);
+			var y:BigInteger = new BigInteger(otherPartyPublicParameters.y, true);
 			
 			return CryptoUtil.ensureLength(_curve.createPoint(x, y).multiply(_d).x.toBigInteger().toByteArray(), (_keySize + 7) / 8);
 		}
@@ -221,26 +213,10 @@ package flame.crypto
 			var buffer:ByteArray = new ByteArray();
 			
 			if (parameters.d != null)
-			{
-				buffer.writeByte(0);
-				buffer.writeBytes(parameters.d);
-				
-				_d = new BigInteger(buffer);
-				
-				buffer.clear();
-			}
+				_d = new BigInteger(parameters.d, true);
 			
-			buffer.writeByte(0);
-			buffer.writeBytes(parameters.x);
-			
-			_x = new BigInteger(buffer);
-			
-			buffer.clear();
-			
-			buffer.writeByte(0);
-			buffer.writeBytes(parameters.y);
-			
-			_y = new BigInteger(buffer);
+			_x = new BigInteger(parameters.x, true);
+			_y = new BigInteger(parameters.y, true);
 		}
 		
 		/**

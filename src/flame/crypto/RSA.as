@@ -10,7 +10,6 @@ package flame.crypto
 {
 	import flame.core.flame_internal;
 	import flame.numerics.BigInteger;
-	import flame.utils.ByteArrayUtil;
 	import flame.utils.Convert;
 	
 	import flash.utils.ByteArray;
@@ -33,9 +32,12 @@ package flame.crypto
 		private var _dQ:BigInteger;
 		private var _exponent:BigInteger = new BigInteger(65537);
 		private var _inverseQ:BigInteger;
+		private var _isKeyParametersGenerated:Boolean;
 		private var _modulus:BigInteger;
 		private var _p:BigInteger;
 		private var _q:BigInteger;
+		private var _useCRT:Boolean;
+		private var _useKeyBlinding:Boolean;
 		
 		//--------------------------------------------------------------------------
 	    //
@@ -47,27 +49,26 @@ package flame.crypto
 		 * Initializes a new instance of the RSA class
 		 * with the specified key size or key parameters.
 		 * 
-		 * @param keySize The size of the key to use in bits.
+		 * @param key If the parameter type is int, it specifies the size of the key to use, in bits.
+		 * If the parameter type is RSAParameters, it specifies the key parameters to be passed.
 		 * 
-		 * @param parameters The key parameters to be passed.
+		 * @throws flame.crypto.CryptoError <code>key</code> parameter specifies an invalid length.
 		 * 
-		 * @throws flame.crypto.CryptoError <code>keySize</code> specifies an invalid length.
+		 * @throws TypeError <code>key</code> paramater has an invalid type.
 		 */
-		public function RSA(keySize:int = 512, parameters:RSAParameters = null)
+		public function RSA(key:* = 512)
 		{
 			super();
 			
-			_legalKeySizes = new <KeySizes>[ new KeySizes(384, 1024, 8) ];
+			_legalKeySizes = new <KeySizes>[ new KeySizes(384, 4096, 8) ];
 			_legalKeySizes.fixed = true;
 			
-			if (parameters == null)
-			{
-				setKeySize(keySize);
-				
-				generateKeyParameters();
-			}
+			if (key is int)
+				setKeySize(key);
+			else if (key is RSAParameters)
+				importParameters(key);
 			else
-				importParameters(parameters);
+				throw new TypeError(_resourceManager.getString("flameLocale", "argInvalidValue", [ "key" ]));
 		}
 		
 		//--------------------------------------------------------------------------
@@ -85,29 +86,44 @@ package flame.crypto
 		 * 
 		 * @throws ArgumentError <code>data</code> parameter is <code>null</code>.
 		 * 
-		 * @throws flame.crypto.CryptoError Thrown in the following situations:<ul>
-		 * <li>The length of the <code>data</code> parameter is greater than <code>keySize</code>.</li>
-		 * <li>The private key does not exist.</li>
-		 * </ul>
+		 * @throws flame.crypto.CryptoError The private key does not exist.
 		 */
 	    public function decrypt(data:ByteArray):ByteArray
 	    {
 			if (data == null)
 				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "data" ]));
 			
+			if (!_isKeyParametersGenerated)
+				generateKeyParameters();
+			
 			if (publicOnly)
 				throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoKeyNotExist"));
 	    	
-			ByteArrayUtil.insertByte(data, 0, 0);
+			var r:BigInteger;
+			var t:BigInteger = new BigInteger(data, true);
 			
-    		var t:BigInteger = new BigInteger(data);
-	    	var tP:BigInteger = t.mod(_p).modPow(_dP, _p);
-	    	var tQ:BigInteger = t.mod(_q).modPow(_dQ, _q);
+			if (_useKeyBlinding)
+			{
+				r = new BigInteger(RandomNumberGenerator.getNonZeroBytes(_keySize >> 3), true);
+				t = r.modPow(_exponent, _modulus).multiply(t).mod(_modulus);
+			}
+			
+			if (_useCRT)
+			{
+		    	var tP:BigInteger = t.mod(_p).modPow(_dP, _p);
+		    	var tQ:BigInteger = t.mod(_q).modPow(_dQ, _q);
+				
+				t = tQ > tP
+					? tQ.add(_q.multiply(_p.subtract(tQ.subtract(tP).multiply(_inverseQ).mod(_p))))
+					: tQ.add(_q.multiply(tP.subtract(tQ).multiply(_inverseQ).mod(_p)));
+			}
+			else
+				t = t.modPow(_d, _modulus);
 	    	
-	    	while (tP.compareTo(tQ) < 0)
-				tP = tP.add(_p);
-	    	
-			return CryptoUtil.ensureLength(tP.subtract(tQ).multiply(_inverseQ).mod(_p).multiply(_q).add(tQ).toByteArray(), _keySize >> 3);
+			if (_useKeyBlinding)
+				t = t.multiply(r.flame_internal::modInverse(_modulus)).mod(_modulus);
+				
+			return CryptoUtil.ensureLength(t.toByteArray(), _keySize >> 3);
 	    }
 	    
 		/**
@@ -124,9 +140,10 @@ package flame.crypto
 			if (data == null)
 				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "data" ]));
 			
-			ByteArrayUtil.insertByte(data, 0, 0);
+			if (!_isKeyParametersGenerated)
+				generateKeyParameters();
 			
-	    	return CryptoUtil.ensureLength(new BigInteger(data).flame_internal::modPowInt(_exponent, _modulus).toByteArray(), _keySize >> 3);
+	    	return CryptoUtil.ensureLength(new BigInteger(data, true).flame_internal::modPowInt(_exponent, _modulus).toByteArray(), _keySize >> 3);
 	    }
 	    
 		/**
@@ -143,6 +160,9 @@ package flame.crypto
 	    {
 			var length:int = _keySize >> 3;
 	    	var parameters:RSAParameters = new RSAParameters();
+			
+			if (!_isKeyParametersGenerated)
+				generateKeyParameters();
 			
 	    	parameters.exponent = _exponent.toByteArray();
 	    	parameters.modulus = CryptoUtil.ensureLength(_modulus.toByteArray(), length);
@@ -238,116 +258,38 @@ package flame.crypto
 			if (parameters.modulus == null)
 				throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidKeySize"));
 			
-			var buffer:ByteArray = new ByteArray();
-			
-			buffer.writeByte(0);
-			buffer.writeBytes(parameters.exponent);
-			
-			_exponent = new BigInteger(buffer);
-			
-			buffer.clear();
-			
-			buffer.writeByte(0);
-			buffer.writeBytes(parameters.modulus);
-			
-			_modulus = new BigInteger(buffer);
+			_exponent = new BigInteger(parameters.exponent, true);
+			_modulus = new BigInteger(parameters.modulus, true);
 			
 			setKeySize(_modulus.flame_internal::bitLength);
 			
-			if (parameters.d == null)
-				_d = null;
-			else
-			{
-				buffer.clear();
+			_d = parameters.d == null ? null : new BigInteger(parameters.d, true);
+			_dP = parameters.dP == null ? null : new BigInteger(parameters.dP, true);
+			_dQ = parameters.dQ == null ? null : new BigInteger(parameters.dQ, true);
+			_inverseQ = parameters.inverseQ == null ? null : new BigInteger(parameters.inverseQ, true);
+			_p = parameters.p == null ? null : new BigInteger(parameters.p, true);
+			_q = parameters.q == null ? null : new BigInteger(parameters.q, true);
+			_useCRT = _p != null && _q != null;
 			
-				buffer.writeByte(0);
-				buffer.writeBytes(parameters.d);
-				
-				_d = new BigInteger(buffer);
-			}
+			_isKeyParametersGenerated = _d != null || _useCRT;
 			
-			if (parameters.dP == null)
-				_dP == null;
-			else
-			{
-				buffer.clear();
-				
-				buffer.writeByte(0);
-				buffer.writeBytes(parameters.dP);
-				
-				_dP = new BigInteger(buffer);
-			}
-			
-			if (parameters.dQ == null)
-				_dQ == null;
-			else
-			{
-				buffer.clear();
-				
-				buffer.writeByte(0);
-				buffer.writeBytes(parameters.dQ);
-				
-				_dQ = new BigInteger(buffer);
-			}
-			
-			if (parameters.inverseQ == null)
-				_inverseQ = null;
-			else
-			{
-				buffer.clear();
-				
-				buffer.writeByte(0);
-				buffer.writeBytes(parameters.inverseQ);
-				
-				_inverseQ = new BigInteger(buffer);
-			}
-			
-			if (parameters.p == null || parameters.q == null)
-				_p = _q = null;
-			else
-			{
-				buffer.clear();
-				
-				buffer.writeByte(0);
-				buffer.writeBytes(parameters.p);
-				
-				_p = new BigInteger(buffer);
-			}
-			
-			if (_p != null)
-			{
-				buffer.clear();
-				
-				buffer.writeByte(0);
-				buffer.writeBytes(parameters.q);
-				
-				_q = new BigInteger(buffer);
-			}
-			
-			if (_p != null && _q != null)
+			if (_useCRT)
 			{
 				if (!_modulus.equals(_p.multiply(_q)))
 					throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidKeySize"));
 				
-				var pp:BigInteger = _p.subtract(BigInteger.ONE);
-				var qq:BigInteger = _q.subtract(BigInteger.ONE);
-				var pq:BigInteger = pp.multiply(qq);
-				
-				var d:BigInteger = _exponent.flame_internal::modInverse(pq);
-				
-				if (_d == null)
-					_d = d;
-				else if (!_d.equals(d))
-					throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidKeySize"));
-				
-				var dP:BigInteger = d.mod(pp);
+				var p1:BigInteger = _p.subtract(BigInteger.ONE);
+				var q1:BigInteger = _q.subtract(BigInteger.ONE);
+				var p1q1:BigInteger = p1.multiply(q1);
+				var d:BigInteger = _exponent.flame_internal::modInverse(p1q1);
+				var dP:BigInteger = d.mod(p1);
 				
 				if (_dP == null)
 					_dP = dP;
-				else if (!_d.equals(d))
+				else if (!_dP.equals(dP))
 					throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidKeySize"));
 				
-				var dQ:BigInteger = d.mod(qq);
+				var dQ:BigInteger = d.mod(q1);
 				
 				if (_dQ == null)
 					_dQ = dQ;
@@ -425,7 +367,7 @@ package flame.crypto
 	    
 	    //--------------------------------------------------------------------------
 	    //
-	    //  Public proeprties
+	    //  Public properties
 	    //
 	    //--------------------------------------------------------------------------
 	    
@@ -437,8 +379,27 @@ package flame.crypto
 		 */
 	    public function get publicOnly():Boolean
 	    {
-	    	return _p == null || _q == null;
+	    	return _isKeyParametersGenerated && !_useCRT && (_d == null || _modulus == null);
 	    }
+		
+		/**
+		 * Gets or sets a value that indicates whether to use key blinding.
+		 * <p>Blinding techniques are used to prevent side channel attacks.
+		 * Side channel attacks allow an adversary to recover information about the input to a cryptographic operation,
+		 * by measuring, for example, timing information, power consumption, electromagnetic leaks, or even sound.</p>
+		 */
+		public function get useKeyBlinding():Boolean
+		{
+			return _useKeyBlinding;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set useKeyBlinding(value:Boolean):void
+		{
+			_useKeyBlinding = value;
+		}
 	    
 	    //--------------------------------------------------------------------------
 	    //
@@ -450,29 +411,20 @@ package flame.crypto
 	    {
 	    	var p:BigInteger;
 			var primeSize:int = _keySize >> 1;
-			var primeSizeinBytes:int = primeSize >> 3;
+			var primeSizeInBytes:int = primeSize >> 3;
 			var q:BigInteger;
-			var rgb:ByteArray;
 			
 			do
 			{
 		    	do
 		    	{
-					rgb = RandomNumberGenerator.getNonZeroBytes(primeSizeinBytes);
-					
-					ByteArrayUtil.insertByte(rgb, 0, 0);
-					
-		    		p = new BigInteger(rgb).flame_internal::findNextProbablePrime(primeSize);
+		    		p = new BigInteger(RandomNumberGenerator.getNonZeroBytes(primeSizeInBytes), true).flame_internal::findNextProbablePrime(primeSize);
 		    	}
 				while (p.flame_internal::bitLength != primeSize || p.greatestCommonDivisor(_exponent).compareTo(BigInteger.ONE) != 0);
 		    	
 		    	do
 		    	{
-					rgb = RandomNumberGenerator.getNonZeroBytes(primeSizeinBytes);
-					
-					ByteArrayUtil.insertByte(rgb, 0, 0);
-					
-		    		q = new BigInteger(rgb).flame_internal::findNextProbablePrime(primeSize);
+		    		q = new BigInteger(RandomNumberGenerator.getNonZeroBytes(primeSizeInBytes), true).flame_internal::findNextProbablePrime(primeSize);
 		    	}
 				while (q.flame_internal::bitLength != primeSize || q.greatestCommonDivisor(_exponent).compareTo(BigInteger.ONE) != 0);
 			
@@ -487,16 +439,19 @@ package flame.crypto
 				q = t;
 			}
 	    	
-	    	var pp:BigInteger = p.subtract(BigInteger.ONE);
-	    	var qq:BigInteger = q.subtract(BigInteger.ONE);
-	    	var pq:BigInteger = pp.multiply(qq);
+	    	var p1:BigInteger = p.subtract(BigInteger.ONE);
+	    	var q1:BigInteger = q.subtract(BigInteger.ONE);
+	    	var p1q1:BigInteger = p1.multiply(q1);
 	    	
-    		_d = _exponent.flame_internal::modInverse(pq);
-    		_dP = _d.mod(pp);
-    		_dQ = _d.mod(qq);
+    		_d = _exponent.flame_internal::modInverse(p1q1);
+    		_dP = _d.mod(p1);
+    		_dQ = _d.mod(q1);
     		_inverseQ = q.flame_internal::modInverse(p);
     		_p = p;
     		_q = q;
+			
+			_isKeyParametersGenerated = true;
+			_useCRT = true;
 	    }
 		
 		private function setKeySize(value:int):void

@@ -8,7 +8,6 @@
 
 package flame.crypto
 {
-	import flame.core.flame_internal;
 	import flame.numerics.BigInteger;
 
 	internal class PrimeECPoint extends ECPoint
@@ -89,21 +88,6 @@ package flame.crypto
 			
 			if (value.sign == 0)
 				return _curve.pointAtInfinity;
-			
-//			var e:BigInteger = value;
-//			var h:BigInteger = e.multiply(THREE);
-//			var n:ECPoint = negate();
-//			var result:ECPoint = this;
-//			
-//			for (var i:int = h.flame_internal::bitLength - 2; i > 0; i--)
-//			{
-//				result = result.double();
-//				
-//				var isHBitSet:Boolean = h.flame_internal::isBitSet(i);
-//				
-//				if (e.flame_internal::isBitSet(i) != isHBitSet)
-//					result = result.add(isHBitSet ? this : n);
-//			}return result;
 			
 			if (_multiplier == null)
 				_multiplier = new ECPointWNAFMultiplier(this);

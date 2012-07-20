@@ -51,27 +51,30 @@ package flame.crypto
 		 * Initializes a new instance of the ECDSA class
 		 * with the specified key size or key parameters.
 		 * 
-		 * @param keySize The size of the key to use in bits.
+		 * @param key If the parameter type is int, it specifies the size of the key to use, in bits.
+		 * If the parameter type is ECCParameters, it specifies the key parameters to be passed.
 		 * 
-		 * @param parameters The key parameters to be passed.
+		 * @throws flame.crypto.CryptoError <code>keySize</code> parameter specifies an invalid length.
 		 * 
-		 * @throws flame.crypto.CryptoError <code>keySize</code> specifies an invalid length.
+		 * @throws TypeError <code>key</code> paramater has an invalid type.
 		 */
-		public function ECDSA(keySize:int = 256, parameters:ECCParameters = null)
+		public function ECDSA(key:* = 256)
 		{
 			super();
 			
 			_legalKeySizes = new <KeySizes>[ new KeySizes(256, 384, 128), new KeySizes(521, 521, 0) ];
 			_legalKeySizes.fixed = true;
 			
-			if (parameters == null)
+			if (key is int)
 			{
-				setKeySize(keySize);
+				setKeySize(key);
 				
 				generateKeyParameters();
 			}
+			else if (key is ECCParameters)
+				importParameters(key);
 			else
-				importParameters(parameters);
+				throw new TypeError(_resourceManager.getString("flameLocale", "argInvalidValue", [ "key" ]));
 		}
 		
 		//--------------------------------------------------------------------------
@@ -158,26 +161,10 @@ package flame.crypto
 			var buffer:ByteArray = new ByteArray();
 			
 			if (parameters.d != null)
-			{
-				buffer.writeByte(0);
-				buffer.writeBytes(parameters.d);
-				
-				_d = new BigInteger(buffer);
-				
-				buffer.clear();
-			}
+				_d = new BigInteger(parameters.d, true);
 			
-			buffer.writeByte(0);
-			buffer.writeBytes(parameters.x);
-			
-			_x = new BigInteger(buffer);
-			
-			buffer.clear();
-			
-			buffer.writeByte(0);
-			buffer.writeBytes(parameters.y);
-			
-			_y = new BigInteger(buffer);
+			_x = new BigInteger(parameters.x, true);
+			_y = new BigInteger(parameters.y, true);
 		}
 		
 		/**
@@ -201,16 +188,12 @@ package flame.crypto
 			
 			var buffer:ByteArray = new ByteArray();
 			
-			buffer.writeByte(0);
 			buffer.writeBytes(hash, 0, Math.min(hash.length, int((_domainParameters.n.flame_internal::bitLength + 7) / 8)));
 			
 			var e:BigInteger = new BigInteger(buffer);
 			
-			buffer.clear();
-			buffer.writeByte(0);
-			buffer.writeBytes(RandomNumberGenerator.getNonZeroBytes(_domainParameters.n.flame_internal::bitLength));
-			
-			var k:BigInteger = new BigInteger(buffer).mod(_domainParameters.n.subtract(BigInteger.ONE)).add(BigInteger.ONE);
+			var k:BigInteger = new BigInteger(RandomNumberGenerator.getNonZeroBytes(_domainParameters.n.flame_internal::bitLength), true)
+				.mod(_domainParameters.n.subtract(BigInteger.ONE)).add(BigInteger.ONE);
 			var r:BigInteger = _curve.createPoint(_domainParameters.x, _domainParameters.y).multiply(k).x.toBigInteger().mod(_domainParameters.n);
 			var s:BigInteger = k.flame_internal::modInverse(_domainParameters.n).multiply(e.add(_d.multiply(r))).mod(_domainParameters.n);
 			var keySizeInBytes:int = (_keySize + 7) / 8;
@@ -264,22 +247,19 @@ package flame.crypto
 			var buffer:ByteArray = new ByteArray();
 			var keySizeInBytes:int = (_keySize + 7) / 8;
 			
-			buffer.writeByte(0);
 			buffer.writeBytes(signature, 0, keySizeInBytes);
 			
-			var r:BigInteger = new BigInteger(buffer);
+			var r:BigInteger = new BigInteger(buffer, true);
 			
 			buffer.clear();
-			buffer.writeByte(0);
 			buffer.writeBytes(signature, keySizeInBytes);
 			
-			var inverse:BigInteger = new BigInteger(buffer).flame_internal::modInverse(_domainParameters.n);
+			var inverse:BigInteger = new BigInteger(buffer, true).flame_internal::modInverse(_domainParameters.n);
 			
 			buffer.clear();
-			buffer.writeByte(0);
 			buffer.writeBytes(hash, 0, Math.min(hash.length, int((_domainParameters.n.flame_internal::bitLength + 7) / 8)));
 			
-			var u1:BigInteger = new BigInteger(buffer).multiply(inverse).mod(_domainParameters.n);
+			var u1:BigInteger = new BigInteger(buffer, true).multiply(inverse).mod(_domainParameters.n);
 			var u2:BigInteger = r.multiply(inverse).mod(_domainParameters.n);
 			var g:ECPoint = _curve.createPoint(_domainParameters.x, _domainParameters.y);
 			var q:ECPoint = _curve.createPoint(_x, _y);

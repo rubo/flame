@@ -2,7 +2,7 @@
 //
 //  Copyright 2010 Ruben Buniatyan. All rights reserved.
 //
-//	Portions Copyright 2009 Tom Wu. All rights reserved.
+//  Portions Copyright 2009 Tom Wu. All rights reserved.
 //
 //  This source is subject to the license agreement accompanying it.
 //
@@ -59,14 +59,15 @@ package flame.numerics
 	 * the <code>BigInteger()</code> constructor always interprets the most significant bit
 	 * of the first byte in the array as a sign bit. To prevent the <code>BigInteger()</code> constructor
 	 * from confusing the two's complement representation of a negative value
-	 * with the sign and magnitude representation of a positive value,
+	 * with the sign-and-magnitude representation of a positive value,
 	 * positive values in which the most significant bit of the first byte in the byte array
 	 * would ordinarily be set should include an additional byte whose value is 0.
 	 * For example, FF F0 BD C0 is the big-endian hexadecimal representation of either -1,000,000 or 4,293,967,296.
 	 * Because the most significant bit of the first byte in this array is on, the value of the byte array
 	 * would be interpreted by the <code>BigInteger()</code> constructor as -1,000,000.
-	 * To instantiate a BigInteger whose value is positive, a byte array whose elements are FF F0 BD C0
-	 * must be passed to the constructor.</p>
+	 * To instantiate a BigInteger whose value is positive, a byte array whose elements are 00 FF F0 BD C0
+	 * must be passed to the constructor. To avoid manually adding a zero-value byte,
+	 * you may use the <code>unsigned</code> parameter of the <code>BigInteger()</code> constructor.</p>
 	 * <p>Byte arrays created by the <code>toByteArray()</code> method from positive values
 	 * include an extra zero-value byte. Therefore, the BigInteger class can successfully round-trip values
 	 * by assigning them to, and then restoring them from, byte arrays.</p>
@@ -161,17 +162,23 @@ package flame.numerics
 		 * and passing it an unsigned integer as a parameter.
 		 * Because unsigned integers are represented by their magnitude only,
 		 * positive values can be misinterpreted as negative values.
-		 * To prevent this misinterpretation, you can add a zero-byte value to the beginning of the array.</li>
+		 * To prevent this misinterpretation, you can add a zero-byte value to the beginning of the array
+		 * either manually or by setting the <code>unsigned</code> parameter to <code>true</code>.</li>
 		 * <li>By creating a byte array either dynamically or statically
 		 * without necessarily calling any of the previous methods, or by modifying an existing byte array.
 		 * To prevent positive values from being misinterpreted as negative values,
-		 * you can add a zero-byte value to the beginning of the array.</li>
+		 * you can add a zero-byte value to the beginning of the array either manually
+		 * or by setting the <code>unsigned</code> parameter to <code>true</code>.</li>
 		 * </ul></p>
 		 * <p>If <code>value</code> parameter is an empty ByteArray,
 		 * the new BigInteger object is initialized to a value of <code>BigInteger.ZERO</code>.</p>
 		 * 
 		 * @param value The value to use to create the BigInteger.
 		 * This parameter can accept a String, a ByteArray, or an int.
+		 * 
+		 * @param unsigned Indicates whether to use the most significant bit of the first byte
+		 * as a sign bit. If <code>true</code>, the BigInteger is unsigned; otherwise, signed.
+		 * This paramater is used only when the <code>value</code> parameter type is ByteArray.
 		 * 
 		 * @throws ArgumentError Thrown in the following situations:<ul>
 		 * <li><code>value</code> parameter is <code>null</code>.</li>
@@ -183,7 +190,7 @@ package flame.numerics
 		 * @see #toByteArray() toByteArray()
 		 * @see flash.utils.ByteArray
 		 */
-		public function BigInteger(value:*)
+		public function BigInteger(value:*, unsigned:Boolean = false)
 		{
 			super();
 			
@@ -195,7 +202,7 @@ package flame.numerics
 				if (value.length == 0)
 					setBitsFromInt(0);
 				else
-					setBitsFromByteArray(value);
+					setBitsFromByteArray(value, unsigned);
 			}
 			else if (value is int)
 				setBitsFromInt(value);
@@ -629,7 +636,7 @@ package flame.numerics
 			var x:Number = 0;
 			var t:Number = .5;
 			var length:int = value._length - 1;
-			var bl:int = getBitLengthOf(value._bits[length]);
+			var bl:int = getBitLength(value._bits[length]);
 			var mask:int =  1 << bl - 1;
 			
 			for (var i:int = length; i >= 0; i--)
@@ -823,7 +830,7 @@ package flame.numerics
 			var t1:BigInteger = new BigInteger(0);
 			var t2:BigInteger;
 			
-			i = getBitLengthOf(exponent._bits[j]) - 1;
+			i = getBitLength(exponent._bits[j]) - 1;
 			
 			while (j >= 0)
 			{
@@ -1578,7 +1585,7 @@ package flame.numerics
 			var a:BigInteger = new BigInteger(0);
 			var s:int = _sign;
 			var ds:int = d._sign;
-			var ss:int = 30 - getBitLengthOf(pd._bits[pd._length - 1]);
+			var ss:int = 30 - getBitLength(pd._bits[pd._length - 1]);
 			
 			if (r == null)
 				r = new BigInteger(0);
@@ -2131,7 +2138,7 @@ package flame.numerics
 			if (_length <= 0)
 				return 0;
 			
-			return 30 * (_length - 1) + getBitLengthOf(_bits[_length - 1] ^ _sign & 0x3FFFFFFF);
+			return 30 * (_length - 1) + getBitLength(_bits[_length - 1] ^ _sign & 0x3FFFFFFF);
 		}
 		
 		//--------------------------------------------------------------------------
@@ -2212,7 +2219,7 @@ package flame.numerics
 			var t3:BigInteger;
 			var result:BigInteger = t2.valueOf();
 			
-			for (var i:int = getBitLengthOf(exponent) - 2; i >= 0; i--)
+			for (var i:int = getBitLength(exponent) - 2; i >= 0; i--)
 			{
 				reductionAlgorithm.square(result, t1);
 				
@@ -2229,7 +2236,7 @@ package flame.numerics
 			return reductionAlgorithm.revert(result);
 		}
 		
-		private static function getBitLengthOf(value:int):int
+		private static function getBitLength(value:int):int
 		{
 			var size:int = 1;
 			
@@ -2301,7 +2308,7 @@ package flame.numerics
 			return result;
 		}
 		
-		private function setBitsFromByteArray(value:ByteArray):void
+		private function setBitsFromByteArray(value:ByteArray, unsigned:Boolean):void
 		{
 			var s:int = 0;
 			var x:int = 0;
@@ -2328,7 +2335,7 @@ package flame.numerics
 					s -= 30;
 			}
 			
-			if ((value[0] & 0x80) != 0 )
+			if (!unsigned && (value[0] & 0x80) != 0)
 			{
 				_sign = -1;
 				
@@ -2542,9 +2549,7 @@ package flame.numerics
 				
 				if (z.compareTo(ONE) != 0 && z.compareTo(subOne) != 0)
 				{
-					j = 1;
-					
-					while (j++ < lowBit && z.compareTo(subOne) != 0)
+					for (j = 1; j < lowBit && z.compareTo(subOne) != 0; j++)
 					{
 						z = z.modPowInt(2, this);
 						
