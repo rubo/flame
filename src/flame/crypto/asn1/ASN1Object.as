@@ -119,7 +119,7 @@ package flame.crypto.asn1
 					
 					return ASN1IA5String.fromRawValue(value);
 					
-				case ASN1Tag.NUMERIC_STRING:
+				case ASN1Tag.INTEGER:
 					
 					return ASN1Integer.fromRawValue(value);
 				
