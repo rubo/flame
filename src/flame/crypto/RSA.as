@@ -176,11 +176,14 @@ package flame.crypto
 				
 				length >>= 1;
 				
-				parameters.dP = CryptoUtil.ensureLength(_dP.toByteArray(), length);
-		    	parameters.dQ = CryptoUtil.ensureLength(_dQ.toByteArray(), length);
-		    	parameters.inverseQ = CryptoUtil.ensureLength(_inverseQ.toByteArray(), length);
-		    	parameters.p = CryptoUtil.ensureLength(_p.toByteArray(), length);
-		    	parameters.q = CryptoUtil.ensureLength(_q.toByteArray(), length);
+				if (_dP != null && _dQ != null && _inverseQ != null && _p != null && _q != null)
+				{
+					parameters.dP = CryptoUtil.ensureLength(_dP.toByteArray(), length);
+			    	parameters.dQ = CryptoUtil.ensureLength(_dQ.toByteArray(), length);
+			    	parameters.inverseQ = CryptoUtil.ensureLength(_inverseQ.toByteArray(), length);
+			    	parameters.p = CryptoUtil.ensureLength(_p.toByteArray(), length);
+			    	parameters.q = CryptoUtil.ensureLength(_q.toByteArray(), length);
+				}
 	    	}
 	    	
 	    	return parameters;
@@ -354,11 +357,21 @@ package flame.crypto
 	    	
 			if (includePrivateParameters)
 			{
-				xml.appendChild(<P>{Convert.toBase64String(parameters.p)}</P>);
-				xml.appendChild(<Q>{Convert.toBase64String(parameters.q)}</Q>);
-				xml.appendChild(<DP>{Convert.toBase64String(parameters.dP)}</DP>);
-				xml.appendChild(<DQ>{Convert.toBase64String(parameters.dQ)}</DQ>);
-				xml.appendChild(<InverseQ>{Convert.toBase64String(parameters.inverseQ)}</InverseQ>);
+				if (parameters.p != null)
+					xml.appendChild(<P>{Convert.toBase64String(parameters.p)}</P>);
+				
+				if (parameters.q != null)
+					xml.appendChild(<Q>{Convert.toBase64String(parameters.q)}</Q>);
+				
+				if (parameters.dP != null)
+					xml.appendChild(<DP>{Convert.toBase64String(parameters.dP)}</DP>);
+				
+				if (parameters.dQ != null)
+					xml.appendChild(<DQ>{Convert.toBase64String(parameters.dQ)}</DQ>);
+				
+				if (parameters.inverseQ != null)
+					xml.appendChild(<InverseQ>{Convert.toBase64String(parameters.inverseQ)}</InverseQ>);
+				
 				xml.appendChild(<D>{Convert.toBase64String(parameters.d)}</D>);
 			}
 			
