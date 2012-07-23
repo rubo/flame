@@ -11,6 +11,7 @@ package flame.crypto
 	import mx.resources.IResourceManager;
 	import mx.resources.ResourceManager;
 
+	[ResourceBundle("flameNumerics")]
 	internal final class Int64
 	{
 		//--------------------------------------------------------------------------
