@@ -210,8 +210,6 @@ package flame.crypto
 			
 			setKeySize(parameters.keySize);
 			
-			var buffer:ByteArray = new ByteArray();
-			
 			if (parameters.d != null)
 				_d = new BigInteger(parameters.d, true);
 			
