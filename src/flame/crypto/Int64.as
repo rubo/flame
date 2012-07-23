@@ -101,7 +101,7 @@ package flame.crypto
 		internal function divide(value:Int64):Int64
 		{
 			if (value.isZero)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argDivideByZero"));
+				throw new ArgumentError(_resourceManager.getString("flameNumerics", "argDivideByZero"));
 			
 			var result:Int64 = new Int64(0, 0);
 			
@@ -113,7 +113,7 @@ package flame.crypto
 		internal function divRem(divisor:Int64):Vector.<Int64>
 		{
 			if (divisor.isZero)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argDivideByZero"));
+				throw new ArgumentError(_resourceManager.getString("flameNumerics", "argDivideByZero"));
 			
 			var quotient:Int64 = new Int64(0, 0);
 			var remainder:Int64 = new Int64(0, 0);
@@ -131,7 +131,7 @@ package flame.crypto
 		internal function mod(value:Int64):Int64
 		{
 			if (value.isZero)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argDivideByZero"));
+				throw new ArgumentError(_resourceManager.getString("flameNumerics", "argDivideByZero"));
 			
 			var result:Int64 = new Int64(0, 0);
 			

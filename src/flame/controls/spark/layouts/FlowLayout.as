@@ -493,7 +493,7 @@ package flame.controls.spark.layouts
 		private function checkVirtualLayout():void
 		{
 			if (useVirtualLayout)
-				throw new Error(ResourceManager.getInstance().getString("flameLocale", "flowLayoutNotVirtualized"));
+				throw new Error(ResourceManager.getInstance().getString("flameControls", "flowLayoutNotVirtualized"));
 		}
 		
 		private function getElementRowIndexAt(index:int):int

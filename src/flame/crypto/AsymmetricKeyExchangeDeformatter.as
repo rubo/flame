@@ -14,7 +14,7 @@ package flame.crypto
 	import mx.resources.IResourceManager;
 	import mx.resources.ResourceManager;
 
-	[ResourceBundle("flameLocale")]
+	[ResourceBundle("flameCore")]
 	
 	/**
 	 * Represents the base class from which all asymmetric key exchange deformatters must inherit.
@@ -67,7 +67,7 @@ package flame.crypto
 		 */
 		public function decryptKeyExchange(data:ByteArray):ByteArray
 		{
-			throw new IllegalOperationError(_resourceManager.getString("flameLocale", "argNotImplemented"));
+			throw new IllegalOperationError(_resourceManager.getString("flameCore", "argNotImplemented"));
 		}
 		
 		/**
@@ -80,7 +80,7 @@ package flame.crypto
 		 */
 		public function setKey(key:AsymmetricAlgorithm):void
 		{
-			throw new IllegalOperationError(_resourceManager.getString("flameLocale", "argNotImplemented"));
+			throw new IllegalOperationError(_resourceManager.getString("flameCore", "argNotImplemented"));
 		}
 		
 		//--------------------------------------------------------------------------
@@ -94,7 +94,7 @@ package flame.crypto
 		 */
 		public function get parameters():String
 		{
-			throw new IllegalOperationError(_resourceManager.getString("flameLocale", "argNotImplemented"));
+			throw new IllegalOperationError(_resourceManager.getString("flameCore", "argNotImplemented"));
 		}
 		
 		/**
@@ -102,7 +102,7 @@ package flame.crypto
 		 */
 		public function set parameters(value:String):void
 		{
-			throw new IllegalOperationError(_resourceManager.getString("flameLocale", "argNotImplemented"));
+			throw new IllegalOperationError(_resourceManager.getString("flameCore", "argNotImplemented"));
 		}
 	}
 }

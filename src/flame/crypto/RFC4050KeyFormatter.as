@@ -15,7 +15,7 @@ package flame.crypto
 	import mx.resources.IResourceManager;
 	import mx.resources.ResourceManager;
 
-	[ResourceBundle("flameLocale")]
+	[ResourceBundle("flameCrypto")]
 	internal final class RFC4050KeyFormatter
 	{
 		//--------------------------------------------------------------------------
@@ -72,7 +72,7 @@ package flame.crypto
 				
 				default:
 					
-					throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoUnknownECAlgorithm"));
+					throw new CryptoError(_resourceManager.getString("flameCrypto", "unknownECAlgorithm"));
 			}
 			
 			var xml:XML =
@@ -98,27 +98,27 @@ package flame.crypto
 		private static function readAlgorithm(xml:XML):String
 		{
 			if (xml.namespace().toString() != ROOT_NAMESPACE)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "cryptoUnexcpectedXMLNamespace", [ xml.namespace().toString(), ROOT_NAMESPACE ]));
+				throw new ArgumentError(_resourceManager.getString("flameCrypto", "unexcpectedXMLNamespace", [ xml.namespace().toString(), ROOT_NAMESPACE ]));
 			
 			var rootElement:String = xml.localName();
 			
 			if (rootElement != ECDH_ROOT_ELEMENT && rootElement != ECDSA_ROOT_ELEMENT)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "cryptoUnknownECAlgorithm"));
+				throw new ArgumentError(_resourceManager.getString("flameCrypto", "unknownECAlgorithm"));
 			
 			var domainParameters:XMLList = xml.children().(localName() == DOMAIN_PARAMETERS_ELEMENT);
 			
 			if (domainParameters.length() == 0)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "cryptoMissingDomainParameters"));
+				throw new ArgumentError(_resourceManager.getString("flameCrypto", "missingDomainParameters"));
 			
 			var namedCurve:XMLList = domainParameters.children().(localName() == NAMED_CURVE_ELEMENT);
 			
 			if (namedCurve.length() == 0)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "cryptoMissingDomainParameters"));
+				throw new ArgumentError(_resourceManager.getString("flameCrypto", "missingDomainParameters"));
 			
 			var urn:XMLList = namedCurve.attributes().(localName() == URN_ATTRIBUTE);
 			
 			if (urn.length() == 0)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "cryptoMissingDomainParameters"));
+				throw new ArgumentError(_resourceManager.getString("flameCrypto", "missingDomainParameters"));
 			
 			return urn.toString().substring(URN_ATTRIBUTE_PREFIX.length);
 		}
@@ -126,27 +126,27 @@ package flame.crypto
 		private static function readPublicKey(xml:XMLList, keySize:int):ECCParameters
 		{
 			if (xml.length() == 0)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "cryptoMissingPublicKey"));
+				throw new ArgumentError(_resourceManager.getString("flameCrypto", "missingPublicKey"));
 			
 			var x:XMLList = xml.children().(localName() == X_ELEMENT);
 			
 			if (x.length() == 0)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "cryptoMissingPublicKey"));
+				throw new ArgumentError(_resourceManager.getString("flameCrypto", "missingPublicKey"));
 			
 			x = x.attributes().(localName() == VALUE_ATTRIBUTE);
 			
 			if (x.length() == 0 || !x.toString())
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "cryptoMissingPublicKey"));
+				throw new ArgumentError(_resourceManager.getString("flameCrypto", "missingPublicKey"));
 			
 			var y:XMLList = xml.children().(localName() == Y_ELEMENT);
 			
 			if (y.length() == 0)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "cryptoMissingPublicKey"));
+				throw new ArgumentError(_resourceManager.getString("flameCrypto", "missingPublicKey"));
 			
 			y = y.attributes().(localName() == VALUE_ATTRIBUTE);
 			
 			if (y.length() == 0 || !y.toString())
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "cryptoMissingPublicKey"));
+				throw new ArgumentError(_resourceManager.getString("flameCrypto", "missingPublicKey"));
 			
 			var keySizeInBytes:int = (keySize + 7) / 8;
 			var parameters:ECCParameters = new ECCParameters();

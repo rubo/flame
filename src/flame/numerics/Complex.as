@@ -12,7 +12,7 @@ package flame.numerics
 	import mx.resources.ResourceManager;
 	import mx.utils.StringUtil;
 	
-	[ResourceBundle("flameLocale")]
+	[ResourceBundle("flameCore")]
 	
 	/**
 	 * Represents a complex number. This class is immutable and cannot be inherited.
@@ -148,7 +148,7 @@ package flame.numerics
 	    public function add(value:Complex):Complex
 	    {
 			if (value == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value" ]));
 			
 	    	return new Complex(_real + value._real, _imaginary + value._imaginary);
 	    }
@@ -230,7 +230,7 @@ package flame.numerics
 	    public function divide(value:Complex):Complex
 	    {
 			if (value == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value" ]));
 			
 	    	if (Math.abs(value._imaginary) < Math.abs(value._real))
 	    		return new Complex((_real + _imaginary * (value._imaginary / value._real)) / (value._real + value._imaginary * (value._imaginary / value._real)), (_imaginary - _real * (value._imaginary / value._real)) / (value._real + value._imaginary * (value._imaginary / value._real)));
@@ -251,7 +251,7 @@ package flame.numerics
 	    public function equals(value:Complex):Boolean
 	    {
 			if (value == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value" ]));
 			
 	    	return _real == value._real && _imaginary == value._imaginary;
 	    }
@@ -334,7 +334,7 @@ package flame.numerics
 	    public function multiply(value:Complex):Complex
 	    {
 			if (value == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value" ]));
 			
 	    	return new Complex(_real * value._real - _imaginary * value._imaginary, _imaginary * value._real + _real * value._imaginary);
 	    }
@@ -380,7 +380,7 @@ package flame.numerics
 	    	else if (exponent is Number)
 	    		return pow(new Complex(exponent, 0));
 	    	
-			throw new TypeError(_resourceManager.getString("flameLocale", "argInvalidValue", [ "exponent" ]));
+			throw new TypeError(_resourceManager.getString("flameCore", "argInvalidValue", [ "exponent" ]));
 	    }
 	    
 		/**
@@ -455,7 +455,7 @@ package flame.numerics
 	    public function subtract(value:Complex):Complex
 	    {
 			if (value == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value" ]));
 			
 	    	return new Complex(_real - value._real, _imaginary - value._imaginary);
 	    }

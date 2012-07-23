@@ -44,10 +44,10 @@ package flame.crypto.asn1
 			super(ASN1Tag.NUMERIC_STRING);
 			
 			if (value == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value" ]));
 			
 			if (!_validCharPattern.test(value))
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "asn1InvalidNumericStringValue"));
+				throw new ArgumentError(_resourceManager.getString("flameCrypto", "asn1InvalidNumericStringValue"));
 			
 			_value = value;
 		}
@@ -66,7 +66,7 @@ package flame.crypto.asn1
 			var string:String = value.readMultiByte(value.bytesAvailable, "ascii");
 			
 			if (!_validCharPattern.test(string))
-				throw new ASN1Error(_resourceManager.getString("flameLocale", "asn1InvalidNumericStringValue"));
+				throw new ASN1Error(_resourceManager.getString("flameCrypto", "asn1InvalidNumericStringValue"));
 			
 			return new ASN1NumericString(string);
 		}

@@ -16,7 +16,8 @@ package flame.serialization
 	import mx.resources.ResourceManager;
 	import mx.utils.DescribeTypeCache;
 
-	[ResourceBundle("flameLocale")]
+	[ResourceBundle("flameCore")]
+	[ResourceBundle("flameSerialization")]
 	
 	/**
 	 * Serializes and deserializes objects into and from JSON strings.
@@ -74,10 +75,10 @@ package flame.serialization
 		public function deserialize(value:String):*
 		{
 			if (value == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value" ]));
 			
 			if (value.length > _maxJSONLength)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "jsonMaxLengthExceeded"));
+				throw new ArgumentError(_resourceManager.getString("flameSerialization", "jsonMaxLengthExceeded"));
 			
 			if (StringUtil.isNullOrWhiteSpace(value))
 				return null;
@@ -107,7 +108,7 @@ package flame.serialization
 			var json:String = serializeValue(value, 1, []);
 			
 			if (json.length > _maxJSONLength)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "jsonMaxLengthExceeded"));
+				throw new ArgumentError(_resourceManager.getString("flameSerialization", "jsonMaxLengthExceeded"));
 			
 			return json;
 		}
@@ -134,7 +135,7 @@ package flame.serialization
 		public function set maxJSONLength(value:int):void
 		{
 			if (value < 1)
-				throw new RangeError(_resourceManager.getString("flameLocale", "argInvalidMaxJSONLength"));
+				throw new RangeError(_resourceManager.getString("flameSerialization", "argInvalidMaxJSONLength"));
 			
 			_maxJSONLength = value;
 		}
@@ -155,7 +156,7 @@ package flame.serialization
 		public function set recursionLimit(value:int):void
 		{
 			if (value < 1)
-				throw new RangeError(_resourceManager.getString("flameLocale", "argInvalidRecursionLimit"));
+				throw new RangeError(_resourceManager.getString("flameSerialization", "argInvalidRecursionLimit"));
 			
 			_recursionLimit = value;
 		}
@@ -189,7 +190,7 @@ package flame.serialization
 				else if (token.type == JSONTokenType.COMMA)
 					token = _tokenizer.nextToken();
 				else
-					throw new JSONError(_resourceManager.getString("flameLocale", "jsonInvalidArrayMissingCommaOrRightBracket",
+					throw new JSONError(_resourceManager.getString("flameSerialization", "jsonInvalidArrayMissingCommaOrRightBracket",
 						[ _tokenizer.position ]));
 			}
 			
@@ -227,15 +228,15 @@ package flame.serialization
 						else if (token.type == JSONTokenType.COMMA)
 							token = _tokenizer.nextToken();
 						else
-							throw new JSONError(_resourceManager.getString("flameLocale", "jsonInvalidObjectMissingCommaOrRightBracket",
+							throw new JSONError(_resourceManager.getString("flameSerialization", "jsonInvalidObjectMissingCommaOrRightBracket",
 								[ _tokenizer.position ]));
 					}
 					else
-						throw new JSONError(_resourceManager.getString("flameLocale", "jsonInvalidObjectMissingColon",
+						throw new JSONError(_resourceManager.getString("flameSerialization", "jsonInvalidObjectMissingColon",
 							[ _tokenizer.position ]));
 				}
 				else
-					throw new JSONError(_resourceManager.getString("flameLocale", "jsonInvalidObjectMissingMemberName",
+					throw new JSONError(_resourceManager.getString("flameSerialization", "jsonInvalidObjectMissingMemberName",
 						[ _tokenizer.position ]));
 			}
 			
@@ -245,7 +246,7 @@ package flame.serialization
 		private function deserializeValue(token:JSONToken, depth:int):*
 		{
 			if (depth > _recursionLimit)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "jsonDepthLimitExceeded"));
+				throw new ArgumentError(_resourceManager.getString("flameSerialization", "jsonDepthLimitExceeded"));
 			
 			switch (token.type)
 			{
@@ -270,7 +271,7 @@ package flame.serialization
 				
 				default:
 					
-					throw new JSONError(_resourceManager.getString("flameLocale", "jsonIllegalPrimitive", [ token.value ]));
+					throw new JSONError(_resourceManager.getString("flameSerialization", "jsonIllegalPrimitive", [ token.value ]));
 			}
 		}
 		
@@ -282,7 +283,7 @@ package flame.serialization
 			
 			for each (var object:Object in objectsInUse)
 				if (value === object)
-					throw new ArgumentError(_resourceManager.getString("flameLocale", "jsonCircularReference",
+					throw new ArgumentError(_resourceManager.getString("flameSerialization", "jsonCircularReference",
 						[ getQualifiedClassName(value) ]));
 			
 			objectsInUse.push(value);
@@ -309,7 +310,7 @@ package flame.serialization
 			
 			for each (var object:Object in objectsInUse)
 				if (value === object)
-					throw new ArgumentError(_resourceManager.getString("flameLocale", "jsonCircularReference",
+					throw new ArgumentError(_resourceManager.getString("flameSerialization", "jsonCircularReference",
 						[ getQualifiedClassName(value) ]));
 			
 			objectsInUse.push(value);
@@ -395,7 +396,7 @@ package flame.serialization
 		private function serializeValue(value:*, depth:int, objectsInUse:Array):String
 		{
 			if (depth > _recursionLimit)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "jsonDepthLimitExceeded"));
+				throw new ArgumentError(_resourceManager.getString("flameSerialization", "jsonDepthLimitExceeded"));
 			
 			if (value is Array)
 				return serializeArray(value, depth, objectsInUse);

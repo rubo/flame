@@ -33,7 +33,7 @@
 	</target>
 	
 	<target name="library">
-		<echo level="info" message="Building the library..." />
+		<echo level="info" message="Building the SWC..." />
 		<compc allow-source-path-overlap="true" debug="false" fork="true" locale="en_US" optimize="false"
 			output="${bin.output.dir}${file.separator}flame.swc">
 			<external-library-path dir="${flex.player.dir}" includes="playerglobal.swc" />
@@ -57,8 +57,16 @@
 			<include-namespaces uri="library://flame" />
 			<include-namespaces uri="library://flame/mx" />
 			<include-namespaces uri="library://flame/spark" />
-			<include-resource-bundles bundle="flameLocale" />
-			<include-resource-bundles bundle="flameLocaleInvariant" />
+			<include-resource-bundles bundle="flameConfig" />
+			<include-resource-bundles bundle="flameControls" />
+			<include-resource-bundles bundle="flameCore" />
+			<include-resource-bundles bundle="flameCrypto" />
+			<include-resource-bundles bundle="flameFormatters" />
+			<include-resource-bundles bundle="flameNumerics" />
+			<include-resource-bundles bundle="flameSerialization" />
+			<include-resource-bundles bundle="flameUtils" />
+			<include-resource-bundles bundle="flameValidators" />
+			<include-resource-bundles bundle="flameVersion" />
 			<include-sources dir="${source.dir}" includes="*" />
 			<jvmarg line="${jvm.args}" />
 			<!-- Start: Workaround for the bug SDK-28711 -->

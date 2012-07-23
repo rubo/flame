@@ -16,7 +16,8 @@ package flame.crypto
 	import mx.resources.IResourceManager;
 	import mx.resources.ResourceManager;
 
-	[ResourceBundle("flameLocale")]
+	[ResourceBundle("flameCore")]
+	[ResourceBundle("flameCrypto")]
 	
 	/**
 	 * Performs a cryptographic transformation of data using the Rijndael algorithm.
@@ -112,7 +113,7 @@ package flame.crypto
 			super();
 			
 			if (key == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "key" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "key" ]));
 			
 			_blockSize = _inputBlockSize = _outputBlockSize = blockSize >> 3;
 			_feedbackSize = feedbackSize >> 3;
@@ -130,10 +131,10 @@ package flame.crypto
 			if (mode == CipherMode.CBC || mode == CipherMode.CFB)
 			{
 				if (iv == null)
-					throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "iv" ]));
+					throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "iv" ]));
 				
 				if (iv.length != _blockSize)
-					throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidIVSize"));
+					throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidIVSize"));
 				
 				_iv = ByteArrayUtil.copy(iv);
 				_iv.endian = Endian.LITTLE_ENDIAN;
@@ -142,7 +143,7 @@ package flame.crypto
 				_state.endian = Endian.LITTLE_ENDIAN;
 			}
 			else if (mode != CipherMode.ECB)
-				throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidCipherMode"));
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidCipherMode"));
 			
 		    _decIndex.length = _encIndex.length = _nb * 3;
 		    _decIndex.fixed = _encIndex.fixed = true;
@@ -199,19 +200,19 @@ package flame.crypto
 		public function transformBlock(inputBuffer:ByteArray, inputOffset:int, inputCount:int, outputBuffer:ByteArray, outputOffset:int):int
 		{
 			if (inputBuffer == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "inputBuffer" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "inputBuffer" ]));
 			
 			if (outputBuffer == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "outputBuffer" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "outputBuffer" ]));
 			
 			if (inputOffset < 0)
-				throw new RangeError(_resourceManager.getString("flameLocale", "argOutOfRangeNonNegative", [ "inputOffset" ]));
+				throw new RangeError(_resourceManager.getString("flameCore", "argOutOfRangeNonNegative", [ "inputOffset" ]));
 			
 			if (inputCount <= 0 || inputCount % _inputBlockSize != 0 ||  inputCount > inputBuffer.length)
-				throw new RangeError(_resourceManager.getString("flameLocale", "argInvalidValue", [ "inputCount" ]));
+				throw new RangeError(_resourceManager.getString("flameCore", "argInvalidValue", [ "inputCount" ]));
 			
 			if (inputBuffer.length - inputCount < inputOffset)
-				throw new RangeError(_resourceManager.getString("flameLocale", "argInvalidOffsetLength"));
+				throw new RangeError(_resourceManager.getString("flameCore", "argInvalidOffsetLength"));
 			
 			var count:int;
 			var inputEndian:String = inputBuffer.endian;
@@ -284,16 +285,16 @@ package flame.crypto
 		public function transformFinalBlock(inputBuffer:ByteArray, inputOffset:int, inputCount:int):ByteArray
 		{
 			if (inputBuffer == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "inputBuffer" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "inputBuffer" ]));
 			
 			if (inputOffset < 0)
-				throw new RangeError(_resourceManager.getString("flameLocale", "argOutOfRangeNonNegative", [ "inputOffset" ]));
+				throw new RangeError(_resourceManager.getString("flameCore", "argOutOfRangeNonNegative", [ "inputOffset" ]));
 			
 			if (inputCount < 0 || inputCount > inputBuffer.length)
-				throw new RangeError(_resourceManager.getString("flameLocale", "argInvalidValue", [ "inputCount" ]));
+				throw new RangeError(_resourceManager.getString("flameCore", "argInvalidValue", [ "inputCount" ]));
 			
 			if (inputBuffer.length - inputCount < inputOffset)
-				throw new RangeError(_resourceManager.getString("flameLocale", "argInvalidOffsetLength"));
+				throw new RangeError(_resourceManager.getString("flameCore", "argInvalidOffsetLength"));
 			
 			var buffer:ByteArray = new ByteArray();
 			var inputEndian:String = inputBuffer.endian;
@@ -315,7 +316,7 @@ package flame.crypto
 			else
 			{
 				if (inputCount % _inputBlockSize)
-					throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoDecryptInvalidDataSize"));
+					throw new CryptoError(_resourceManager.getString("flameCrypto", "decryptInvalidDataSize"));
 				
 				if (_depadBuffer == null)
 					decryptBlock(inputBuffer, inputOffset, inputCount, buffer, 0, true);
@@ -503,7 +504,7 @@ package flame.crypto
 						var last:int = outputBuffer[outputBuffer.length - 1];
 		                
 		                if (last > outputBuffer.length || last > _inputBlockSize || last <= 0)
-		                	throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidPadding"));
+		                	throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidPadding"));
 		                
 		                ByteArrayUtil.removeBytes(outputBuffer, outputBuffer.length - last, last);
 		        }
@@ -577,7 +578,7 @@ package flame.crypto
 		                if (inputCount % _inputBlockSize == 0)
 		                    break;
 		                
-		                throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoEncryptInvalidDataSize"));
+		                throw new CryptoError(_resourceManager.getString("flameCrypto", "encryptInvalidDataSize"));
 		            
 		            case PaddingMode.PKCS7:
 		                
@@ -713,7 +714,7 @@ package flame.crypto
 	                
 	            default:
 	                
-	                throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidKeySize"));
+	                throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidKeySize"));
 	        }
 	        
 	        _nbnr = _nb * _nr;

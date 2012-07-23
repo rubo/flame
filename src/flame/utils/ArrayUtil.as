@@ -14,7 +14,7 @@ package flame.utils
 	import mx.resources.IResourceManager;
 	import mx.resources.ResourceManager;
 	
-	[ResourceBundle("flameLocale")]
+	[ResourceBundle("flameCore")]
 	
 	/**
 	 * The ArrayUtil utility class is an all-static class with methods for working with Array objects.
@@ -42,7 +42,7 @@ package flame.utils
 		 */
 		public function ArrayUtil()
 		{
-			throw new IllegalOperationError(_resourceManager.getString("flameLocale", "staticClassInstance",
+			throw new IllegalOperationError(_resourceManager.getString("flameCore", "staticClassInstance",
 				[ getQualifiedClassName(ArrayUtil) ]));
 		}
 		
@@ -78,10 +78,10 @@ package flame.utils
 		public static function binarySearch(array:Array, value:*, comparer:Function):int
 		{
 			if (array == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "array" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "array" ]));
 			
 			if (comparer == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "comparer" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "comparer" ]));
 			
 		    var length:int = array.length;
 		    var l:int = 0;
@@ -125,7 +125,7 @@ package flame.utils
 		public static function repeat(value:*, count:int):Array
 		{
 			if (count < 0)
-				throw new RangeError(_resourceManager.getString("flameLocale", "argOutOfRangeNonNegative", [ "count" ]));
+				throw new RangeError(_resourceManager.getString("flameCore", "argOutOfRangeNonNegative", [ "count" ]));
 			
 			var array:Array = [];
 		

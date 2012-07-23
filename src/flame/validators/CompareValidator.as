@@ -17,7 +17,8 @@ package flame.validators
 	import mx.validators.ValidationResult;
 	import mx.validators.Validator;
 
-	[ResourceBundle("flameLocale")]
+	[ResourceBundle("flameCore")]
+	[ResourceBundle("flameValidators")]
 	
 	/**
 	 * Compares the value entered by the user in an input control
@@ -87,7 +88,7 @@ package flame.validators
 		public static function compareValues(validator:CompareValidator, sourceValue:Object, targetValue:Object):Array
 		{
 			if (validator == null)
-				throw new ArgumentError(ResourceManager.getInstance().getString("flameLocale", "argNullGeneric", [ "validator" ]));
+				throw new ArgumentError(ResourceManager.getInstance().getString("flameCore", "argNullGeneric", [ "validator" ]));
 			
 			var results:Array = [];
 			
@@ -130,7 +131,7 @@ package flame.validators
 		{
 			_notMatchErrorOverride = value;
 			
-			_notMatchError = value == null ? resourceManager.getString("flameLocale", "notMatchError") : value;
+			_notMatchError = value == null ? resourceManager.getString("flameValidators", "notMatchError") : value;
 		}
 		
 		[Inspectable(category="General")]
@@ -267,9 +268,9 @@ package flame.validators
 	        if (_target != null && _targetProperty)
 	            return _target[_targetProperty];
 	        else if (_target == null && _targetProperty)
-	            throw new Error(resourceManager.getString("flameLocale", "targetAttributeMissing"));
+	            throw new Error(resourceManager.getString("flameValidators", "targetAttributeMissing"));
 	        else if (_target != null && !_targetProperty)
-	        	throw new Error(resourceManager.getString("flameLocale", "targetPropertyAttributeMissing"));
+	        	throw new Error(resourceManager.getString("flameValidators", "targetPropertyAttributeMissing"));
 	        
 	        return null;
 	    }

@@ -15,7 +15,7 @@ package flame.crypto
 	import mx.resources.IResourceManager;
 	import mx.resources.ResourceManager;
 
-	[ResourceBundle("flameLocale")]
+	[ResourceBundle("flameCore")]
 	internal class ECPointMultiplier
 	{
 		//--------------------------------------------------------------------------
@@ -54,7 +54,7 @@ package flame.crypto
 		
 		internal function multiply(value:BigInteger):ECPoint
 		{
-			throw new IllegalOperationError(_resourceManager.getString("flameLocale", "argNotImplemented"));
+			throw new IllegalOperationError(_resourceManager.getString("flameCore", "argNotImplemented"));
 		}
 	}
 }

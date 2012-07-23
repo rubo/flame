@@ -94,6 +94,39 @@ package flame.crypto
 		}
 		
 		//--------------------------------------------------------------------------
+		//
+		//  Public properties
+		//
+		//--------------------------------------------------------------------------
+		
+		/**
+		 * Gets or sets the mode for operation of the symmetric algorithm.
+		 * <p>The default is <code>CipherMode.CBC</code>.</p>
+		 * <p>The <code>CipherMode.CTS</code> and <code>CipherMode.OFB</code> modes are not supported.</p>
+		 * See CipherMode enumeration for a description of specific modes.
+		 * 
+		 * @throws flame.crypto.CryptoError The cipher mode is set to
+		 * <code>CipherMode.CTS</code> or <code>CipherMode.OFB</code>.
+		 * 
+		 * @see flame.crypto.CipherMode
+		 */
+		public override function get mode():uint
+		{
+			return super.mode;
+		}
+		
+		/**
+		 * @private
+		 */
+		public override function set mode(value:uint):void
+		{
+			if (value == CipherMode.CTS || value == CipherMode.OFB)
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidCipherMode"));
+			
+			super.mode = value;
+		}
+		
+		//--------------------------------------------------------------------------
 	    //
 	    //  Private methods
 	    //
@@ -101,6 +134,12 @@ package flame.crypto
 	    
 		private function createTransform(key:ByteArray, iv:ByteArray, useEncryptMode:Boolean):ICryptoTransform
 		{
+			if (iv != null && iv.length != _blockSize >> 3)
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidIVSize"));
+			
+			if (key != null && !validateKeySize(key.length << 3))
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidKeySize"));
+			
 			return new RijndaelTransform(key || super.key, mode, iv || super.iv, blockSize, feedbackSize, padding, useEncryptMode); 
 		}
 	}

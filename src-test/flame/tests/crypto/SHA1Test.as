@@ -34,13 +34,13 @@ package flame.tests.crypto
 		//
 		//--------------------------------------------------------------------------
 		
-		[Test]
+		[Test(order=1)]
 		public function testComputeHash1():void
 		{
 			computeHashAndTest(new ByteArray(), "DA39A3EE5E6B4B0D3255BFEF95601890AFD80709");
 		}
 		
-		[Test]
+		[Test(order=2)]
 		public function testComputeHash2():void
 		{
 			var data:ByteArray = new ByteArray();
@@ -50,7 +50,7 @@ package flame.tests.crypto
 			computeHashAndTest(data, "A9993E364706816ABA3E25717850C26C9CD0D89D");
 		}
 		
-		[Test]
+		[Test(order=3)]
 		public function testComputeHash3():void
 		{
 			var data:ByteArray = new ByteArray();
@@ -60,7 +60,7 @@ package flame.tests.crypto
 			computeHashAndTest(data, "84983E441C3BD26EBAAE4AA1F95129E5E54670F1");
 		}
 		
-		[Test]
+		[Test(order=4)]
 		public function testTransformBlock():void
 		{
 			var data:ByteArray = new ByteArray();

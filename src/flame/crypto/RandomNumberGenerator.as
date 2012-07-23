@@ -42,7 +42,7 @@ package flame.crypto
 		 */
 		public function RandomNumberGenerator()
 		{
-			throw new IllegalOperationError(_resourceManager.getString("flameLocale", "staticClassInstance",
+			throw new IllegalOperationError(_resourceManager.getString("flameCore", "staticClassInstance",
 				[ getQualifiedClassName(RandomNumberGenerator) ]));
 		}
 		
@@ -67,7 +67,7 @@ package flame.crypto
 		public static function getBytes(count:int):ByteArray
 		{
 			if (count < 0)
-				throw new RangeError(_resourceManager.getString("flameLocale", "argOutOfRangeNonNegative", [ "count" ]));
+				throw new RangeError(_resourceManager.getString("flameCore", "argOutOfRangeNonNegative", [ "count" ]));
 			
 			var data:ByteArray = generateRandomBytes(Math.min(count, 1024));
 			
@@ -102,7 +102,7 @@ package flame.crypto
 		public static function getNonZeroBytes(count:int):ByteArray
 		{
 			if (count < 0)
-				throw new RangeError(_resourceManager.getString("flameLocale", "argOutOfRangeNonNegative", [ "count" ]));
+				throw new RangeError(_resourceManager.getString("flameCore", "argOutOfRangeNonNegative", [ "count" ]));
 			
 			var data:ByteArray = getBytes(count);
             

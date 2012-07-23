@@ -15,7 +15,7 @@ package flame.crypto
 	import mx.resources.IResourceManager;
 	import mx.resources.ResourceManager;
 
-	[ResourceBundle("flameLocale")]
+	[ResourceBundle("flameCore")]
 	internal class ECPoint
 	{
 		//--------------------------------------------------------------------------
@@ -59,12 +59,12 @@ package flame.crypto
 		
 		internal function add(value:ECPoint):ECPoint
 		{
-			throw new IllegalOperationError(_resourceManager.getString("flameLocale", "argNotImplemented"));
+			throw new IllegalOperationError(_resourceManager.getString("flameCore", "argNotImplemented"));
 		}
 		
 		internal function double():ECPoint
 		{
-			throw new IllegalOperationError(_resourceManager.getString("flameLocale", "argNotImplemented"));
+			throw new IllegalOperationError(_resourceManager.getString("flameCore", "argNotImplemented"));
 		}
 		
 		internal function multiply(value:BigInteger):ECPoint
@@ -74,12 +74,12 @@ package flame.crypto
 		
 		internal function negate():ECPoint
 		{
-			throw new IllegalOperationError(_resourceManager.getString("flameLocale", "argNotImplemented"));
+			throw new IllegalOperationError(_resourceManager.getString("flameCore", "argNotImplemented"));
 		}
 		
 		internal function subtract(value:ECPoint):ECPoint
 		{
-			throw new IllegalOperationError(_resourceManager.getString("flameLocale", "argNotImplemented"));
+			throw new IllegalOperationError(_resourceManager.getString("flameCore", "argNotImplemented"));
 		}
 		
 		//--------------------------------------------------------------------------

@@ -15,7 +15,7 @@ package flame.crypto
 	import mx.resources.IResourceManager;
 	import mx.resources.ResourceManager;
 
-	[ResourceBundle("flameLocale")]
+	[ResourceBundle("flameCore")]
 	internal class ECFieldElement
 	{
 		//--------------------------------------------------------------------------
@@ -50,12 +50,12 @@ package flame.crypto
 		
 		internal function add(value:ECFieldElement):ECFieldElement
 		{
-			throw new IllegalOperationError(_resourceManager.getString("flameLocale", "argNotImplemented"));
+			throw new IllegalOperationError(_resourceManager.getString("flameCore", "argNotImplemented"));
 		}
 		
 		internal function divide(value:ECFieldElement):ECFieldElement
 		{
-			throw new IllegalOperationError(_resourceManager.getString("flameLocale", "argNotImplemented"));
+			throw new IllegalOperationError(_resourceManager.getString("flameCore", "argNotImplemented"));
 		}
 		
 		internal function equals(value:ECFieldElement):Boolean
@@ -65,27 +65,27 @@ package flame.crypto
 		
 		internal function multiply(value:ECFieldElement):ECFieldElement
 		{
-			throw new IllegalOperationError(_resourceManager.getString("flameLocale", "argNotImplemented"));
+			throw new IllegalOperationError(_resourceManager.getString("flameCore", "argNotImplemented"));
 		}
 		
 		internal function negate():ECFieldElement
 		{
-			throw new IllegalOperationError(_resourceManager.getString("flameLocale", "argNotImplemented"));
+			throw new IllegalOperationError(_resourceManager.getString("flameCore", "argNotImplemented"));
 		}
 		
 		internal function square():ECFieldElement
 		{
-			throw new IllegalOperationError(_resourceManager.getString("flameLocale", "argNotImplemented"));
+			throw new IllegalOperationError(_resourceManager.getString("flameCore", "argNotImplemented"));
 		}
 		
 		internal function subtract(value:ECFieldElement):ECFieldElement
 		{
-			throw new IllegalOperationError(_resourceManager.getString("flameLocale", "argNotImplemented"));
+			throw new IllegalOperationError(_resourceManager.getString("flameCore", "argNotImplemented"));
 		}
 		
 		internal function toBigInteger():BigInteger
 		{
-			throw new IllegalOperationError(_resourceManager.getString("flameLocale", "argNotImplemented"));
+			throw new IllegalOperationError(_resourceManager.getString("flameCore", "argNotImplemented"));
 		}
 		
 		//--------------------------------------------------------------------------
@@ -96,7 +96,7 @@ package flame.crypto
 		
 		internal function get fieldSize():int
 		{
-			throw new IllegalOperationError(_resourceManager.getString("flameLocale", "argNotImplemented"));
+			throw new IllegalOperationError(_resourceManager.getString("flameCore", "argNotImplemented"));
 		}
 	}
 }

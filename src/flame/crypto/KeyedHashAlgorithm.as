@@ -73,10 +73,10 @@ package flame.crypto
 		public function set key(value:ByteArray):void
 		{
 			if (value == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value" ]));
 			
 			if (_state != 0)
-				throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoHashKeySet"));
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "hashKeySet"));
 			
 			_key = value;
 		}

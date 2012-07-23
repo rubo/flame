@@ -82,7 +82,7 @@ package flame.controls.mx
 	 */
 	[Event(name="uploadCompleteData", type="flash.events.DataEvent")]
 	
-	[ResourceBundle("flameLocale")]
+	[ResourceBundle("flameControls")]
 	
 	/**
 	 * Name of CSS style declaration that specifies style for the browse and remove buttons.
@@ -286,7 +286,7 @@ package flame.controls.mx
 		 */
 		public function get browseLabel():String
 		{
-			return _browseLabel == null ? resourceManager.getString("flameLocale", "browseButton") : _browseLabel;
+			return _browseLabel == null ? resourceManager.getString("flameControls", "browseButton") : _browseLabel;
 		}
 		
 		/**
@@ -358,7 +358,7 @@ package flame.controls.mx
 		 */
 		public function get removeLabel():String
 		{
-			return _removeLabel == null ? resourceManager.getString("flameLocale", "removeButton") : _removeLabel;
+			return _removeLabel == null ? resourceManager.getString("flameControls", "removeButton") : _removeLabel;
 		}
 		
 		/**

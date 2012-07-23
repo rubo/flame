@@ -46,10 +46,10 @@ package flame.crypto.asn1
 			super(ASN1Tag.OBJECT_IDENTIFIER);
 			
 			if (value == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "data" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "data" ]));
 			
 			if (!_oidPattern.test(value))
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "asn1InvalidOID"));
+				throw new ArgumentError(_resourceManager.getString("flameCrypto", "asn1InvalidOID"));
 			
 			_value = value;
 		}

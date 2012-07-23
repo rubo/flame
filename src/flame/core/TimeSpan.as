@@ -15,7 +15,7 @@ package flame.core
 	import mx.resources.ResourceManager;
 	import mx.utils.StringUtil;
 	
-	[ResourceBundle("flameLocale")]
+	[ResourceBundle("flameCore")]
 	
 	/**
 	 * Represents a time interval. This class is immutable and cannot be inherited.
@@ -108,7 +108,7 @@ package flame.core
 	    public function add(value:TimeSpan):TimeSpan
 	    {
 			if (value == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value" ]));
 				
 	    	return new TimeSpan(0, 0, 0, 0, _milliseconds + value.totalMilliseconds);
 	    }
@@ -162,7 +162,7 @@ package flame.core
 	    public function compareTo(value:TimeSpan):int
 	    {
 			if (value == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value" ]));
 			
 	    	if (_milliseconds < value.totalMilliseconds)
 	    		return -1;
@@ -279,7 +279,7 @@ package flame.core
 	    public static function parse(value:String):TimeSpan
 	    {
 			if (value == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value" ]));
 			
 	    	var matches:Array;
 	    	var timeSpan:TimeSpan;
@@ -316,7 +316,7 @@ package flame.core
 	    public function subtract(value:TimeSpan):TimeSpan
 	    {
 			if (value == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value" ]));
 			
 	    	return new TimeSpan(0, 0, 0, 0, _milliseconds - value.totalMilliseconds);
 	    }

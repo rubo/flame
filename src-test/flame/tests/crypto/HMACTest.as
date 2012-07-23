@@ -35,7 +35,7 @@ package flame.tests.crypto
 		//
 		//--------------------------------------------------------------------------
 		
-		[Test]
+		[Test(order=1)]
 		public function testComputeHash1():void
 		{
 			var data:ByteArray = new ByteArray();
@@ -47,7 +47,7 @@ package flame.tests.crypto
 			computeHashAndTest(data, "9294727A3638BB1C13F48EF8158BFC9D");
 		}
 		
-		[Test]
+		[Test(order=2)]
 		public function testComputeHash2():void
 		{
 			var data:ByteArray = new ByteArray();
@@ -62,7 +62,7 @@ package flame.tests.crypto
 			computeHashAndTest(data, "750C783E6AB0B503EAA86E310A5DB738");
 		}
 		
-		[Test]
+		[Test(order=3)]
 		public function testComputeHash3():void
 		{
 			HMAC(_hashAlgorithm).key = ByteArrayUtil.fromHexString("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
@@ -71,7 +71,7 @@ package flame.tests.crypto
 				"56BE34521D144C88DBB8C733F0E8B3F6");
 		}
 		
-		[Test]
+		[Test(order=4)]
 		public function testTransformBlock():void
 		{
 			HMAC(_hashAlgorithm).key = ByteArrayUtil.fromHexString("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");

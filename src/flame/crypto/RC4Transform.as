@@ -15,7 +15,7 @@ package flame.crypto
 	import mx.resources.IResourceManager;
 	import mx.resources.ResourceManager;
 
-	[ResourceBundle("flameLocale")]
+	[ResourceBundle("flameCore")]
 	
 	/**
 	 * Performs a cryptographic transformation of data using the RC4 algorithm.
@@ -31,8 +31,8 @@ package flame.crypto
 	    
 		private static var _resourceManager:IResourceManager = ResourceManager.getInstance();
 		
-		private var _i:int = 0;
-		private var _j:int = 0;
+		private var _i:int;
+		private var _j:int;
 		private var _key:ByteArray;
 		private var _state:ByteArray = new ByteArray();
 		
@@ -96,19 +96,19 @@ package flame.crypto
 		public function transformBlock(inputBuffer:ByteArray, inputOffset:int, inputCount:int, outputBuffer:ByteArray, outputOffset:int):int
 		{
 			if (inputBuffer == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "inputBuffer" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "inputBuffer" ]));
 			
 			if (outputBuffer == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "outputBuffer" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "outputBuffer" ]));
 			
 			if (inputOffset < 0)
-				throw new RangeError(_resourceManager.getString("flameLocale", "argOutOfRangeNonNegative", [ "inputOffset" ]));
+				throw new RangeError(_resourceManager.getString("flameCore", "argOutOfRangeNonNegative", [ "inputOffset" ]));
 			
 			if (inputCount <= 0 ||  inputCount > inputBuffer.length)
-				throw new RangeError(_resourceManager.getString("flameLocale", "argInvalidValue", [ "inputCount" ]));
+				throw new RangeError(_resourceManager.getString("flameCore", "argInvalidValue", [ "inputCount" ]));
 			
 			if (inputBuffer.length - inputCount < inputOffset)
-				throw new RangeError(_resourceManager.getString("flameLocale", "argInvalidOffsetLength"));
+				throw new RangeError(_resourceManager.getString("flameCore", "argInvalidOffsetLength"));
 			
 			return encrypt(inputBuffer, inputOffset, inputCount, outputBuffer, outputOffset);
 		}
@@ -137,16 +137,16 @@ package flame.crypto
 		public function transformFinalBlock(inputBuffer:ByteArray, inputOffset:int, inputCount:int):ByteArray
 		{
 			if (inputBuffer == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "inputBuffer" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "inputBuffer" ]));
 			
 			if (inputOffset < 0)
-				throw new RangeError(_resourceManager.getString("flameLocale", "argOutOfRangeNonNegative", [ "inputOffset" ]));
+				throw new RangeError(_resourceManager.getString("flameCore", "argOutOfRangeNonNegative", [ "inputOffset" ]));
 			
 			if (inputCount < 0 || inputCount > inputBuffer.length)
-				throw new RangeError(_resourceManager.getString("flameLocale", "argInvalidValue", [ "inputCount" ]));
+				throw new RangeError(_resourceManager.getString("flameCore", "argInvalidValue", [ "inputCount" ]));
 			
 			if (inputBuffer.length - inputCount < inputOffset)
-				throw new RangeError(_resourceManager.getString("flameLocale", "argInvalidOffsetLength"));
+				throw new RangeError(_resourceManager.getString("flameCore", "argInvalidOffsetLength"));
 			
 			var buffer:ByteArray = new ByteArray();
 			
@@ -207,6 +207,8 @@ package flame.crypto
 		 */
 		internal function reset():void
 		{
+			_i = _j = 0;
+			
 			_state.clear();
 			
 			generateKeySchedule();
@@ -226,7 +228,7 @@ package flame.crypto
 				_state[_i] = _state[_j = (_j + temp) & 0xFF];
 				_state[_j] = temp;
 				
-				outputBuffer[outputBuffer + j] = inputBuffer[i] ^ _state[(_state[_i] + temp) & 0xFF];
+				outputBuffer[outputOffset + j] = inputBuffer[i] ^ _state[(_state[_i] + temp) & 0xFF];
 			}
 			
 			return inputCount;

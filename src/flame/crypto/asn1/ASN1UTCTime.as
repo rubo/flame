@@ -13,6 +13,8 @@ package flame.crypto.asn1
 	
 	import flash.utils.ByteArray;
 	
+	[ResourceBundle("flameUtils")]
+	
 	/**
 	 * Represents the Abstract Syntax Notation One (ASN.1) UTCTime type.
 	 */
@@ -46,7 +48,7 @@ package flame.crypto.asn1
 			super(ASN1Tag.UTC_TIME);
 			
 			if (value == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value" ]));
 			
 			_time = value.time;
 		}
@@ -79,7 +81,7 @@ package flame.crypto.asn1
 			var dateString:String = value.readMultiByte(value.bytesAvailable, "ascii");
 			
 			if (!_datePattern.test(dateString))
-				throw new ASN1Error(_resourceManager.getString("flameLocale", "asn1InvalidDateFormat"));
+				throw new ASN1Error(_resourceManager.getString("flameCrypto", "asn1InvalidDateFormat"));
 			
 			var year:int = int(dateString.substr(0, 2));
 			
@@ -88,28 +90,28 @@ package flame.crypto.asn1
 			var month:int = int(dateString.substr(2, 2));
 			
 			if (month < 1 || month > 12)
-				throw new ASN1Error(_resourceManager.getString("flameLocale", "argOutOfRangeMonth"));
+				throw new ASN1Error(_resourceManager.getString("flameUtils", "argOutOfRangeMonth"));
 			
 			var day:int = int(dateString.substr(4, 2));
 			var daysInMonth:int = DateUtil.daysInMonth(year, month);
 			
 			if (day < 1 || day > daysInMonth)
-				throw new ASN1Error(_resourceManager.getString("flameLocale", "argOutOfRangeDay", [ daysInMonth ]));
+				throw new ASN1Error(_resourceManager.getString("flameUtils", "argOutOfRangeDay", [ daysInMonth ]));
 			
 			var hours:int = int(dateString.substr(6, 2));
 			
 			if (hours > 23)
-				throw new ASN1Error(_resourceManager.getString("flameLocale", "argOutOfRangeHours"));
+				throw new ASN1Error(_resourceManager.getString("flameUtils", "argOutOfRangeHours"));
 			
 			var minutes:int = int(dateString.substr(8, 2));
 			
 			if (minutes > 59)
-				throw new ASN1Error(_resourceManager.getString("flameLocale", "argOutOfRangeMinutes"));
+				throw new ASN1Error(_resourceManager.getString("flameUtils", "argOutOfRangeMinutes"));
 			
 			var seconds:int = int(dateString.substr(10, 2));
 			
 			if (seconds > 59)
-				throw new ASN1Error(_resourceManager.getString("flameLocale", "argOutOfRangeSeconds"));
+				throw new ASN1Error(_resourceManager.getString("flameUtils", "argOutOfRangeSeconds"));
 			
 			var date:Date = new Date();
 			

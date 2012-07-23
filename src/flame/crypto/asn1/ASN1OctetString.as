@@ -43,7 +43,7 @@ package flame.crypto.asn1
 			super(ASN1Tag.OCTET_STRING);
 			
 			if (value == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value" ]));
 			
 			_value = ByteArrayUtil.copy(value);
 		}

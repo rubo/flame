@@ -14,7 +14,8 @@ package flame.crypto.asn1
 	import mx.resources.IResourceManager;
 	import mx.resources.ResourceManager;
 
-	[ResourceBundle("flameLocale")]
+	[ResourceBundle("flameCore")]
+	[ResourceBundle("flameCrypto")]
 	
 	/**
 	 * Represents the abstract base class from which all implementations of
@@ -81,7 +82,7 @@ package flame.crypto.asn1
 		public static function fromByteArray(data:ByteArray):ASN1Object
 		{
 			if (data == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "data" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "data" ]));
 			
 			var tag:uint = data.readUnsignedByte();
 			var length:int = decodeLength(data);
@@ -260,7 +261,7 @@ package flame.crypto.asn1
 		 */
 		protected function encodeValue():ByteArray
 		{
-			throw new IllegalOperationError(_resourceManager.getString("flameLocale", "argNotImplemented"));
+			throw new IllegalOperationError(_resourceManager.getString("flameCore", "argNotImplemented"));
 		}
 		
 		//--------------------------------------------------------------------------
@@ -276,7 +277,7 @@ package flame.crypto.asn1
 			if (length > 0x7F)
 			{
 				if (length == 0x80)
-					throw new ASN1Error(_resourceManager.getString("flameLocale", "asn1IndefiniteLength"));
+					throw new ASN1Error(_resourceManager.getString("flameCrypto", "asn1IndefiniteLength"));
 				
 				var decodedLength:int = 0;
 				

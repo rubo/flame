@@ -80,16 +80,16 @@ package flame.crypto
 		public override function verifySignature(data:ByteArray, signature:ByteArray):Boolean
 		{
 			if (_key == null)
-				throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoMissingKey"));
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "missingKey"));
 			
 			if (_hashAlgorithm == null)
-				throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoMissingOID"));
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "missingOID"));
 			
 			if (data == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "data" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "data" ]));
 			
 			if (signature == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "signature" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "signature" ]));
 			
 			return _key.verifyHash(_hashAlgorithm.computeHash(data), signature);
 		}
@@ -118,7 +118,7 @@ package flame.crypto
 		public override function setKey(key:AsymmetricAlgorithm):void
 		{
 			if (key == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "key" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "key" ]));
 			
 			_key = ECDSA(key);
 		}

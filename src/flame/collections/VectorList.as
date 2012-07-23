@@ -37,7 +37,7 @@ package flame.collections
 	 */
 	[Event(name="collectionChange", type="mx.events.CollectionEvent")]
 	
-	[ResourceBundle("flameLocale")]
+	[ResourceBundle("flameCore")]
 	
 	/**
 	 * The VectorList class is a simple implementation of IList
@@ -93,7 +93,7 @@ package flame.collections
 			if (source != null)
 			{
 				if (!(source is Vector.<*> || source is Vector.<Number> || source is Vector.<int> || source is Vector.<uint>))
-					throw new TypeError(_resourceManager.getString("flameLocale", "argTypeMismatch",
+					throw new TypeError(_resourceManager.getString("flameCore", "argTypeMismatch",
 						[ "source", getQualifiedClassName(Vector.<*>) ]));
 
 				this.source = source;
@@ -119,7 +119,7 @@ package flame.collections
 		public function addAll(list:IList):void
 		{
 			if (list == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "list" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "list" ]));
 			
 			addAllAt(list, length);
 		}
@@ -140,10 +140,10 @@ package flame.collections
 		public function addAllAt(list:IList, index:int):void
 		{
 			if (list == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "list" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "list" ]));
 			
 			if (index < 0 || index > length)
-				throw new RangeError(_resourceManager.getString("flameLocale", "argOutOfRangeInsert", [ "index" ]));
+				throw new RangeError(_resourceManager.getString("flameCore", "argOutOfRangeInsert", [ "index" ]));
 			
 			for (var i:int = 0, count:int = list.length, offset:int = length; i < count; i++)
 				addItemAt(list.getItemAt(i), offset + i);
@@ -173,7 +173,7 @@ package flame.collections
 		public function addItemAt(item:Object, index:int):void
 		{
 			if (index < 0 || index > length)
-				throw new RangeError(_resourceManager.getString("flameLocale", "argOutOfRangeInsert", [ "index" ]));
+				throw new RangeError(_resourceManager.getString("flameCore", "argOutOfRangeInsert", [ "index" ]));
 			
 			_source.splice(index, 0, item);
 			
@@ -197,7 +197,7 @@ package flame.collections
 		public function getItemAt(index:int, prefetch:int = 0):Object
 		{
 			if (index < 0 || index >= length)
-				throw new RangeError(_resourceManager.getString("flameLocale", "argOutOfRangeIndex", [ "index" ]));
+				throw new RangeError(_resourceManager.getString("flameCore", "argOutOfRangeIndex", [ "index" ]));
 			
 			return _source[index];
 		}
@@ -294,7 +294,7 @@ package flame.collections
 		public function removeItemAt(index:int):Object
 		{
 			if (index < 0 || index >= length)
-				throw new RangeError(_resourceManager.getString("flameLocale", "argOutOfRangeIndex", [ "index" ]));
+				throw new RangeError(_resourceManager.getString("flameCore", "argOutOfRangeIndex", [ "index" ]));
 			
 			var item:Object = _source.splice(index, 1)[0];
 			
@@ -321,7 +321,7 @@ package flame.collections
 		public function setItemAt(item:Object, index:int):Object
 		{
 			if (index < 0 || index >= length)
-				throw new RangeError(_resourceManager.getString("flameLocale", "argOutOfRangeIndex", [ "index" ]));
+				throw new RangeError(_resourceManager.getString("flameCore", "argOutOfRangeIndex", [ "index" ]));
 			
 			var oldItem:Object = _source[index];
 			
@@ -430,7 +430,7 @@ package flame.collections
 		public function set source(value:*):void
 		{
 			if (value != null && !(value is Vector.<*> || value is Vector.<Number> || value is Vector.<int> || value is Vector.<uint>))
-				throw new TypeError(_resourceManager.getString("flameLocale", "argTypeMismatch",
+				throw new TypeError(_resourceManager.getString("flameCore", "argTypeMismatch",
 					[ "value", getQualifiedClassName(Vector.<*>) ]));
 		
 			var item:Object;

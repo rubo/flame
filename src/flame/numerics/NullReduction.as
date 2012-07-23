@@ -14,7 +14,7 @@ package flame.numerics
 	
 	import mx.resources.ResourceManager;
 	
-	[ResourceBundle("flameLocale")]
+	[ResourceBundle("flameCore")]
 	internal final class NullReduction implements IReductionAlgorithm
 	{
 		//--------------------------------------------------------------------------
@@ -46,7 +46,7 @@ package flame.numerics
 		
 		public function reduce(value:BigInteger):void
 		{
-			throw new IllegalOperationError(ResourceManager.getInstance().getString("flameLocale", "argNotSupported"));
+			throw new IllegalOperationError(ResourceManager.getInstance().getString("flameCore", "argNotSupported"));
 		}
 		
 		public function revert(value:BigInteger):BigInteger

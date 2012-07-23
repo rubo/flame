@@ -84,7 +84,7 @@ package flame.controls.spark
 	 */
 	[Event(name="uploadCompleteData", type="flash.events.DataEvent")]
 	
-	[ResourceBundle("flameLocale")]
+	[ResourceBundle("flameControls")]
 	
 	/**
 	 * Disabled state of the MultiFileUploader.
@@ -254,7 +254,7 @@ package flame.controls.spark
 		 */
 		public function get browseLabel():String
 		{
-			return _browseLabel == null ? resourceManager.getString("flameLocale", "browseButton") : _browseLabel;
+			return _browseLabel == null ? resourceManager.getString("flameControls", "browseButton") : _browseLabel;
 		}
 		
 		/**
@@ -311,7 +311,7 @@ package flame.controls.spark
 		 */
 		public function get removeLabel():String
 		{
-			return _removeLabel == null ? resourceManager.getString("flameLocale", "removeButton") : _removeLabel;
+			return _removeLabel == null ? resourceManager.getString("flameControls", "removeButton") : _removeLabel;
 		}
 		
 		/**

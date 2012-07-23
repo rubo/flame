@@ -67,12 +67,12 @@ package flame.crypto.asn1
 		internal static function fromRawValue(value:ByteArray):ASN1Boolean
 		{
 			if (value.bytesAvailable > 1)
-				throw new ASN1Error(_resourceManager.getString("flameLocale", "asn1InvalidValueLength", [ "value" ]));
+				throw new ASN1Error(_resourceManager.getString("flameCrypto", "asn1InvalidValueLength", [ "value" ]));
 			
 			var byte:int = value.readByte();
 			
 			if (byte != 0 && byte != 0xFF)
-				throw new ASN1Error(_resourceManager.getString("flameLocale", "asn1InvalidBooleanValue"));
+				throw new ASN1Error(_resourceManager.getString("flameCrypto", "asn1InvalidBooleanValue"));
 			
 			return new ASN1Boolean(byte == 0xFF);
 		}

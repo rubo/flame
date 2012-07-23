@@ -45,7 +45,7 @@ package flame.crypto.asn1
 			super(tag);
 			
 			if (value == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value" ]));
 			
 			_value = ByteArrayUtil.copy(value);
 		}

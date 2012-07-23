@@ -44,10 +44,10 @@ package flame.crypto.asn1
 			super(ASN1Tag.PRINTABLE_STRING);
 			
 			if (value == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value" ]));
 			
 			if (!_validCharPattern.test(value))
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "asn1InvalidPrintableStringValue"));
+				throw new ArgumentError(_resourceManager.getString("flameCrypto", "asn1InvalidPrintableStringValue"));
 			
 			_value = value;
 		}

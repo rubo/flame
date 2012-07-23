@@ -124,10 +124,10 @@ package flame.crypto
 		public override function set key(value:ByteArray):void
 		{
 			if (value == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value" ]));
 			
 			if (_isHashing)
-				throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoHashKeySet"));
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "hashKeySet"));
 			
 			initializeKey(value);
 		}
@@ -189,7 +189,7 @@ package flame.crypto
 		protected function setHashAlgorithm(name:String):void
 		{
 			if (_isHashing)
-				throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoHashAlgorithmSet"));
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "hashAlgorithmSet"));
 			
 			_hashName = name;
 			_hashAlgorithm1 = HashAlgorithm(CryptoConfig.createFromName(_hashName));

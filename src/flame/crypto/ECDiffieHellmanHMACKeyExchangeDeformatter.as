@@ -79,13 +79,13 @@ package flame.crypto
 		public override function decryptKeyExchange(data:ByteArray):ByteArray
 		{
 			if (_key == null)
-				throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoMissingKey"));
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "missingKey"));
 			
 			if (_hmac == null)
-				throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoMissingOID"));
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "missingOID"));
 			
 			if (_format == null)
-				throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoMissingKeyBLOBFormat"));
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "missingKeyBLOBFormat"));
 			
 			var otherPartyPublicParameters:ECCParameters = ECCParameters.fromByteArray(data, _format);
 			var secretAgreement:ByteArray = _key.deriveSecretAgreement(otherPartyPublicParameters);
@@ -112,7 +112,7 @@ package flame.crypto
 		public function setHashAlgorithm(name:String):void
 		{
 			if (name == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "name" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "name" ]));
 			
 			_hmac = HMAC.create(name);
 		}
@@ -130,7 +130,7 @@ package flame.crypto
 		public override function setKey(key:AsymmetricAlgorithm):void
 		{
 			if (key == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "key" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "key" ]));
 			
 			_key = ECDiffieHellman(key);
 		}
@@ -161,7 +161,7 @@ package flame.crypto
 		public function set format(value:String):void
 		{
 			if (value == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value" ]));
 			
 			_format = value;
 		}
@@ -191,7 +191,7 @@ package flame.crypto
 		 */
 		public override function get parameters():String
 		{
-			throw new IllegalOperationError(_resourceManager.getString("flameLocale", "argNotSupported"));
+			throw new IllegalOperationError(_resourceManager.getString("flameCore", "argNotSupported"));
 		}
 		
 		/**
@@ -199,7 +199,7 @@ package flame.crypto
 		 */
 		public override function set parameters(value:String):void
 		{
-			throw new IllegalOperationError(_resourceManager.getString("flameLocale", "argNotSupported"));
+			throw new IllegalOperationError(_resourceManager.getString("flameCore", "argNotSupported"));
 		}
 		
 		/**

@@ -14,7 +14,8 @@ package flame.utils
 	import mx.resources.IResourceManager;
 	import mx.resources.ResourceManager;
 	
-	[ResourceBundle("flameLocale")]
+	[ResourceBundle("flameCore")]
+	
 	/**
 	 * The StringUtil utility class is an all-static class with methods for working with String objects.
 	 * You do not create instances of StringUtil;
@@ -42,7 +43,7 @@ package flame.utils
 		 */
 		public function StringUtil()
 		{
-			throw new IllegalOperationError(_resourceManager.getString("flameLocale", "staticClassInstance",
+			throw new IllegalOperationError(_resourceManager.getString("flameCore", "staticClassInstance",
 				[ getQualifiedClassName(StringUtil) ]));
 		}
 		
@@ -72,13 +73,13 @@ package flame.utils
 	    public static function insert(string:String, index:int, value:String):String
 	    {
 	    	if (string == null)
-	    		throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "string" ]));
+	    		throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "string" ]));
 	    	
 	    	if (index < 0)
-	    		throw new RangeError(_resourceManager.getString("flameLocale", "argOutOfRangeStartIndex", [ "index" ]));
+	    		throw new RangeError(_resourceManager.getString("flameCore", "argOutOfRangeStartIndex", [ "index" ]));
 	    	
 	    	if (index > string.length)
-	    		throw new RangeError(_resourceManager.getString("flameLocale", "argOutOfRangeIndex", [ "index" ]));
+	    		throw new RangeError(_resourceManager.getString("flameCore", "argOutOfRangeIndex", [ "index" ]));
 	    	
 	    	return value ? string.substr(0, index) + value + string.substr(index) : string;
 	    }
@@ -186,16 +187,16 @@ package flame.utils
 		public static function remove(value:String, startIndex:int, count:int):String
 	    {
 	    	if (value == null)
-	    		throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value" ]));
+	    		throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value" ]));
 	    	
 	    	if (startIndex < 0)
-	    		throw new RangeError(_resourceManager.getString("flameLocale", "argOutOfRangeStartIndex", [ "startIndex" ]));
+	    		throw new RangeError(_resourceManager.getString("flameCore", "argOutOfRangeStartIndex", [ "startIndex" ]));
 	    	
 	    	if (count < 0)
-	    		throw new RangeError(_resourceManager.getString("flameLocale", "argOutOfRangeNonNegative", [ "count" ]));
+	    		throw new RangeError(_resourceManager.getString("flameCore", "argOutOfRangeNonNegative", [ "count" ]));
 	    	
 	    	if (startIndex + count > value.length)
-	    		throw new RangeError(_resourceManager.getString("flameLocale", "argOutOfRangeIndex", [ "index" ]));
+	    		throw new RangeError(_resourceManager.getString("flameCore", "argOutOfRangeIndex", [ "index" ]));
 	    	
 	    	return value.substr(0, startIndex) + value.substr(startIndex + count);
 	    }
@@ -209,10 +210,10 @@ package flame.utils
 		private static function pad(value:String, totalWidth:int, paddingChar:String, isRightPadded:Boolean):String
 		{
 			if (value == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value" ]));
 			
 			if (totalWidth < 0)
-				throw new RangeError(_resourceManager.getString("flameLocale", "argOutOfRangeNonNegative", [ "totalWidth" ]));
+				throw new RangeError(_resourceManager.getString("flameCore", "argOutOfRangeNonNegative", [ "totalWidth" ]));
 			
 			var paddingWidth:int = totalWidth - value.length;
 			

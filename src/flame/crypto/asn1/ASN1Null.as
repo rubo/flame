@@ -58,7 +58,7 @@ package flame.crypto.asn1
 		internal static function fromRawValue(value:ByteArray):ASN1Null
 		{
 			if (value.length > 0)
-				throw new ASN1Error(_resourceManager.getString("flameLocale", "asn1InvalidValueLength"));
+				throw new ASN1Error(_resourceManager.getString("flameCrypto", "asn1InvalidValueLength"));
 			
 			return NULL;
 		}

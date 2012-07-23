@@ -21,7 +21,8 @@ package flame.numerics
 	
 	use namespace flame_internal;
 	
-	[ResourceBundle("flameLocale")]
+	[ResourceBundle("flameCore")]
+	[ResourceBundle("flameNumerics")]
 	
 	/**
 	 * Represents an arbitrarily large signed integer. This class cannot be inherited.
@@ -195,7 +196,7 @@ package flame.numerics
 			super();
 			
 			if (value == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value" ]));
 			
 			if (value is ByteArray)
 			{
@@ -211,12 +212,12 @@ package flame.numerics
 				value = StringUtil.trim(value);
 				
 				if (!_legalParsePattern.test(value))
-					throw new ArgumentError(_resourceManager.getString("flameLocale", "argInvalidBigIntegerFormat"));
+					throw new ArgumentError(_resourceManager.getString("flameNumerics", "argInvalidBigIntegerFormat"));
 				
 				setBitsFromString(value, getDefaultRadix(value));
 			}
 			else
-				throw new TypeError(_resourceManager.getString("flameLocale", "argInvalidValue", [ "value" ]));
+				throw new TypeError(_resourceManager.getString("flameCore", "argInvalidValue", [ "value" ]));
 		}
 		
 		//--------------------------------------------------------------------------
@@ -254,7 +255,7 @@ package flame.numerics
 		public function add(value:BigInteger):BigInteger
 		{
 			if (value == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value" ]));
 			
 			var result:BigInteger = new BigInteger(0);
 			
@@ -285,7 +286,7 @@ package flame.numerics
 		public function and(value:BigInteger):BigInteger
 		{
 			if (value == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value" ]));
 			
 			var count:int;
 			var length:int = Math.min(value._length, _length);
@@ -338,7 +339,7 @@ package flame.numerics
 		public function andNot(value:BigInteger):BigInteger
 		{
 			if (value == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value" ]));
 			
 			var count:int;
 			var length:int = Math.min(value._length, _length);
@@ -399,7 +400,7 @@ package flame.numerics
 		public function compareTo(value:BigInteger):int
 		{
 			if (value == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value" ]));
 			
 			if (_sign < value._sign)
 				return -1;
@@ -438,10 +439,10 @@ package flame.numerics
 		public function divide(value:BigInteger):BigInteger
 		{
 			if (value == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value" ]));
 			
 			if (value.isZero)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argDivideByZero"));
+				throw new ArgumentError(_resourceManager.getString("flameNumerics", "argDivideByZero"));
 			
 			var result:BigInteger = new BigInteger(0);
 			
@@ -473,10 +474,10 @@ package flame.numerics
 		public function divRem(divisor:BigInteger):Vector.<BigInteger>
 		{
 			if (divisor == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "divisor" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "divisor" ]));
 			
 			if (divisor.isZero)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argDivideByZero"));
+				throw new ArgumentError(_resourceManager.getString("flameNumerics", "argDivideByZero"));
 			
 			var quotient:BigInteger = new BigInteger(0);
 			var remainder:BigInteger = new BigInteger(0);
@@ -503,7 +504,7 @@ package flame.numerics
 		public function equals(value:BigInteger):Boolean
 		{
 			if (value == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value" ]));
 			
 			return compareTo(value) == 0;
 		}
@@ -530,7 +531,7 @@ package flame.numerics
 		public function greatestCommonDivisor(value:BigInteger):BigInteger
 		{
 			if (value == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value" ]));
 			
 			var x:BigInteger = _sign < 0 ? negate() : valueOf();
 			var y:BigInteger = value._sign < 0 ? value.negate() : value.valueOf();
@@ -617,7 +618,7 @@ package flame.numerics
 		public static function log(value:BigInteger, base:Number = Math.E):Number
 		{
 			if (value == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value" ]));
 			
 			if (value._sign < 0 || base == 1)
 				return Number.NaN;
@@ -673,10 +674,10 @@ package flame.numerics
 		public static function max(value1:BigInteger, value2:BigInteger):BigInteger
 		{
 			if (value1 == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value1" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value1" ]));
 			
 			if (value2 == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value2" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value2" ]));
 			
 			return value1.compareTo(value2) > 0 ? value1 : value2;
 		}
@@ -698,10 +699,10 @@ package flame.numerics
 		public static function min(value1:BigInteger, value2:BigInteger):BigInteger
 		{
 			if (value1 == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value1" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value1" ]));
 			
 			if (value2 == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value2" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value2" ]));
 			
 			return value1.compareTo(value2) < 0 ? value1 : value2;
 		}
@@ -724,10 +725,10 @@ package flame.numerics
 		public function mod(value:BigInteger):BigInteger
 		{
 			if (value == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value" ]));
 			
 			if (value.isZero)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argDivideByZero"));
+				throw new ArgumentError(_resourceManager.getString("flameNumerics", "argDivideByZero"));
 			
 			var result:BigInteger = new BigInteger(0);
 			
@@ -759,16 +760,16 @@ package flame.numerics
 		public function modPow(exponent:BigInteger, modulus:BigInteger):BigInteger
 		{
 			if (exponent == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "exponent" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "exponent" ]));
 			
 			if (exponent.compareTo(ZERO) < 0)
-				throw new RangeError(_resourceManager.getString("flameLocale", "argOutOfRangeNonNegative", [ "exponent" ]));
+				throw new RangeError(_resourceManager.getString("flameCore", "argOutOfRangeNonNegative", [ "exponent" ]));
 			
 			if (modulus == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "modulus" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "modulus" ]));
 			
 			if (modulus.isZero)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argDivideByZero"));
+				throw new ArgumentError(_resourceManager.getString("flameNumerics", "argDivideByZero"));
 			
 			if (exponent.isZero || equals(ONE))
 				return modulus.equals(ONE) ? ZERO : ONE;
@@ -920,7 +921,7 @@ package flame.numerics
 		public function multiply(value:BigInteger):BigInteger
 		{
 			if (value == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value" ]));
 			
 			var result:BigInteger = new BigInteger(0);
 			
@@ -989,7 +990,7 @@ package flame.numerics
 		public function or(value:BigInteger):BigInteger
 		{
 			if (value == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value" ]));
 			
 			var count:int;
 			var length:int = Math.min(value._length, _length);
@@ -1049,18 +1050,18 @@ package flame.numerics
 		public static function parse(value:String, radix:int = 0):BigInteger
 		{
 			if (value == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value" ]));
 			
 			value = StringUtil.trim(value);
 			
 			if (!_legalParsePattern.test(value))
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argInvalidBigIntegerFormat"));
+				throw new ArgumentError(_resourceManager.getString("flameNumerics", "argInvalidBigIntegerFormat"));
 			
 			if (radix == 0)
 				radix = getDefaultRadix(value);
 			
 			if (radix < 2 || radix > 36)
-				throw new RangeError(_resourceManager.getString("flameLocale", "argInvalidRadix"));
+				throw new RangeError(_resourceManager.getString("flameNumerics", "argInvalidRadix"));
 			
 			var result:BigInteger = new BigInteger(0);
 			
@@ -1103,10 +1104,10 @@ package flame.numerics
 		public function remainder(value:BigInteger):BigInteger
 		{
 			if (value == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value" ]));
 			
 			if (value.isZero)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argDivideByZero"));
+				throw new ArgumentError(_resourceManager.getString("flameNumerics", "argDivideByZero"));
 			
 			var remainder:BigInteger = new BigInteger(0);
 			
@@ -1174,7 +1175,7 @@ package flame.numerics
 		public function subtract(value:BigInteger):BigInteger
 		{
 			if (value == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value" ]));
 			
 			var diff:BigInteger = new BigInteger(0);
 			
@@ -1406,7 +1407,7 @@ package flame.numerics
 		public function xor(value:BigInteger):BigInteger
 		{
 			if (value == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value" ]));
 			
 			var count:int;
 			var length:int = Math.min(value._length, _length);
@@ -2209,7 +2210,7 @@ package flame.numerics
 		private function exp(exponent:int, reductionAlgorithm:IReductionAlgorithm):BigInteger
 		{
 			if (exponent < 0)
-				throw new RangeError(_resourceManager.getString("flameLocale", "argOutOfRangeNonNegative", [ "exponent" ]));
+				throw new RangeError(_resourceManager.getString("flameCore", "argOutOfRangeNonNegative", [ "exponent" ]));
 			
 			if (isZero)
 				return exponent == 0 ? ONE : this;

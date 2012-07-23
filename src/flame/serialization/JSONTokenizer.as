@@ -11,7 +11,9 @@ package flame.serialization
 	import mx.resources.IResourceManager;
 	import mx.resources.ResourceManager;
 
-	[ResourceBundle("flameLocale")]
+	[ResourceBundle("flameCore")]
+	[ResourceBundle("flameSerialization")]
+	
 	internal final class JSONTokenizer
 	{
 		//--------------------------------------------------------------------------
@@ -95,7 +97,7 @@ package flame.serialization
 					if (falsePrimitive == "false")
 						return new JSONToken(JSONTokenType.FALSE, false);
 					
-					throw new JSONError(_resourceManager.getString("flameLocale", "jsonIllegalPrimitive", [ falsePrimitive ]));
+					throw new JSONError(_resourceManager.getString("flameSerialization", "jsonIllegalPrimitive", [ falsePrimitive ]));
 				
 				case "n":
 					
@@ -104,7 +106,7 @@ package flame.serialization
 					if (nullPrimitive == "null")
 						return new JSONToken(JSONTokenType.NULL, null);
 					
-					throw new JSONError(_resourceManager.getString("flameLocale", "jsonIllegalPrimitive", [ nullPrimitive ]));
+					throw new JSONError(_resourceManager.getString("flameSerialization", "jsonIllegalPrimitive", [ nullPrimitive ]));
 				
 				case "t":
 					
@@ -113,14 +115,14 @@ package flame.serialization
 					if (truePrimitive == "true")
 						return new JSONToken(JSONTokenType.FALSE, true);
 					
-					throw new JSONError(_resourceManager.getString("flameLocale", "jsonIllegalPrimitive", [ truePrimitive ]));				
+					throw new JSONError(_resourceManager.getString("flameSerialization", "jsonIllegalPrimitive", [ truePrimitive ]));				
 				
 				default:
 					
 					if (isDigit(_currentChar) || _currentChar == "-")
 						return readNumber();
 					
-					throw new JSONError(_resourceManager.getString("flameLocale", "jsonIllegalPrimitive", [ _currentChar ]));
+					throw new JSONError(_resourceManager.getString("flameSerialization", "jsonIllegalPrimitive", [ _currentChar ]));
 			}
 		}
 		
@@ -166,14 +168,14 @@ package flame.serialization
 			}
 			
 			if (!isDigit(_currentChar))
-				throw new JSONError(_resourceManager.getString("flameLocale", "jsonIllegalPrimitive", [ value + _currentChar ]));
+				throw new JSONError(_resourceManager.getString("flameSerialization", "jsonIllegalPrimitive", [ value + _currentChar ]));
 			
 			if (_currentChar == "0")
 			{
 				value += _currentChar;
 				
 				if (isDigit(readChar()))
-					throw new JSONError(_resourceManager.getString("flameLocale", "jsonIllegalPrimitive", [ value + _currentChar ]));
+					throw new JSONError(_resourceManager.getString("flameSerialization", "jsonIllegalPrimitive", [ value + _currentChar ]));
 			}
 			else
 				do
@@ -185,7 +187,7 @@ package flame.serialization
 				value += _currentChar;
 				
 				if (!isDigit(readChar()))
-					throw new JSONError(_resourceManager.getString("flameLocale", "jsonIllegalPrimitive", [ value + _currentChar ]));
+					throw new JSONError(_resourceManager.getString("flameSerialization", "jsonIllegalPrimitive", [ value + _currentChar ]));
 				
 				do
 					value += _currentChar;
@@ -206,7 +208,7 @@ package flame.serialization
 				}
 				
 				if (!isDigit(_currentChar))
-					throw new JSONError(_resourceManager.getString("flameLocale", "jsonIllegalPrimitive", [ value + _currentChar ]));
+					throw new JSONError(_resourceManager.getString("flameSerialization", "jsonIllegalPrimitive", [ value + _currentChar ]));
 				
 				do
 					value += _currentChar;
@@ -220,7 +222,7 @@ package flame.serialization
 			if (isFinite(number) && !isNaN(number))
 				return new JSONToken(JSONTokenType.NUMBER, number);
 			
-			throw new JSONError(_resourceManager.getString("flameLocale", "jsonIllegalPrimitive", [ value ]));
+			throw new JSONError(_resourceManager.getString("flameSerialization", "jsonIllegalPrimitive", [ value ]));
 		}
 		
 		private function readString():JSONToken
@@ -282,14 +284,14 @@ package flame.serialization
 								if (isDigit(_currentChar) || _currentChar >= "A" && _currentChar <= "F" || _currentChar >= "a" && _currentChar <= "f")
 									charCode += _currentChar;
 								else
-									throw new JSONError(_resourceManager.getString("flameLocale", "formatInvalidString"));
+									throw new JSONError(_resourceManager.getString("flameCore", "formatInvalidString"));
 							
 							string += String.fromCharCode(parseInt(charCode, 16));
 							break;
 						
 						default:
 							
-							throw new JSONError(_resourceManager.getString("flameLocale", "jsonInvalidEscape", [ _position ]));
+							throw new JSONError(_resourceManager.getString("flameSerialization", "jsonInvalidEscape", [ _position ]));
 					}
 				}
 				else
@@ -297,7 +299,7 @@ package flame.serialization
 			}
 			
 			if (_currentChar.length == 0)
-				throw new JSONError(_resourceManager.getString("flameLocale", "jsonUnterminatedString", [ _position ]));
+				throw new JSONError(_resourceManager.getString("flameSerialization", "jsonUnterminatedString", [ _position ]));
 			
 			if (escapedSolidusCount == 2)
 			{

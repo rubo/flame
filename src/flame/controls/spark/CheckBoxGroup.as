@@ -29,7 +29,7 @@ package flame.controls.spark
 	 */
 	[Event(name="change", type="flash.events.Event")]
 	
-	[ResourceBundle("flameLocale")]
+	[ResourceBundle("flameCore")]
 	
 	/**
 	 * The CheckBoxGroup control defines a group of CheckBox controls.
@@ -96,7 +96,7 @@ package flame.controls.spark
 		public function addCheckBox(checkBox:CheckBox):void
 		{
 			if (checkBox == null)
-				throw new ArgumentError(ResourceManager.getInstance().getString("flameLocale", "argNullGeneric", [ "checkBox" ]));
+				throw new ArgumentError(ResourceManager.getInstance().getString("flameCore", "argNullGeneric", [ "checkBox" ]));
 			
 			if (_checkBoxes.indexOf(checkBox) == -1)
 			{
@@ -122,7 +122,7 @@ package flame.controls.spark
 		public function getCheckBoxAt(index:int):CheckBox
 		{
 			if (index < 0 || index >= _checkBoxes.length)
-				throw new RangeError(ResourceManager.getInstance().getString("flameLocale", "argOutOfRangeIndex", [ "index" ]));
+				throw new RangeError(ResourceManager.getInstance().getString("flameCore", "argOutOfRangeIndex", [ "index" ]));
 			
 			return _checkBoxes[index];
 		}
@@ -155,7 +155,7 @@ package flame.controls.spark
 		public function removeCheckBox(checkBox:CheckBox):void
 		{
 			if (checkBox == null)
-				throw new ArgumentError(ResourceManager.getInstance().getString("flameLocale", "argNullGeneric", [ "checkBox" ]));
+				throw new ArgumentError(ResourceManager.getInstance().getString("flameCore", "argNullGeneric", [ "checkBox" ]));
 			
 			var index:int = _checkBoxes.indexOf(checkBox);
 			

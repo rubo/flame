@@ -40,7 +40,7 @@ package flame.controls.spark
 	
 	[ExcludeClass]
 	
-	[ResourceBundle("flameLocale")]
+	[ResourceBundle("flameControls")]
 	
 	/**
 	 * Disabled state of the FileReader.
@@ -181,7 +181,7 @@ package flame.controls.spark
 		 */
 		public function get browseLabel():String
 		{
-			return _browseLabel == null ? resourceManager.getString("flameLocale", "browseButton") : _browseLabel;
+			return _browseLabel == null ? resourceManager.getString("flameControls", "browseButton") : _browseLabel;
 		}
 		
 		/**
@@ -200,7 +200,7 @@ package flame.controls.spark
 		 */
 		public function get cancelLabel():String
 		{
-			return _cancelLabel == null ? resourceManager.getString("flameLocale", "cancelButton") : _cancelLabel;
+			return _cancelLabel == null ? resourceManager.getString("flameControls", "cancelButton") : _cancelLabel;
 		}
 		
 		/**
@@ -375,7 +375,7 @@ package flame.controls.spark
 		 */
 		protected function fileReference_progressHandler(event:ProgressEvent):void
 		{
-			progressBar.label = resourceManager.getString("flameLocale", "fileProgressLabel",
+			progressBar.label = resourceManager.getString("flameControls", "fileProgressLabel",
 				[ Math.round(event.bytesLoaded * 100 / event.bytesTotal) ]);
 		}
 		

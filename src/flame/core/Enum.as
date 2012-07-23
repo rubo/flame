@@ -41,7 +41,7 @@ package flame.core
 		 */
 		public function Enum()
 		{
-			throw new IllegalOperationError(_resourceManager.getString("flameLocale", "staticClassInstance", [ getQualifiedClassName(Enum) ]));
+			throw new IllegalOperationError(_resourceManager.getString("flameCore", "staticClassInstance", [ getQualifiedClassName(Enum) ]));
 		}
 		
 		//--------------------------------------------------------------------------
@@ -68,10 +68,10 @@ package flame.core
 		public static function getName(type:Class, value:*):String
 		{
 			if (type == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "type" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "type" ]));
 			
 			if (value == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value" ]));
 			
 			var typeDescription:XML = DescribeTypeCache.describeType(type).typeDescription;
 			
@@ -100,10 +100,10 @@ package flame.core
 		public static function toString(type:Class, value:*):String
 		{
 			if (type == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "type" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "type" ]));
 			
 			if (value == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value" ]));
 			
 			var typeDescription:XML = DescribeTypeCache.describeType(type).typeDescription;
 			var fieldDescription:XMLList = typeDescription.constant.(@name == getName(type, value));

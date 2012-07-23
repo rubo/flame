@@ -18,10 +18,10 @@ Provides cryptographic services including support for [National Security Agency 
 - Abstract Syntax Notation One (ASN.1) encoding and decoding
 
 #### Numerics
-Provides classes to represent arbitrarily large signed integers and complex numbers.
+Provides classes to represent arbitrarily large signed integers (BigInteger) and complex numbers.
 
 #### UI controls
-Provides both Spark and MX controls for single/multi-file uploading, checkbox grouping, collapsible panel, advanced tab bar, flow layout, bindable validators, and a few small extensions to several controls of the Flex SDK.
+Provides both Spark and MX controls for single and multi-file uploading, checkbox grouping, collapsible panel, advanced tab bar, flow layout, bindable validators, and a few small extensions to several controls of the Flex SDK.
 
 #### Utilities
 Provides a few utility classes to work with Array, Vector, ByteArray, Date, and String types as well as methods for data conversion.

@@ -30,13 +30,13 @@ package flame.crypto
 		{
 			super();
 			
-			_blockSize = 1;
+			_blockSize = 8;
 			_keySize = 128;
 			
-			_legalBlockSizes = new <KeySizes>[ new KeySizes(1, 1, 0) ];
+			_legalBlockSizes = new <KeySizes>[ new KeySizes(8, 8, 0) ];
 			_legalBlockSizes.fixed = true;
 			
-			_legalKeySizes = new <KeySizes>[ new KeySizes(40, 128, 8) ];
+			_legalKeySizes = new <KeySizes>[ new KeySizes(40, 2048, 8) ];
 			_legalKeySizes.fixed = true;
 			
 			_mode = CipherMode.OFB;
@@ -74,6 +74,9 @@ package flame.crypto
 		 */
 		public override function createEncryptor(key:ByteArray = null, iv:ByteArray = null):ICryptoTransform
 		{
+			if (key != null && !validateKeySize(key.length << 3))
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidKeySize"));
+			
 			return new RC4Transform(key || super.key);
 		}
 		
@@ -84,7 +87,7 @@ package flame.crypto
 		 */
 		public override function generateIV():void
 		{
-			throw new IllegalOperationError(_resourceManager.getString("flameLocale", "argNotSupported"));
+			throw new IllegalOperationError(_resourceManager.getString("flameCore", "argNotSupported"));
 		}
 		
 		/**
@@ -108,7 +111,7 @@ package flame.crypto
 		 */
 		public override function get feedbackSize():int
 		{
-			throw new IllegalOperationError(_resourceManager.getString("flameLocale", "argNotSupported"));
+			throw new IllegalOperationError(_resourceManager.getString("flameCore", "argNotSupported"));
 		}
 		
 		/**
@@ -116,7 +119,7 @@ package flame.crypto
 		 */
 		public override function set feedbackSize(value:int):void
 		{
-			throw new IllegalOperationError(_resourceManager.getString("flameLocale", "argNotSupported"));
+			throw new IllegalOperationError(_resourceManager.getString("flameCore", "argNotSupported"));
 		}
 		
 		/**
@@ -126,7 +129,7 @@ package flame.crypto
 		 */
 		public override function get iv():ByteArray
 		{
-			throw new IllegalOperationError(_resourceManager.getString("flameLocale", "argNotSupported"));
+			throw new IllegalOperationError(_resourceManager.getString("flameCore", "argNotSupported"));
 		}
 		
 		/**
@@ -134,7 +137,7 @@ package flame.crypto
 		 */
 		public override function set iv(value:ByteArray):void
 		{
-			throw new IllegalOperationError(_resourceManager.getString("flameLocale", "argNotSupported"));
+			throw new IllegalOperationError(_resourceManager.getString("flameCore", "argNotSupported"));
 		}
 		
 		/**
@@ -157,9 +160,9 @@ package flame.crypto
 		public override function set mode(value:uint):void
 		{
 			if (value != CipherMode.OFB)
-				throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidCipherMode"));
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidCipherMode"));
 				
-			_mode = value;
+			super.mode = value;
 		}
 		
 		/**
@@ -182,9 +185,9 @@ package flame.crypto
 		public override function set padding(value:uint):void
 		{
 			if (value != PaddingMode.NONE)
-				throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidPaddingMode"));
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidPaddingMode"));
 			
-			_padding = value;
+			super.padding = value;
 		}
 	}
 }

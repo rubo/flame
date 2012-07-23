@@ -81,7 +81,7 @@ package flame.crypto
 		internal override function multiply(value:BigInteger):ECPoint
 		{
 			if (value.sign < 0)
-				throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidParameter"));
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidParameter"));
 			
 			if (isAtInfinity)
 				return this;

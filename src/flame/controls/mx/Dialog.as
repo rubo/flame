@@ -70,7 +70,7 @@ package flame.controls.mx
 		public static function hide(dialog:Dialog):void
 		{
 			if (dialog == null)
-				throw new ArgumentError(ResourceManager.getInstance().getString("flameLocale", "argNullGeneric", [ "dialog" ]));
+				throw new ArgumentError(ResourceManager.getInstance().getString("flameCore", "argNullGeneric", [ "dialog" ]));
 			
 			PopUpManager.removePopUp(dialog);
 		}
@@ -91,7 +91,7 @@ package flame.controls.mx
 		public static function setTopmost(dialog:Dialog):void
 		{
 			if (dialog == null)
-				throw new ArgumentError(ResourceManager.getInstance().getString("flameLocale", "argNullGeneric", [ "dialog" ]));
+				throw new ArgumentError(ResourceManager.getInstance().getString("flameCore", "argNullGeneric", [ "dialog" ]));
 			
 			PopUpManager.bringToFront(dialog);
 		}
@@ -131,7 +131,7 @@ package flame.controls.mx
 		public static function show(dialog:*, parent:DisplayObject = null, modal:Boolean = true, owner:DisplayObjectContainer = null, childList:String = PopUpManagerChildList.APPLICATION):Dialog
 		{
 			if (dialog == null)
-				throw new ArgumentError(ResourceManager.getInstance().getString("flameLocale", "argNullGeneric", [ "dialog" ]));
+				throw new ArgumentError(ResourceManager.getInstance().getString("flameCore", "argNullGeneric", [ "dialog" ]));
 			
 			if (parent == null)
 				parent = FlexGlobals.topLevelApplication as DisplayObject;
@@ -143,7 +143,7 @@ package flame.controls.mx
 				popup = PopUpManager.createPopUp(parent, dialog, modal, childList) as Dialog;
 				
 				if (popup == null)
-					throw new TypeError(ResourceManager.getInstance().getString("flameLocale", "argTypeMismatch",
+					throw new TypeError(ResourceManager.getInstance().getString("flameCore", "argTypeMismatch",
 						[ "dialog", getQualifiedClassName(Dialog) ]));
 			}
 			else if (dialog is Dialog)
@@ -153,7 +153,7 @@ package flame.controls.mx
 				PopUpManager.addPopUp(dialog, parent, modal, childList);
 			}
 			else
-				throw new TypeError(ResourceManager.getInstance().getString("flameLocale", "argTypeMismatch",
+				throw new TypeError(ResourceManager.getInstance().getString("flameCore", "argTypeMismatch",
 					[ "dialog", getQualifiedClassName(Dialog) ]));
 			
 			popup.owner = owner || parent as DisplayObjectContainer;

@@ -13,7 +13,7 @@ package flame.formatters
 	
 	import mx.formatters.Formatter;
 
-	[ResourceBundle("flameLocale")]
+	[ResourceBundle("flameFormatters")]
 	
 	/**
 	 * The TimeSpanFormatter class uses a format string
@@ -144,7 +144,7 @@ package flame.formatters
 	    public function set formatString(value:String):void
 	    {
 	    	_formatStringOverride = value;
-	    	_formatString = value || resourceManager.getString("flameLocale", "timeSpanFormat");
+	    	_formatString = value || resourceManager.getString("flameFormatters", "timeSpanFormat");
 	    }
 	    
 	    //--------------------------------------------------------------------------

@@ -33,7 +33,7 @@ package flame.crypto
 			super();
 			
 			if (x.compareTo(q) >= 0)
-				throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidParameter"));
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidParameter"));
 			
 			_q = q;
 			_x = x;

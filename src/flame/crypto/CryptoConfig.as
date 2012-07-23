@@ -18,7 +18,7 @@ package flame.crypto
 	import mx.resources.IResourceManager;
 	import mx.resources.ResourceManager;
 
-	[ResourceBundle("flameLocale")]
+	[ResourceBundle("flameCore")]
 	
 	/**
 	 * Accesses the cryptography configuration information.
@@ -139,10 +139,10 @@ package flame.crypto
 		public static function addAlgorithm(algorithm:Class, ...names):void
 		{
 			if (algorithm == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "algorithm" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "algorithm" ]));
 			
 			if (names.length == 0)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "names" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "names" ]));
 			
 			for each (var name:String in names)
 				_typeTable[name] = algorithm;
@@ -164,10 +164,10 @@ package flame.crypto
 		public static function addOID(oid:String, ...names):void
 		{
 			if (oid == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "oid" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "oid" ]));
 
 			if (names.length == 0)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "names" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "names" ]));
 			
 			for each (var name:String in names)
 				_oidTable[name] = oid;
@@ -187,7 +187,7 @@ package flame.crypto
 		public static function createFromName(name:String, ...params):*
 		{
 			if (name == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "name" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "name" ]));
 			
 			var type:Class = _typeTable[name];
 			
@@ -209,7 +209,7 @@ package flame.crypto
 		public static function mapNameToOID(name:String):String
 		{
 			if (name == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "name" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "name" ]));
 			
 			return _oidTable[name];
 		}

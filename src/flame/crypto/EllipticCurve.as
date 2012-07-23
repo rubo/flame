@@ -15,7 +15,7 @@ package flame.crypto
 	import mx.resources.IResourceManager;
 	import mx.resources.ResourceManager;
 
-	[ResourceBundle("flameLocale")]
+	[ResourceBundle("flameCore")]
 	internal class EllipticCurve
 	{
 		//--------------------------------------------------------------------------
@@ -54,12 +54,12 @@ package flame.crypto
 		
 		internal function bigIntegerToFieldElement(value:BigInteger):ECFieldElement
 		{
-			throw new IllegalOperationError(_resourceManager.getString("flameLocale", "argNotImplemented"));
+			throw new IllegalOperationError(_resourceManager.getString("flameCore", "argNotImplemented"));
 		}
 		
 		internal function createPoint(x:BigInteger, y:BigInteger):ECPoint
 		{
-			throw new IllegalOperationError(_resourceManager.getString("flameLocale", "argNotImplemented"));
+			throw new IllegalOperationError(_resourceManager.getString("flameCore", "argNotImplemented"));
 		}
 		
 		internal function equals(value:EllipticCurve):Boolean
@@ -85,7 +85,7 @@ package flame.crypto
 		
 		internal function get fieldSize():int
 		{
-			throw new IllegalOperationError(_resourceManager.getString("flameLocale", "argNotImplemented"));
+			throw new IllegalOperationError(_resourceManager.getString("flameCore", "argNotImplemented"));
 		}
 		
 		internal function get pointAtInfinity():ECPoint

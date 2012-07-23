@@ -75,14 +75,14 @@ package flame.crypto
 		public override function decryptKeyExchange(data:ByteArray):ByteArray
 		{
 			if (_key == null)
-				throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoMissingKey"));
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "missingKey"));
 			
 			var buffer:ByteArray = _key.decrypt(data);
 			var hashSize:int = _hashAlgorithm.hashSize >> 3;
 			var modulusSize:int = _key.keySize >> 3;
 			
 			if (modulusSize < (hashSize << 1) + 2)
-				throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoPaddingDecryptDataTooLong", [ modulusSize ]));
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "paddingDecryptDataTooLong", [ modulusSize ]));
 			
 			var db:ByteArray = new ByteArray();
 			var seed:ByteArray = new ByteArray();
@@ -104,7 +104,7 @@ package flame.crypto
 			
 			for (i = 0; i < hashSize; i++)
 				if (db[i] != _label[i])
-					throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidPadding"));
+					throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidPadding"));
 			
 			i = hashSize;
 			
@@ -112,7 +112,7 @@ package flame.crypto
 				i++;
 			
 			if (db[i] != 1)
-				throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidPadding"));
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidPadding"));
 			
 			var output:ByteArray = new ByteArray();
 			
@@ -136,7 +136,7 @@ package flame.crypto
 		public override function setKey(key:AsymmetricAlgorithm):void
 		{
 			if (key == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "key" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "key" ]));
 			
 			_key = RSA(key);
 		}
@@ -154,7 +154,7 @@ package flame.crypto
 		 */
 		public override function get parameters():String
 		{
-			throw new IllegalOperationError(_resourceManager.getString("flameLocale", "argNotSupported"));
+			throw new IllegalOperationError(_resourceManager.getString("flameCore", "argNotSupported"));
 		}
 		
 		/**
@@ -162,7 +162,7 @@ package flame.crypto
 		 */
 		public override function set parameters(value:String):void
 		{
-			throw new IllegalOperationError(_resourceManager.getString("flameLocale", "argNotSupported"));
+			throw new IllegalOperationError(_resourceManager.getString("flameCore", "argNotSupported"));
 		}
 	}
 }

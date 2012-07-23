@@ -46,7 +46,7 @@ package flame.controls.mx
 	 */
 	[Event(name="tabClose", type="flame.controls.events.TabEvent")]
 	
-	[ResourceBundle("flameLocale")]
+	[ResourceBundle("flameCore")]
 	
 	/**
 	 * Name of CSS style declaration that specifies style for the selected tab.
@@ -148,7 +148,7 @@ package flame.controls.mx
 		public function getTabClosePolicyAt(index:int):String
 		{
 			if (index < 0 || index >= numChildren)
-				throw new RangeError(resourceManager.getString("flameLocale", "argOutOfRangeIndex", [ "index" ]));
+				throw new RangeError(resourceManager.getString("flameCore", "argOutOfRangeIndex", [ "index" ]));
 			
 			return AdvancedTab(getChildAt(index)).closePolicy;
 		}
@@ -176,7 +176,7 @@ package flame.controls.mx
 		public function setTabClosePolicyAt(value:String, index:int):void
 		{
 			if (index < 0 || index >= numChildren)
-				throw new RangeError(resourceManager.getString("flameLocale", "argOutOfRangeIndex", [ "index" ]));
+				throw new RangeError(resourceManager.getString("flameCore", "argOutOfRangeIndex", [ "index" ]));
 			
 			AdvancedTab(getChildAt(index)).closePolicy = value;
 		}

@@ -16,7 +16,8 @@ package flame.crypto
 	import mx.resources.IResourceManager;
 	import mx.resources.ResourceManager;
 	
-	[ResourceBundle("flameLocale")]
+	[ResourceBundle("flameCore")]
+	[ResourceBundle("flameCrypto")]
 	
 	/**
 	 * Represents the base class from which all implementations of cryptographic hash algorithms must inherit.
@@ -93,7 +94,7 @@ package flame.crypto
 		public function computeHash(data:ByteArray):ByteArray
 		{
 			if (data == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "data" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "data" ]));
 			
 			var position:uint = data.position;
 			
@@ -113,7 +114,7 @@ package flame.crypto
 		 */
 		public function initialize():void
 		{
-			throw new IllegalOperationError(_resourceManager.getString("flameLocale", "argNotImplemented"));
+			throw new IllegalOperationError(_resourceManager.getString("flameCore", "argNotImplemented"));
 		}
 		
 		/**
@@ -150,16 +151,16 @@ package flame.crypto
 		public function transformBlock(inputBuffer:ByteArray, inputOffset:int, inputCount:int, outputBuffer:ByteArray, outputOffset:int):int
 		{
 			if (inputBuffer == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "inputBuffer" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "inputBuffer" ]));
 			
 			if (inputOffset < 0)
-				throw new RangeError(_resourceManager.getString("flameLocale", "argOutOfRangeNonNegative", [ "inputOffset" ]));
+				throw new RangeError(_resourceManager.getString("flameCore", "argOutOfRangeNonNegative", [ "inputOffset" ]));
 			
 			if (inputCount < 0 || inputCount > inputBuffer.length)
-				throw new RangeError(_resourceManager.getString("flameLocale", "argInvalidValue", [ "inputCount" ]));
+				throw new RangeError(_resourceManager.getString("flameCore", "argInvalidValue", [ "inputCount" ]));
 			
 			if (inputBuffer.length - inputCount < inputOffset)
-				throw new RangeError(_resourceManager.getString("flameLocale", "argInvalidOffsetLength"));
+				throw new RangeError(_resourceManager.getString("flameCore", "argInvalidOffsetLength"));
 			
 			var inputPosition:uint = inputBuffer.position;
 
@@ -213,16 +214,16 @@ package flame.crypto
 		public function transformFinalBlock(inputBuffer:ByteArray, inputOffset:int, inputCount:int):ByteArray
 		{
 			if (inputBuffer == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "inputBuffer" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "inputBuffer" ]));
 			
 			if (inputOffset < 0)
-				throw new RangeError(_resourceManager.getString("flameLocale", "argOutOfRangeNonNegative", [ "inputBuffer" ]));
+				throw new RangeError(_resourceManager.getString("flameCore", "argOutOfRangeNonNegative", [ "inputBuffer" ]));
 			
 			if (inputCount < 0 || inputCount > inputBuffer.length)
-				throw new RangeError(_resourceManager.getString("flameLocale", "argInvalidValue", [ "inputCount" ]));
+				throw new RangeError(_resourceManager.getString("flameCore", "argInvalidValue", [ "inputCount" ]));
 			
 			if (inputBuffer.length - inputCount < inputOffset)
-				throw new RangeError(_resourceManager.getString("flameLocale", "argInvalidOffsetLength"));
+				throw new RangeError(_resourceManager.getString("flameCore", "argInvalidOffsetLength"));
 			
 			var inputPosition:uint = inputBuffer.position;
 			
@@ -279,7 +280,7 @@ package flame.crypto
 		public function get hash():ByteArray
 		{
 			if (_state != 0)
-				throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoHashNotYetFinalized"));
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "hashNotYetFinalized"));
 			
 			return ByteArrayUtil.copy(_hash);
 		}
@@ -332,7 +333,7 @@ package flame.crypto
 		 */
 		protected function hashCore(inputBuffer:ByteArray, inputOffset:int, inputCount:int):void
 		{
-			throw new IllegalOperationError(_resourceManager.getString("flameLocale", "argNotImplemented"));
+			throw new IllegalOperationError(_resourceManager.getString("flameCore", "argNotImplemented"));
 		}
 		
 		/**
@@ -345,7 +346,7 @@ package flame.crypto
 		 */
 		protected function hashFinal():ByteArray
 		{
-			throw new IllegalOperationError(_resourceManager.getString("flameLocale", "argNotImplemented"));
+			throw new IllegalOperationError(_resourceManager.getString("flameCore", "argNotImplemented"));
 		}
 	}
 }

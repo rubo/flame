@@ -18,7 +18,7 @@ package flame.collections
 	import mx.resources.ResourceManager;
 	
 	[DefaultProperty("source")]
-	[ResourceBundle("flameLocale")]
+	[ResourceBundle("flameCore")]
 	
 	/**
 	 * The VectorCollection class is a wrapper class that exposes a Vector as
@@ -83,7 +83,7 @@ package flame.collections
 			super();
 			
 			if (source != null && !(source is Vector.<*> || source is Vector.<Number> || source is Vector.<int> || source is Vector.<uint>))
-				throw new TypeError(_resourceManager.getString("flameLocale", "argTypeMismatch",
+				throw new TypeError(_resourceManager.getString("flameCore", "argTypeMismatch",
 					[ "source", getQualifiedClassName(Vector.<*>) ]));
 			
 			this.source = source;
@@ -147,7 +147,7 @@ package flame.collections
 		public function set source(value:*):void
 		{
 			if (value != null && !(value is Vector.<*> || value is Vector.<Number> || value is Vector.<int> || value is Vector.<uint>))
-				throw new TypeError(_resourceManager.getString("flameLocale", "argTypeMismatch",
+				throw new TypeError(_resourceManager.getString("flameCore", "argTypeMismatch",
 					[ "value", getQualifiedClassName(Vector.<*>) ]));
 			
 			list = new VectorList(value);

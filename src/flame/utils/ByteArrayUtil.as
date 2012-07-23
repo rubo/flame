@@ -15,7 +15,8 @@ package flame.utils
 	import mx.resources.IResourceManager;
 	import mx.resources.ResourceManager;
 	
-	[ResourceBundle("flameLocale")]
+	[ResourceBundle("flameCore")]
+	[ResourceBundle("flameUtils")]
 	
 	/**
 	 * The ByteArrayUtil utility class is an all-static class with methods for working with ByteArray objects.
@@ -45,7 +46,7 @@ package flame.utils
 		 */
 		public function ByteArrayUtil()
 		{
-			throw new IllegalOperationError(_resourceManager.getString("flameLocale", "staticClassInstance",
+			throw new IllegalOperationError(_resourceManager.getString("flameCore", "staticClassInstance",
 				[ getQualifiedClassName(ByteArrayUtil) ]));
 		}
 		
@@ -71,10 +72,10 @@ package flame.utils
 		public static function addBytes(byteArray:ByteArray, bytes:ByteArray):void
 		{
 			if (byteArray == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "byteArray" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "byteArray" ]));
 			
 			if (bytes == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "bytes" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "bytes" ]));
 			
 			byteArray.position = byteArray.length;
 			byteArray.writeBytes(bytes);
@@ -92,7 +93,7 @@ package flame.utils
 		public static function copy(byteArray:ByteArray):ByteArray
 		{
 			if (byteArray == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "byteArray" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "byteArray" ]));
 			
 			var buffer:ByteArray = new ByteArray();
 			var position:uint = byteArray.position;
@@ -123,7 +124,7 @@ package flame.utils
 			value = value.replace(_hexTrimPattern, "");
 			
 			if (_hexPattern.test(value))
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argInvalidHexString"));
+				throw new ArgumentError(_resourceManager.getString("flameUtils", "argInvalidHexString"));
 			
 			if (value.length % 2 != 0)
 				value = "0" + value;
@@ -160,16 +161,16 @@ package flame.utils
 		public static function getBytes(byteArray:ByteArray, index:int, count:int):ByteArray
 		{
 			if (byteArray == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "byteArray" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "byteArray" ]));
 			
 			if (index < 0)
-				throw new RangeError(_resourceManager.getString("flameLocale", "argOutOfRangeNonNegative", [ "index" ]));
+				throw new RangeError(_resourceManager.getString("flameCore", "argOutOfRangeNonNegative", [ "index" ]));
 			
 			if (count < 0)
-				throw new RangeError(_resourceManager.getString("flameLocale", "argOutOfRangeNonNegative", [ "count" ]));
+				throw new RangeError(_resourceManager.getString("flameCore", "argOutOfRangeNonNegative", [ "count" ]));
 			
 			if (byteArray.length - index < count)
-				throw new RangeError(_resourceManager.getString("flameLocale", "argInvalidOffsetLength"));
+				throw new RangeError(_resourceManager.getString("flameCore", "argInvalidOffsetLength"));
 			
 			var buffer:ByteArray = new ByteArray();
 			
@@ -202,16 +203,16 @@ package flame.utils
 		public static function insertBytes(byteArray:ByteArray, index:int, bytes:*):void
 		{
 			if (byteArray == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "byteArray" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "byteArray" ]));
 			
 			if (index < 0 || index > byteArray.length)
-				throw new RangeError(_resourceManager.getString("flameLocale", "argOutOfRangeInsert", [ "index" ]));
+				throw new RangeError(_resourceManager.getString("flameCore", "argOutOfRangeInsert", [ "index" ]));
 			
 			if (bytes == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "bytes" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "bytes" ]));
 			
 			if (!(bytes is ByteArray) && !(bytes is int))
-				throw new TypeError(_resourceManager.getString("flameLocale", "argInvalidValue", [ "bytes" ]));
+				throw new TypeError(_resourceManager.getString("flameCore", "argInvalidValue", [ "bytes" ]));
 			
 			var buffer:ByteArray = new ByteArray();
 			var position:uint = byteArray.position;
@@ -251,16 +252,16 @@ package flame.utils
 		public static function removeBytes(byteArray:ByteArray, index:int, count:int):void
 		{
 			if (byteArray == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "byteArray" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "byteArray" ]));
 			
 			if (index < 0)
-				throw new RangeError(_resourceManager.getString("flameLocale", "argOutOfRangeNonNegative", [ "index" ]));
+				throw new RangeError(_resourceManager.getString("flameCore", "argOutOfRangeNonNegative", [ "index" ]));
 			
 			if (count < 0)
-				throw new RangeError(_resourceManager.getString("flameLocale", "argOutOfRangeNonNegative", [ "count" ]));
+				throw new RangeError(_resourceManager.getString("flameCore", "argOutOfRangeNonNegative", [ "count" ]));
 			
 			if (byteArray.length - index < count)
-				throw new RangeError(_resourceManager.getString("flameLocale", "argInvalidOffsetLength"));
+				throw new RangeError(_resourceManager.getString("flameCore", "argInvalidOffsetLength"));
 			
 			if (count > 0)
 			{
@@ -290,7 +291,7 @@ package flame.utils
 		public static function repeat(value:int, count:int):ByteArray
 		{
 			if (count < 0)
-				throw new RangeError(_resourceManager.getString("flameLocale", "argOutOfRangeNonNegative", [ "count" ]));
+				throw new RangeError(_resourceManager.getString("flameCore", "argOutOfRangeNonNegative", [ "count" ]));
 			
 			var byteArray:ByteArray = new ByteArray();
 		
@@ -320,16 +321,16 @@ package flame.utils
 		public static function reverse(byteArray:ByteArray, index:int = 0, count:int = 0):void
 		{
 			if (byteArray == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "byteArray" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "byteArray" ]));
 			
 			if (index < 0)
-				throw new RangeError(_resourceManager.getString("flameLocale", "argOutOfRangeNonNegative", [ "index" ]));
+				throw new RangeError(_resourceManager.getString("flameCore", "argOutOfRangeNonNegative", [ "index" ]));
 			
 			if (count < 0)
-				throw new RangeError(_resourceManager.getString("flameLocale", "argOutOfRangeNonNegative", [ "count" ]));
+				throw new RangeError(_resourceManager.getString("flameCore", "argOutOfRangeNonNegative", [ "count" ]));
 			
 			if (byteArray.length - index < count)
-				throw new RangeError(_resourceManager.getString("flameLocale", "argInvalidOffsetLength"));
+				throw new RangeError(_resourceManager.getString("flameCore", "argInvalidOffsetLength"));
 			
 			for (var i:int = index, j:int = index + (count || byteArray.length) - 1, byte:int; i < j; i++, j--)
 			{
@@ -351,7 +352,7 @@ package flame.utils
 		public static function toArray(byteArray:ByteArray):Array
 		{
 			if (byteArray == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "byteArray" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "byteArray" ]));
 			
 			var array:Array = [];
 			
@@ -373,7 +374,7 @@ package flame.utils
 		public static function toHexString(byteArray:ByteArray):String
 		{
 			if (byteArray == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "byteArray" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "byteArray" ]));
 			
             var string:String = "";
 			var position:int = byteArray.position;
@@ -400,7 +401,7 @@ package flame.utils
 		public static function toVector(byteArray:ByteArray):Vector.<int>
 		{
 			if (byteArray == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "byteArray" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "byteArray" ]));
 			
 			var vector:Vector.<int> = new Vector.<int>();
 			

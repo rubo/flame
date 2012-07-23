@@ -14,7 +14,7 @@ package flame.crypto
 	import mx.resources.IResourceManager;
 	import mx.resources.ResourceManager;
 	
-	[ResourceBundle("flameLocale")]
+	[ResourceBundle("flameCore")]
 	
 	/**
 	 * Represents the abstract base class from which all implementations of asymmetric signature deformatters must inherit.
@@ -66,7 +66,7 @@ package flame.crypto
 		 */		
 		public function setHashAlgorithm(name:String):void
 		{
-			throw new IllegalOperationError(_resourceManager.getString("flameLocale", "argNotImplemented"));
+			throw new IllegalOperationError(_resourceManager.getString("flameCore", "argNotImplemented"));
 		}
 		
 		/**
@@ -79,7 +79,7 @@ package flame.crypto
 		 */
 		public function setKey(key:AsymmetricAlgorithm):void
 		{
-			throw new IllegalOperationError(_resourceManager.getString("flameLocale", "argNotImplemented"));
+			throw new IllegalOperationError(_resourceManager.getString("flameCore", "argNotImplemented"));
 		}
 		
 		/**
@@ -95,7 +95,7 @@ package flame.crypto
 		 */
 		public function verifySignature(hash:ByteArray, signature:ByteArray):Boolean
 		{
-			throw new IllegalOperationError(_resourceManager.getString("flameLocale", "argNotImplemented"));
+			throw new IllegalOperationError(_resourceManager.getString("flameCore", "argNotImplemented"));
 		}
 	}
 }

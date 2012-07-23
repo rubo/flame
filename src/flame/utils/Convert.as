@@ -21,7 +21,7 @@ package flame.utils
 	import mx.utils.Base64Encoder;
 	import mx.utils.StringUtil;
 	
-	[ResourceBundle("flameLocale")]
+	[ResourceBundle("flameCore")]
 	
 	/**
 	 * The Convert utility class is an all-static class
@@ -63,7 +63,7 @@ package flame.utils
 		 */
 		public function Convert()
 		{
-			throw new IllegalOperationError(_resourceManager.getString("flameLocale", "staticClassInstance",
+			throw new IllegalOperationError(_resourceManager.getString("flameCore", "staticClassInstance",
 				[ getQualifiedClassName(Convert) ]));
 		}
 		
@@ -88,7 +88,7 @@ package flame.utils
 	    public static function fromBase64String(value:String):ByteArray
 	    {
 	    	if (value == null)
-	    		throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value" ]));
+	    		throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value" ]));
 	    	
 	    	_base64Decoder.reset();
 	    	
@@ -112,7 +112,7 @@ package flame.utils
 		public static function fromJSONString(value:String):Object
 		{
 			if (value == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value" ]));
 			
 			return _jsonSerializer.deserialize(value);
 		}
@@ -148,7 +148,7 @@ package flame.utils
 	    public static function toBase64String(data:ByteArray):String
 	    {
 	    	if (data == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "data" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "data" ]));
 	    	
 	    	_base64Encoder.reset();
 	    	
@@ -192,7 +192,7 @@ package flame.utils
 	    public static function toDate(value:String):Date
 	    {
 			if (value == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value" ]));
 			
 	    	return DateFormatter.parseDateString(value);
 	    }

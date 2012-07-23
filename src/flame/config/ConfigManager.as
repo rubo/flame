@@ -103,7 +103,8 @@ package flame.config
 	 */
 	[Event(name="status", type="flash.events.StatusEvent")]
 	
-	[ResourceBundle("flameLocale")]
+	[ResourceBundle("flameConfig")]
+	[ResourceBundle("flameCore")]
 	
 	/**
 	 * Provides access to the configuration settings loaded from an XML document
@@ -261,7 +262,7 @@ package flame.config
 			super();
 			
 			if (_instance != null)
-				throw new IllegalOperationError(_resourceManager.getString("flameLocale", "singletonInstance", [ getQualifiedClassName(this) ]));
+				throw new IllegalOperationError(_resourceManager.getString("flameCore", "singletonInstance", [ getQualifiedClassName(this) ]));
 			
 			_instance = this;
 			
@@ -286,7 +287,7 @@ package flame.config
 		public function clear():void
 		{
 			if (_sharedObject == null)
-				throw new ConfigError(_resourceManager.getString("flameLocale", "configNotLoaded"));
+				throw new ConfigError(_resourceManager.getString("flameConfig", "settingsNotLoaded"));
 			
 			_sharedObject.clear();
 		}
@@ -304,7 +305,7 @@ package flame.config
 		public function commitChanges():void
 		{
 			if (_sharedObject == null)
-				throw new ConfigError(_resourceManager.getString("flameLocale", "configNotLoaded"));
+				throw new ConfigError(_resourceManager.getString("flameConfig", "settingsNotLoaded"));
 			
 			_sharedObject.flush();
 		}
@@ -332,7 +333,7 @@ package flame.config
 		public function load(url:String):void
 		{
 			if (url == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "url" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "url" ]));
 			
 			_urlLoader.load(new URLRequest(url));
 		}
@@ -349,7 +350,7 @@ package flame.config
 		public function refresh():void
 		{
 			if (!_sharedObjectName)
-				throw new ConfigError(_resourceManager.getString("flameLocale", "configInvalidName"));
+				throw new ConfigError(_resourceManager.getString("flameConfig", "invalidName"));
 			
 			if (_sharedObject != null)
 				removeSharedObjectListeners();
@@ -421,7 +422,7 @@ package flame.config
 			if (_booleanPattern.test(value))
 				return Convert.toBoolean(value);
 			
-			throw new ConfigError(_resourceManager.getString("flameLocale", "configInvalidBooleanValue",
+			throw new ConfigError(_resourceManager.getString("flameConfig", "invalidBooleanValue",
 				[ attribute.localName(), value ]));
 		}
 		
@@ -432,7 +433,7 @@ package flame.config
 			var keyed:Boolean = idCount != 0;
 			
 			if (keyed && idCount != items.length())
-				throw new ConfigError(_resourceManager.getString("flameLocale", "configInvalidKeyedCollection"));
+				throw new ConfigError(_resourceManager.getString("flameConfig", "invalidKeyedCollection"));
 			
 			var collection:* = keyed ? new ObjectProxy() : [];
 			
@@ -474,7 +475,7 @@ package flame.config
 			if (_numberPattern.test(value))
 				return Number(value);
 			
-			throw new ConfigError(_resourceManager.getString("flameLocale", "configInvalidNumberValue",
+			throw new ConfigError(_resourceManager.getString("flameConfig", "invalidNumberValue",
 				[ attribute.localName(), value ]));
 		}
 		
@@ -570,7 +571,7 @@ package flame.config
 					_sharedObjectName = root.attribute(new QName(CDL_NAMESPACE_URI, "name")).toString();
 					
 					if (!_sharedObjectName)
-						throw new ConfigError(_resourceManager.getString("flameLocale", "configInvalidName"));
+						throw new ConfigError(_resourceManager.getString("flameConfig", "invalidName"));
 					
 					var pathAttribute:XMLList = root.attribute(new QName(CDL_NAMESPACE_URI, "path"));
 					
@@ -595,7 +596,7 @@ package flame.config
 						revision = parseNumber(revisionAttribute[0]);
 					
 					if (isNaN(revision) || revision < 1)
-						throw new ConfigError(_resourceManager.getString("flameLocale", "configInvalidRevision"));
+						throw new ConfigError(_resourceManager.getString("flameConfig", "invalidRevision"));
 					
 					if (isNaN(_sharedObject.data.$revision) || _sharedObject.data.$revision < revision)
 					{
@@ -609,7 +610,7 @@ package flame.config
 					_sharedObject.flush();
 				}
 				else
-					throw new ConfigError(_resourceManager.getString("flameLocale", "configInvalidDataFormat"));
+					throw new ConfigError(_resourceManager.getString("flameConfig", "invalidDataFormat"));
 				
 				dispatchEvent(event);
 			}

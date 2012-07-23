@@ -74,13 +74,13 @@ package flame.crypto
 		public override function createSignature(hash:ByteArray):ByteArray
 		{
 			if (_key == null)
-				throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoMissingKey"));
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "missingKey"));
 			
 			if (_oid == null)
-				throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoMissingOID"));
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "missingOID"));
 			
 			if (hash == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "hash" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "hash" ]));
 			
 			var modulusSize:int = _key.keySize >> 3;
 			var buffer:ByteArray = new ByteArray();
@@ -128,7 +128,7 @@ package flame.crypto
 		public override function setKey(key:AsymmetricAlgorithm):void
 		{
 			if (key == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "key" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "key" ]));
 			
 			_key = RSA(key);
 		}

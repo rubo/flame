@@ -33,7 +33,7 @@ package flame.crypto.asn1
 			super(ASN1Tag.GRAPHIC_STRING);
 			
 			if (value == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value" ]));
 			
 			_value = value;
 		}

@@ -14,7 +14,9 @@ package flame.utils
 	import mx.resources.IResourceManager;
 	import mx.resources.ResourceManager;
 
-	[ResourceBundle("flameLocale")]
+	[ResourceBundle("flameCore")]
+	[ResourceBundle("flameUtils")]
+	
 	/**
 	 * The DateUtil utility class is an all-static class with methods for working with Date objects.
 	 * You do not create instances of DateUtil;
@@ -41,7 +43,7 @@ package flame.utils
 		 */
 		public function DateUtil()
 		{
-			throw new IllegalOperationError(_resourceManager.getString("flameLocale", "staticClassInstance",
+			throw new IllegalOperationError(_resourceManager.getString("flameCore", "staticClassInstance",
 				[ getQualifiedClassName(DateUtil) ]));
 		}
 		
@@ -70,7 +72,7 @@ package flame.utils
 		public static function daysInMonth(year:int, month:int):int
 		{
 			if (year < 1 || year > 9999)
-				throw new RangeError(_resourceManager.getString("flameLocale", "argOutOfRangeYear"));
+				throw new RangeError(_resourceManager.getString("flameUtils", "argOutOfRangeYear"));
 			
 			switch (month)
 			{
@@ -97,7 +99,7 @@ package flame.utils
 				
 				default:
 					
-					throw new RangeError(_resourceManager.getString("flameLocale", "argOutOfRangeMonth"));
+					throw new RangeError(_resourceManager.getString("flameUtils", "argOutOfRangeMonth"));
 			}
 		}
 		
@@ -113,7 +115,7 @@ package flame.utils
 		public static function isLeapYear(year:int):Boolean
 		{
 			if (year < 1 || year > 9999)
-				throw new RangeError(_resourceManager.getString("flameLocale", "argOutOfRangeYear"));
+				throw new RangeError(_resourceManager.getString("flameUtils", "argOutOfRangeYear"));
 				
 			return year % 4 == 0 && (year % 100 != 0 || year % 400 == 0);
 		}

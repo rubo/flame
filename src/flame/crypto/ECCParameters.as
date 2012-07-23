@@ -129,10 +129,10 @@ package flame.crypto
 		public static function fromByteArray(data:ByteArray, format:String):ECCParameters
 		{
 			if (data == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "data" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "data" ]));
 			
 			if (format == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "format" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "format" ]));
 			
 			var buffer:ByteArray = ByteArrayUtil.copy(data);
 			var includesPrivateParameter:Boolean;
@@ -150,7 +150,7 @@ package flame.crypto
 					var magic:uint = buffer.readUnsignedInt();
 					
 					if (isPrivateBLOB(magic) != includesPrivateParameter)
-						throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidParameter"));
+						throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidParameter"));
 					
 					parameters = new ECCParameters();
 					parameters.algorithmName = getAlgorithmNameByMagic(magic);
@@ -159,7 +159,7 @@ package flame.crypto
 					keySizeInBytes = (parameters.keySize + 7) / 8;
 					
 					if (buffer.readUnsignedInt() != keySizeInBytes)
-						throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidParameter"));
+						throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidParameter"));
 					
 					var xBytes:ByteArray = new ByteArray();
 					var yBytes:ByteArray = new ByteArray();
@@ -173,7 +173,7 @@ package flame.crypto
 					if (includesPrivateParameter)
 					{
 						if (buffer.bytesAvailable < keySizeInBytes)
-							throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidParameter"));
+							throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidParameter"));
 						
 						var dBytes:ByteArray = new ByteArray();
 						
@@ -192,7 +192,7 @@ package flame.crypto
 					var mainSequence:ASN1Sequence = ASN1Object.fromByteArray(buffer) as ASN1Sequence;
 					
 					if (mainSequence == null || mainSequence.elementCount < (includesPrivateParameter ? 3 : 2))
-						throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidKeyBLOB"));
+						throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidKeyBLOB"));
 					
 					var version:ASN1Integer;
 					
@@ -201,18 +201,18 @@ package flame.crypto
 						version = mainSequence.getElementAt(0) as ASN1Integer;
 						
 						if (version == null || version.value.flame_internal::bitLength > 32)
-							throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidKeyBLOB"));
+							throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidKeyBLOB"));
 					}
 					
 					var oidSequence:ASN1Sequence = mainSequence.getElementAt(includesPrivateParameter ? 1 : 0) as ASN1Sequence;
 					
 					if (oidSequence == null || oidSequence.elementCount != 2)
-						throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidKeyBLOB"));
+						throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidKeyBLOB"));
 					
 					var keyOID:ASN1ObjectIdentifier = oidSequence.getElementAt(0) as ASN1ObjectIdentifier;
 					
 					if (CryptoConfig.mapNameToOID("ECC") != keyOID.value)
-						throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidAlgorithm"));
+						throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidAlgorithm"));
 					
 					var bitString:ASN1BitString;
 					var ecOID:ASN1ObjectIdentifier = oidSequence.getElementAt(1) as ASN1ObjectIdentifier;
@@ -226,29 +226,29 @@ package flame.crypto
 						var octetString:ASN1OctetString = mainSequence.getElementAt(2) as ASN1OctetString;
 						
 						if (octetString == null)
-							throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidKeyBLOB"));
+							throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidKeyBLOB"));
 						
 						var keySequence:ASN1Sequence = ASN1Object.fromByteArray(octetString.value) as ASN1Sequence;
 						
 						if (keySequence == null)
-							throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidKeyBLOB"));
+							throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidKeyBLOB"));
 						
 						version = keySequence.getElementAt(0) as ASN1Integer;
 						
 						if (version == null || !version.value.equals(BigInteger.ONE))
-							throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidKeyBLOB"));
+							throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidKeyBLOB"));
 						
 						octetString = keySequence.getElementAt(1) as ASN1OctetString;
 						
 						if (octetString == null || octetString.value.length != keySizeInBytes)
-							throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidKeyBLOB"));
+							throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidKeyBLOB"));
 						
 						parameters.d = octetString.value;
 						
 						var asn1Construct:ASN1GenericConstruct = keySequence.getElementAt(2) as ASN1GenericConstruct;
 						
 						if (asn1Construct == null || asn1Construct.tag != (ASN1Tag.TAGGED | ASN1Tag.CONSTRUCTED | 1) || asn1Construct.elementCount != 1)
-							throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidKeyBLOB"));
+							throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidKeyBLOB"));
 						
 						bitString = asn1Construct.getElementAt(0) as ASN1BitString;
 					}
@@ -256,7 +256,7 @@ package flame.crypto
 						bitString = mainSequence.getElementAt(1) as ASN1BitString;
 					
 					if (bitString == null || bitString.value.length != 2 * keySizeInBytes + 1 || bitString.value[0] != 4)
-						throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidKeyBLOB"));
+						throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidKeyBLOB"));
 					
 					parameters.x = ByteArrayUtil.getBytes(bitString.value, 1, keySizeInBytes);
 					parameters.y = ByteArrayUtil.getBytes(bitString.value, keySizeInBytes + 1, keySizeInBytes);
@@ -264,7 +264,7 @@ package flame.crypto
 				
 				default:
 					
-					throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidKeyBLOBFormat", [ format ]));
+					throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidKeyBLOBFormat", [ format ]));
 			}
 			
 			return parameters;
@@ -287,7 +287,7 @@ package flame.crypto
 		public function toByteArray(format:String):ByteArray
 		{
 			if (format == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "format" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "format" ]));
 			
 			var includePrivateParameter:Boolean;
 			
@@ -299,7 +299,7 @@ package flame.crypto
 					includePrivateParameter = format == KeyBLOBFormat.ECC_PRIVATE_BLOB;
 					
 					if (includePrivateParameter && d == null)
-						throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidKeyState"));
+						throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidKeyState"));
 					
 					var data:ByteArray = new ByteArray();
 					
@@ -323,7 +323,7 @@ package flame.crypto
 					includePrivateParameter = format == KeyBLOBFormat.PKCS8_PRIVATE_BLOB;
 					
 					if (includePrivateParameter && d == null)
-						throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidKeyState"));
+						throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidKeyState"));
 					
 					var mainSequence:ASN1Sequence = new ASN1Sequence();
 					var oidSequence:ASN1Sequence = new ASN1Sequence(new <ASN1Object>[
@@ -360,7 +360,7 @@ package flame.crypto
 					
 				default:
 					
-					throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidKeyBLOBFormat", [ format ]));
+					throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidKeyBLOBFormat", [ format ]));
 			}
 		}
 		
@@ -391,7 +391,7 @@ package flame.crypto
 					
 				default:
 					
-					throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidParameter"));
+					throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidParameter"));
 			}
 		}
 		
@@ -416,7 +416,7 @@ package flame.crypto
 					
 				default:
 					
-					throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoUnknownEC"));
+					throw new CryptoError(_resourceManager.getString("flameCrypto", "unknownEC"));
 			}
 		}
 		
@@ -463,7 +463,7 @@ package flame.crypto
 					
 				default:
 					
-					throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidParameter"));
+					throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidParameter"));
 			}
 		}
 		
@@ -494,7 +494,7 @@ package flame.crypto
 					
 				default:
 					
-					throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidParameter"));
+					throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidParameter"));
 			}
 		}
 		
@@ -517,7 +517,7 @@ package flame.crypto
 						
 					default:
 						
-						throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidParameter"));
+						throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidParameter"));
 				}
 				
 			if (algorithmName == getQualifiedClassName(ECDSA))
@@ -537,10 +537,10 @@ package flame.crypto
 						
 					default:
 						
-						throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidParameter"));
+						throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidParameter"));
 				}
 					
-			throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoUnknownECAlgorithm"));
+			throw new CryptoError(_resourceManager.getString("flameCrypto", "unknownECAlgorithm"));
 		}
 		
 		private static function isPrivateBLOB(magic:uint):Boolean
@@ -567,7 +567,7 @@ package flame.crypto
 				
 				default:
 					
-					throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidParameter"));
+					throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidParameter"));
 			}
 		}
 	}

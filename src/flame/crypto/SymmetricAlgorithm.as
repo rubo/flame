@@ -16,7 +16,8 @@ package flame.crypto
 	import mx.resources.IResourceManager;
 	import mx.resources.ResourceManager;
 	
-	[ResourceBundle("flameLocale")]
+	[ResourceBundle("flameCore")]
+	[ResourceBundle("flameCrypto")]
 	
 	/**
 	 * Represents the abstract base class from which all implementations of symmetric algorithms must inherit.
@@ -121,7 +122,7 @@ package flame.crypto
 		 */
 		public function createDecryptor(key:ByteArray = null, iv:ByteArray = null):ICryptoTransform
 		{
-			throw new IllegalOperationError(_resourceManager.getString("flameLocale", "argNotImplemented"));
+			throw new IllegalOperationError(_resourceManager.getString("flameCore", "argNotImplemented"));
 		}
 		
 		/**
@@ -136,7 +137,7 @@ package flame.crypto
 		 */
 		public function createEncryptor(key:ByteArray = null, iv:ByteArray = null):ICryptoTransform
 		{
-			throw new IllegalOperationError(_resourceManager.getString("flameLocale", "argNotImplemented"));
+			throw new IllegalOperationError(_resourceManager.getString("flameCore", "argNotImplemented"));
 		}
 		
 		/**
@@ -146,7 +147,7 @@ package flame.crypto
 		 */
 		public function generateIV():void
 		{
-			throw new IllegalOperationError(_resourceManager.getString("flameLocale", "argNotImplemented"));
+			throw new IllegalOperationError(_resourceManager.getString("flameCore", "argNotImplemented"));
 		}
 		
 		/**
@@ -155,7 +156,7 @@ package flame.crypto
 		 */
 		public function generateKey():void
 		{
-			throw new IllegalOperationError(_resourceManager.getString("flameLocale", "argNotImplemented"));
+			throw new IllegalOperationError(_resourceManager.getString("flameCore", "argNotImplemented"));
 		}
 		
 		/**
@@ -241,7 +242,7 @@ package flame.crypto
 						}
 				}
 				
-			throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidBlockSize"));
+			throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidBlockSize"));
 		}
 		
 		/**
@@ -263,7 +264,7 @@ package flame.crypto
 		public function set feedbackSize(value:int):void
 		{
 			if (value > _blockSize || value % 8 != 0)
-				throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidFeedbackSize"));
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidFeedbackSize"));
 			
 			_feedbackSize = value;
 		}
@@ -309,10 +310,10 @@ package flame.crypto
 		public function set iv(value:ByteArray):void
 		{
 			if (value == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value" ]));
 			
 			if (value.length != _blockSize >> 3)
-				throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidIVSize"));
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidIVSize"));
 			
 			_iv = ByteArrayUtil.copy(value);
 		}
@@ -344,10 +345,10 @@ package flame.crypto
 		public function set key(value:ByteArray):void
 		{
 			if (value == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value" ]));
 			
 			if (!validateKeySize(value.length << 3))
-				throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidKeySize"));
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidKeySize"));
 				
 			_key = ByteArrayUtil.copy(value);
 			_keySize = value.length << 3;
@@ -369,7 +370,7 @@ package flame.crypto
 		public function set keySize(value:int):void
 		{
 			if (!validateKeySize(value))
-				throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidKeySize"));
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidKeySize"));
 				
 			_keySize = value;
 		}
@@ -411,8 +412,8 @@ package flame.crypto
 		 */
 		public function set mode(value:uint):void
 		{
-			if (value < CipherMode.CBC || value > CipherMode.CFB)
-				throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidCipherMode"));
+			if (value < CipherMode.CBC || value > CipherMode.CTS)
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidCipherMode"));
 			
 			_mode = value;
 		}
@@ -441,7 +442,7 @@ package flame.crypto
 		public function set padding(value:uint):void
 		{
 			if (value < PaddingMode.NONE || value > PaddingMode.ISO10126)
-				throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidPaddingMode"));
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidPaddingMode"));
 			
 			_padding = value;
 		}

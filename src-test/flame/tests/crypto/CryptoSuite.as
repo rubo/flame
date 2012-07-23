@@ -21,7 +21,9 @@ package flame.tests.crypto
 		public var aesTest:AESTest;
 		public var hmacTest:HMACTest;
 		public var md5Test:MD5Test;
+		public var rc4Test:RC4Test;
 		public var ripemd160Test:RIPEMD160Test;
+		public var rsaSuite:RSASuite;
 		public var sha1Test:SHA1Test;
 		public var sha224Test:SHA224Test;
 		public var sha256Test:SHA256Test;

@@ -14,7 +14,7 @@ package flame.utils
 	import mx.resources.IResourceManager;
 	import mx.resources.ResourceManager;
 	
-	[ResourceBundle("flameLocale")]
+	[ResourceBundle("flameCore")]
 	
 	/**
 	 * The VectorUtil utility class is an all-static class with methods for working with Vector objects.
@@ -42,7 +42,7 @@ package flame.utils
 		 */
 		public function VectorUtil()
 		{
-			throw new IllegalOperationError(_resourceManager.getString("flameLocale", "staticClassInstance",
+			throw new IllegalOperationError(_resourceManager.getString("flameCore", "staticClassInstance",
 				[ getQualifiedClassName(VectorUtil) ]));
 		}
 		
@@ -80,14 +80,14 @@ package flame.utils
 		public static function binarySearch(vector:*, value:*, comparer:Function):int
 		{
 			if (vector == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "vector" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "vector" ]));
 			
 			if (!(vector is Vector.<*> || vector is Vector.<Number> || vector is Vector.<int> || vector is Vector.<uint>))
-				throw new TypeError(_resourceManager.getString("flameLocale", "argTypeMismatch",
+				throw new TypeError(_resourceManager.getString("flameCore", "argTypeMismatch",
 					[ "vector", getQualifiedClassName(Vector.<*>) ]));
 			
 			if (comparer == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "comparer" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "comparer" ]));
 			
 		    var length:int = vector.length;
 		    var l:int = 0;
@@ -129,10 +129,10 @@ package flame.utils
 		public static function toArray(vector:*):Array
 		{
 			if (vector == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "vector" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "vector" ]));
 			
 			if (!(vector is Vector.<*> || vector is Vector.<Number> || vector is Vector.<int> || vector is Vector.<uint>))
-				throw new TypeError(_resourceManager.getString("flameLocale", "argTypeMismatch",
+				throw new TypeError(_resourceManager.getString("flameCore", "argTypeMismatch",
 					[ "vector", getQualifiedClassName(Vector.<*>) ]));
 			
 			var array:Array = [];

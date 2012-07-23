@@ -47,7 +47,7 @@ package flame.crypto.asn1
 			super(tag);
 			
 			if ((_tag & ASN1Tag.CONSTRUCTED) != ASN1Tag.CONSTRUCTED)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "asn1InvalidConstructTag"));
+				throw new ArgumentError(_resourceManager.getString("flameCrypto", "asn1InvalidConstructTag"));
 			
 			_elements = elements == null ? new Vector.<ASN1Object>() : elements.slice();
 		}
@@ -84,10 +84,10 @@ package flame.crypto.asn1
 		public function addElementAt(element:ASN1Object, index:int):void
 		{
 			if (element == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "element" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "element" ]));
 			
 			if (index < 0 || index > _elements.length)
-				throw new RangeError(_resourceManager.getString("flameLocale", "argOutOfRangeInsert", [ "index" ]));
+				throw new RangeError(_resourceManager.getString("flameCore", "argOutOfRangeInsert", [ "index" ]));
 			
 			_elements.splice(index, 0, element);
 		}
@@ -105,7 +105,7 @@ package flame.crypto.asn1
 		public function getElementAt(index:int):ASN1Object
 		{
 			if (index < 0 || index >= _elements.length)
-				throw new RangeError(_resourceManager.getString("flameLocale", "argOutOfRangeIndex", [ "index" ]));
+				throw new RangeError(_resourceManager.getString("flameCore", "argOutOfRangeIndex", [ "index" ]));
 			
 			return _elements[index];
 		}
@@ -124,7 +124,7 @@ package flame.crypto.asn1
 		public function removeElementAt(index:int):ASN1Object
 		{
 			if (index < 0 || index >= _elements.length)
-				throw new RangeError(_resourceManager.getString("flameLocale", "argOutOfRangeIndex", [ "index" ]));
+				throw new RangeError(_resourceManager.getString("flameCore", "argOutOfRangeIndex", [ "index" ]));
 			
 			return _elements.splice(index, 1)[0];
 		}

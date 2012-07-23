@@ -79,7 +79,7 @@ package flame.validators
 		public static function validateRadioButtonGroup(validator:RadioButtonGroupValidator):Array
 		{
 			if (validator == null)
-				throw new ArgumentError(ResourceManager.getInstance().getString("flameLocale", "argNullGeneric", [ "validator" ]));
+				throw new ArgumentError(ResourceManager.getInstance().getString("flameCore", "argNullGeneric", [ "validator" ]));
 			
 			return validator.doValidation(validator.getValueFromSource());
 		}
@@ -107,7 +107,7 @@ package flame.validators
 		 */
 		public override function get property():String
 		{
-			throw new IllegalOperationError(resourceManager.getString("flameLocale", "argNotSupported"));
+			throw new IllegalOperationError(resourceManager.getString("flameCore", "argNotSupported"));
 		}
 		
 		/**
@@ -115,7 +115,7 @@ package flame.validators
 		 */
 		public override function set property(value:String):void
 		{
-			throw new IllegalOperationError(resourceManager.getString("flameLocale", "argNotSupported"));
+			throw new IllegalOperationError(resourceManager.getString("flameCore", "argNotSupported"));
 		}
 		
 		/**

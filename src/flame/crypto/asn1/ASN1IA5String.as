@@ -33,7 +33,7 @@ package flame.crypto.asn1
 			super(ASN1Tag.IA5_STRING);
 			
 			if (value == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value" ]));
 			
 			_value = value;
 		}
@@ -51,7 +51,7 @@ package flame.crypto.asn1
 		{
 			for (var i:int = 0, count:int = value.bytesAvailable; i < count; i++)
 				if (value[i] > 0x7F)
-					throw new ASN1Error(_resourceManager.getString("flameLocale", "asn1InvalidIA5StringValue", [ "value" ]));
+					throw new ASN1Error(_resourceManager.getString("flameCrypto", "asn1InvalidIA5StringValue", [ "value" ]));
 			
 			return new ASN1IA5String(value.readMultiByte(value.bytesAvailable, "ascii"));
 		}

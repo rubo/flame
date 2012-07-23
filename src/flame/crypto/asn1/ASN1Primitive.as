@@ -32,7 +32,7 @@ package flame.crypto.asn1
 			super(tag);
 			
 			if ((_tag & ASN1Tag.CONSTRUCTED) == ASN1Tag.CONSTRUCTED)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "asn1InvalidPrimitiveTag"));
+				throw new ArgumentError(_resourceManager.getString("flameCrypto", "asn1InvalidPrimitiveTag"));
 		}
 	}
 }

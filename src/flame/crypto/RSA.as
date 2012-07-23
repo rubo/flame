@@ -68,7 +68,7 @@ package flame.crypto
 			else if (key is RSAParameters)
 				importParameters(key);
 			else
-				throw new TypeError(_resourceManager.getString("flameLocale", "argInvalidValue", [ "key" ]));
+				throw new TypeError(_resourceManager.getString("flameCore", "argInvalidValue", [ "key" ]));
 		}
 		
 		//--------------------------------------------------------------------------
@@ -91,13 +91,13 @@ package flame.crypto
 	    public function decrypt(data:ByteArray):ByteArray
 	    {
 			if (data == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "data" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "data" ]));
 			
 			if (!_isKeyParametersGenerated)
 				generateKeyParameters();
 			
 			if (publicOnly)
-				throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoKeyNotExist"));
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "keyNotExist"));
 	    	
 			var r:BigInteger;
 			var t:BigInteger = new BigInteger(data, true);
@@ -138,7 +138,7 @@ package flame.crypto
 	    public function encrypt(data:ByteArray):ByteArray
 	    {
 			if (data == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "data" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "data" ]));
 			
 			if (!_isKeyParametersGenerated)
 				generateKeyParameters();
@@ -170,7 +170,7 @@ package flame.crypto
 	    	if (includePrivateParameters)
 	    	{
 				if (publicOnly)
-					throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidKeyState"));
+					throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidKeyState"));
 				
 				parameters.d = CryptoUtil.ensureLength(_d.toByteArray(), length);
 				
@@ -209,7 +209,7 @@ package flame.crypto
 	    public override function fromXMLString(value:String):void
 	    {
 	    	if (value == null)
-	    		throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value" ]));
+	    		throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value" ]));
 	    	
 	    	var paremeters:RSAParameters = new RSAParameters();
 	    	var xml:XML = new XML(value);
@@ -253,13 +253,13 @@ package flame.crypto
 	    public function importParameters(parameters:RSAParameters):void
 	    {
 	    	if (parameters == null)
-	    		throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "parameters" ]));
+	    		throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "parameters" ]));
 	    	
 			if (parameters.exponent == null)
-				throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidKeySize"));
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidKeySize"));
 			
 			if (parameters.modulus == null)
-				throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidKeySize"));
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidKeySize"));
 			
 			_exponent = new BigInteger(parameters.exponent, true);
 			_modulus = new BigInteger(parameters.modulus, true);
@@ -279,7 +279,7 @@ package flame.crypto
 			if (_useCRT)
 			{
 				if (!_modulus.equals(_p.multiply(_q)))
-					throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidKeySize"));
+					throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidKeySize"));
 				
 				var p1:BigInteger = _p.subtract(BigInteger.ONE);
 				var q1:BigInteger = _q.subtract(BigInteger.ONE);
@@ -290,21 +290,21 @@ package flame.crypto
 				if (_dP == null)
 					_dP = dP;
 				else if (!_dP.equals(dP))
-					throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidKeySize"));
+					throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidKeySize"));
 				
 				var dQ:BigInteger = d.mod(q1);
 				
 				if (_dQ == null)
 					_dQ = dQ;
 				else if (!_dQ.equals(dQ))
-					throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidKeySize"));
+					throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidKeySize"));
 				
 				var inverseQ:BigInteger = _q.flame_internal::modInverse(_p);
 				
 				if (_inverseQ == null)
 					_inverseQ = inverseQ;
 				else if (!_inverseQ.equals(inverseQ))
-					throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidKeySize"));
+					throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidKeySize"));
 			}
 	    }
 	    
@@ -392,7 +392,7 @@ package flame.crypto
 		 */
 	    public function get publicOnly():Boolean
 	    {
-	    	return _isKeyParametersGenerated && !_useCRT && (_d == null || _modulus == null);
+	    	return !_useCRT && (_d == null || _modulus == null);
 	    }
 		
 		/**
@@ -470,7 +470,7 @@ package flame.crypto
 		private function setKeySize(value:int):void
 		{
 			if (!validateKeySize(value))
-				throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidKeySize"));
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidKeySize"));
 			
 			_keySize = value;
 		}

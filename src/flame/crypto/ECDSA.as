@@ -74,7 +74,7 @@ package flame.crypto
 			else if (key is ECCParameters)
 				importParameters(key);
 			else
-				throw new TypeError(_resourceManager.getString("flameLocale", "argInvalidValue", [ "key" ]));
+				throw new TypeError(_resourceManager.getString("flameCore", "argInvalidValue", [ "key" ]));
 		}
 		
 		//--------------------------------------------------------------------------
@@ -104,7 +104,7 @@ package flame.crypto
 			if (includePrivateParameters)
 			{
 				if (publicOnly)
-					throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidKeyState"));
+					throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidKeyState"));
 				
 				parameters.d = CryptoUtil.ensureLength(_d.toByteArray(), keySizeInBytes);
 			}
@@ -125,7 +125,7 @@ package flame.crypto
 		public override function fromXMLString(value:String):void
 		{
 			if (value == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value" ]));
 			
 			importParameters(RFC4050KeyFormatter.fromXMLString(value));
 		}
@@ -142,19 +142,19 @@ package flame.crypto
 		public function importParameters(parameters:ECCParameters):void
 		{
 			if (parameters == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "parameters" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "parameters" ]));
 			
 			if (parameters.algorithmName != getQualifiedClassName(this))
-				throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoECCMagicMismatch", [ getQualifiedClassName(this) ]));
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "eccMagicMismatch", [ getQualifiedClassName(this) ]));
 			
 			if (parameters.x == null)
-				throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidKeySize"));
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidKeySize"));
 			
 			if (parameters.y == null)
-				throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidKeySize"));
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidKeySize"));
 			
 			if (!parameters.validate())
-				throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidParameter"));
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidParameter"));
 			
 			setKeySize(parameters.keySize);
 			
@@ -181,10 +181,10 @@ package flame.crypto
 		public function signHash(hash:ByteArray):ByteArray
 		{
 			if (hash == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "hash" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "hash" ]));
 			
 			if (publicOnly)
-				throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoKeyNotExist"));
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "keyNotExist"));
 			
 			var buffer:ByteArray = new ByteArray();
 			
@@ -219,7 +219,7 @@ package flame.crypto
 		public override function toXMLString(includePrivateParameters:Boolean):String
 		{
 			if (includePrivateParameters)
-				throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidOperation"));
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidOperation"));
 			
 			return RFC4050KeyFormatter.toXMLString(exportParameters(includePrivateParameters));
 		}
@@ -236,13 +236,13 @@ package flame.crypto
 		public function verifyHash(hash:ByteArray, signature:ByteArray):Boolean
 		{
 			if (hash == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "hash" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "hash" ]));
 			
 			if (signature == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "signature" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "signature" ]));
 			
 			if (signature.length != _keySize >> 2)
-				throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidParameter"));
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidParameter"));
 			
 			var buffer:ByteArray = new ByteArray();
 			var keySizeInBytes:int = (_keySize + 7) / 8;
@@ -318,7 +318,7 @@ package flame.crypto
 		private function setKeySize(value:int):void
 		{
 			if (!validateKeySize(value))
-				throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidKeySize"));
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidKeySize"));
 			
 			_keySize = value;
 		}

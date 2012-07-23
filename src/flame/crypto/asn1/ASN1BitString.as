@@ -48,10 +48,10 @@ package flame.crypto.asn1
 			super(ASN1Tag.BIT_STRING);
 			
 			if (value == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value" ]));
 			
 			if (unusedBitCount < 0 || unusedBitCount > 7)
-				throw new RangeError(_resourceManager.getString("flameLocale", "argOutOfRangeUnusedBits"));
+				throw new RangeError(_resourceManager.getString("flameCrypto", "argOutOfRangeUnusedBits"));
 			
 			_unusedBitCount = unusedBitCount;
 			_value = ByteArrayUtil.copy(value);
@@ -93,14 +93,14 @@ package flame.crypto.asn1
 			var unusedBitCount:int = value.readUnsignedByte();
 			
 			if (unusedBitCount > 7)
-				throw new ASN1Error(_resourceManager.getString("flameLocale", "argOutOfRangeUnusedBits"));
+				throw new ASN1Error(_resourceManager.getString("flameCrypto", "argOutOfRangeUnusedBits"));
 			
 			if (unusedBitCount > 0)
 			{
 				var lastByte:int = value[value.length - 1];
 				
 				if ((lastByte & (0xFF << unusedBitCount & 0xFF)) != lastByte)
-					throw new ASN1Error(_resourceManager.getString("flameLocale", "asn1InvalidUnusedBits"));
+					throw new ASN1Error(_resourceManager.getString("flameCrypto", "asn1InvalidUnusedBits"));
 			}
 			
 			var buffer:ByteArray = new ByteArray();

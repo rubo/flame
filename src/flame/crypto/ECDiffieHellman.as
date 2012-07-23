@@ -90,7 +90,7 @@ package flame.crypto
 			else if (key is ECCParameters)
 				importParameters(key);
 			else
-				throw new TypeError(_resourceManager.getString("flameLocale", "argInvalidValue", [ "key" ]));
+				throw new TypeError(_resourceManager.getString("flameCore", "argInvalidValue", [ "key" ]));
 		}
 		
 		//--------------------------------------------------------------------------
@@ -121,13 +121,13 @@ package flame.crypto
 		public function deriveSecretAgreement(otherPartyPublicParameters:ECCParameters):ByteArray
 		{
 			if (otherPartyPublicParameters == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "otherPartyPublicKey" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "otherPartyPublicKey" ]));
 			
 			if (publicOnly)
-				throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoKeyNotExist"));
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "keyNotExist"));
 			
 			if (otherPartyPublicParameters.keySize != _keySize)
-				throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoECCKeySizeMismatch"));
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "eccKeySizeMismatch"));
 			
 			var x:BigInteger = new BigInteger(otherPartyPublicParameters.x, true);
 			var y:BigInteger = new BigInteger(otherPartyPublicParameters.y, true);
@@ -156,7 +156,7 @@ package flame.crypto
 			if (includePrivateParameters)
 			{
 				if (publicOnly)
-					throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidKeyState"));
+					throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidKeyState"));
 				
 				parameters.d = CryptoUtil.ensureLength(_d.toByteArray(), keySizeInBytes);
 			}
@@ -177,7 +177,7 @@ package flame.crypto
 		public override function fromXMLString(value:String):void
 		{
 			if (value == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value" ]));
 			
 			importParameters(RFC4050KeyFormatter.fromXMLString(value));
 		}
@@ -194,19 +194,19 @@ package flame.crypto
 		public function importParameters(parameters:ECCParameters):void
 		{
 			if (parameters == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "parameters" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "parameters" ]));
 			
 			if (parameters.algorithmName != getQualifiedClassName(this))
-				throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoECCMagicMismatch", [ getQualifiedClassName(this) ]));
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "eccMagicMismatch", [ getQualifiedClassName(this) ]));
 			
 			if (parameters.x == null)
-				throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidKeySize"));
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidKeySize"));
 			
 			if (parameters.y == null)
-				throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidKeySize"));
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidKeySize"));
 			
 			if (!parameters.validate())
-				throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidParameter"));
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidParameter"));
 			
 			setKeySize(parameters.keySize);
 			
@@ -231,7 +231,7 @@ package flame.crypto
 		public override function toXMLString(includePrivateParameters:Boolean):String
 		{
 			if (includePrivateParameters)
-				throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidOperation"));
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidOperation"));
 			
 			return RFC4050KeyFormatter.toXMLString(exportParameters(includePrivateParameters));
 		}
@@ -275,7 +275,7 @@ package flame.crypto
 		private function setKeySize(value:int):void
 		{
 			if (!validateKeySize(value))
-				throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidKeySize"));
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidKeySize"));
 			
 			_keySize = value;
 		}

@@ -46,14 +46,14 @@ package flame.crypto.asn1
 			super(ASN1Tag.INTEGER);
 			
 			if (value == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "value" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value" ]));
 			
 			if (value is BigInteger)
 				_value = BigInteger(value).valueOf();
 			else if (value is int || value is ByteArray)
 				_value = new BigInteger(value);
 			else
-				throw new TypeError(_resourceManager.getString("flameLocale", "argInvalidValue", [ "value" ]));
+				throw new TypeError(_resourceManager.getString("flameCore", "argInvalidValue", [ "value" ]));
 		}
 		
 		//--------------------------------------------------------------------------

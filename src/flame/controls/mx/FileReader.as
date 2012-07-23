@@ -37,7 +37,7 @@ package flame.controls.mx
 	 */
 	[Event(name="select", type="flash.events.Event")]
 	
-	[ResourceBundle("flameLocale")]
+	[ResourceBundle("flameControls")]
 	
 	/**
 	 * Name of CSS style declaration that specifies style for the Browse button.
@@ -194,7 +194,7 @@ package flame.controls.mx
 		 */
 		public function get browseLabel():String
 		{
-			return _browseLabel == null ? resourceManager.getString("flameLocale", "browseButton") : _browseLabel;
+			return _browseLabel == null ? resourceManager.getString("flameControls", "browseButton") : _browseLabel;
 		}
 		
 		/**
@@ -213,7 +213,7 @@ package flame.controls.mx
 		 */
 		public function get cancelLabel():String
 		{
-			return _cancelLabel == null ? resourceManager.getString("flameLocale", "cancelButton") : _cancelLabel;
+			return _cancelLabel == null ? resourceManager.getString("flameControls", "cancelButton") : _cancelLabel;
 		}
 		
 		/**
@@ -495,7 +495,7 @@ package flame.controls.mx
 		 */
 	    protected function fileReference_progressHandler(event:ProgressEvent):void
 	    {
-	    	_progressBar.label = resourceManager.getString("flameLocale", "fileProgressLabel",
+	    	_progressBar.label = resourceManager.getString("flameControls", "fileProgressLabel",
 	    		[ Math.round(event.bytesLoaded * 100 / event.bytesTotal) ]);
 	    }
 	    

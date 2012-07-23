@@ -70,7 +70,7 @@ package flame.crypto
 		public override function decryptKeyExchange(data:ByteArray):ByteArray
 		{
 			if (_key == null)
-				throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoMissingKey"));
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "missingKey"));
 			
 			var buffer:ByteArray = _key.decrypt(data);
 			
@@ -83,7 +83,7 @@ package flame.crypto
 					i++;
 				
 				if (i < 10 || i == count)
-					throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidPadding"));
+					throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidPadding"));
 				
 				var output:ByteArray = new ByteArray();
 				
@@ -94,7 +94,7 @@ package flame.crypto
 				return output;
 			}
 			
-			throw new CryptoError(_resourceManager.getString("flameLocale", "cryptoInvalidPadding"));
+			throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidPadding"));
 		}
 		
 		/**
@@ -110,7 +110,7 @@ package flame.crypto
 		public override function setKey(key:AsymmetricAlgorithm):void
 		{
 			if (key == null)
-				throw new ArgumentError(_resourceManager.getString("flameLocale", "argNullGeneric", [ "key" ]));
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "key" ]));
 			
 			_key = RSA(key);
 		}
@@ -128,7 +128,7 @@ package flame.crypto
 		 */
 		public override function get parameters():String
 		{
-			throw new IllegalOperationError(_resourceManager.getString("flameLocale", "argNotSupported"));
+			throw new IllegalOperationError(_resourceManager.getString("flameCore", "argNotSupported"));
 		}
 		
 		/**
@@ -136,7 +136,7 @@ package flame.crypto
 		 */
 		public override function set parameters(value:String):void
 		{
-			throw new IllegalOperationError(_resourceManager.getString("flameLocale", "argNotSupported"));
+			throw new IllegalOperationError(_resourceManager.getString("flameCore", "argNotSupported"));
 		}
 	}
 }

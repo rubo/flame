@@ -47,7 +47,7 @@ package flame.controls.spark
 	 */
 	[Event(name="tabClose", type="flame.controls.events.TabEvent")]
 	
-	[ResourceBundle("flameLocale")]
+	[ResourceBundle("flameCore")]
 	
 	/**
 	 * The AdvancedTabBar is an enhancment to the standard TabBar.
@@ -106,7 +106,7 @@ package flame.controls.spark
 		public function getTabClosePolicyAt(index:int):String
 		{
 			if (index < 0 || index >= dataGroup.numElements)
-				throw new RangeError(resourceManager.getString("flameLocale", "argOutOfRangeIndex", [ "index" ]));
+				throw new RangeError(resourceManager.getString("flameCore", "argOutOfRangeIndex", [ "index" ]));
 			
 			return AdvancedTabBarButton(dataGroup.getElementAt(index)).closePolicy;
 		}
@@ -126,7 +126,7 @@ package flame.controls.spark
 		public function setTabClosePolicyAt(value:String, index:int):void
 		{
 			if (index < 0 || index >= dataGroup.numElements)
-				throw new RangeError(resourceManager.getString("flameLocale", "argOutOfRangeIndex", [ "index" ]));
+				throw new RangeError(resourceManager.getString("flameCore", "argOutOfRangeIndex", [ "index" ]));
 			
 			AdvancedTabBarButton(dataGroup.getElementAt(index)).closePolicy = value;
 		}
