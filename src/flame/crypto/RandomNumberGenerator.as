@@ -74,17 +74,17 @@ package flame.crypto
 			if (count > 1024)
 			{
 				for (var i:int = 1, length:int = count / 1024; i < length; i++)
-					ByteArrayUtil.addBytes(data, generateRandomBytes(1024));
+					data.writeBytes(generateRandomBytes(1024));
 				
 				length = count % 1024;
 				
 				if (length != 0)
-					ByteArrayUtil.addBytes(data, generateRandomBytes(length));
+					data.writeBytes(generateRandomBytes(length));
 				
 				data.position = 0;
 			}
 			
-	        return data;
+	        return data || new ByteArray();
 		}
 		
 		/**
@@ -107,8 +107,8 @@ package flame.crypto
 			var data:ByteArray = getBytes(count);
             
 	        for (var i:int = 0; i < count; i++)
-				if (data[i] == 0)
-	            	data[i] = int(Math.random() * 1000) + 1;
+				while (data[i] == 0)
+					data[i] = generateRandomBytes(1)[0];
 	            
 	        return data;
 		}
