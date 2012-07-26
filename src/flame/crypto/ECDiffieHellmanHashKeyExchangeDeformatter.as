@@ -81,7 +81,7 @@ package flame.crypto
 				throw new CryptoError(_resourceManager.getString("flameCrypto", "missingKey"));
 			
 			if (_hashAlgorithm == null)
-				throw new CryptoError(_resourceManager.getString("flameCrypto", "missingOID"));
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "missingHashAlgorithm"));
 			
 			if (_format == null)
 				throw new CryptoError(_resourceManager.getString("flameCrypto", "missingKeyBLOBFormat"));

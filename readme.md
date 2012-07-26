@@ -14,7 +14,7 @@ Provides cryptographic services including support for [National Security Agency 
 - Hash algorithms: MD5, RIPEMD-160, SHA-1, SHA-2 (SHA-224, SHA-256, SHA-384, SHA-512)
 - Keyed-hash algorithms: HMAC
 - Symmetric algorithms: AES, Rijndael, RC4
-- Asymmetric algorithms: RSA, Elliptic Curve Diffie-Hellman (ECDH), Elliptic Curve Digital Signature Algorithm (ECDSA)
+- Asymmetric algorithms: RSA (with key blinding, OAEP, PKCS #1, PSS), Elliptic Curve Diffie-Hellman (ECDH), Elliptic Curve Digital Signature Algorithm (ECDSA)
 - Abstract Syntax Notation One (ASN.1) encoding and decoding
 
 #### Numerics

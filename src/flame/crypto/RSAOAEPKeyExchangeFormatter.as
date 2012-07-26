@@ -87,7 +87,7 @@ package flame.crypto
 			var modulusSize:int = _key.keySize >> 3;
 			var hashSize:int = _hashAlgorithm.hashSize >> 3;
 			
-			if (data.length > modulusSize - (hashSize << 1) - 2)
+			if (data.length + (hashSize << 1) + 2 > modulusSize)
 				throw new CryptoError(_resourceManager.getString("flameCrypto", "paddingEncryptDataTooLong", [ modulusSize ]));
 			
 			var db:ByteArray = new ByteArray();

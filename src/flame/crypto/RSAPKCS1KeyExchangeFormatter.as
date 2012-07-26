@@ -79,7 +79,7 @@ package flame.crypto
 			
 			var modulusSize:int = _key.keySize >> 3;
 			
-			if (data.length > modulusSize - 11)
+			if (data.length + 11 > modulusSize)
 				throw new CryptoError(_resourceManager.getString("flameCrypto", "paddingEncryptDataTooLong", [ modulusSize ]));
 			
 			var buffer:ByteArray = new ByteArray();

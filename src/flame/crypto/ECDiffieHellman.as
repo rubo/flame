@@ -54,6 +54,7 @@ package flame.crypto
 		private var _curve:EllipticCurve;
 		private var _d:BigInteger;
 		private var _domainParameters:ECDomainParameters;
+		private var _isKeyPairGenerated:Boolean;
 		private var _x:BigInteger;
 		private var _y:BigInteger;
 		
@@ -65,10 +66,10 @@ package flame.crypto
 		
 		/**
 		 * Initializes a new instance of the ECDiffieHellman class
-		 * with the specified key size or key parameters.
+		 * with the specified key size or key pair.
 		 * 
 		 * @param key If the parameter type is int, it specifies the size of the key to use, in bits.
-		 * If the parameter type is ECCParameters, it specifies the key parameters to be passed.
+		 * If the parameter type is ECCParameters, it specifies the key pair to be passed.
 		 * 
 		 * @throws flame.crypto.CryptoError <code>key</code> parameter specifies an invalid length.
 		 * 
@@ -82,11 +83,7 @@ package flame.crypto
 			_legalKeySizes.fixed = true;
 			
 			if (key is int)
-			{
 				setKeySize(key);
-				
-				generateKeyParameters();
-			}
 			else if (key is ECCParameters)
 				importParameters(key);
 			else
@@ -103,34 +100,37 @@ package flame.crypto
 		 * Returns the secret agreement generated between two parties,
 		 * given a ECCParameters object that contains the second party's public key.
 		 * 
-		 * @param otherPartyPublicParameters An object that contains the public part of
+		 * @param otherPartyPublicKey An object that contains the public part of
 		 * the elliptic curve cryptography (ECC) key from the other party in the key exchange.
 		 * 
 		 * @return The secret agreement. This information is calculated
 		 * from this instanse's private key and the specified public key.
 		 * 
-		 * @throws ArgumentError <code>otherPartyPublicParameters</code> parameter is <code>null</code>.
+		 * @throws ArgumentError <code>otherPartyPublicKey</code> parameter is <code>null</code>.
 		 * 
 		 * @throws flame.crypto.CryptoError Thrown in the following situations:<ul>
-		 * <li><code>otherPartyPublicParameters</code> is not a valid elliptic curve cryptography (ECC) key.</li>
+		 * <li><code>otherPartyPublicKey</code> is not a valid elliptic curve cryptography (ECC) key.</li>
 		 * <li>The private key does not exist.</li>
 		 * </ul>
 		 * 
 		 * @see flame.crypto.ECCParameters
 		 */
-		public function deriveSecretAgreement(otherPartyPublicParameters:ECCParameters):ByteArray
+		public function deriveSecretAgreement(otherPartyPublicKey:ECCParameters):ByteArray
 		{
-			if (otherPartyPublicParameters == null)
+			if (otherPartyPublicKey == null)
 				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "otherPartyPublicKey" ]));
+			
+			if (!_isKeyPairGenerated)
+				generateKeyPair();
 			
 			if (publicOnly)
 				throw new CryptoError(_resourceManager.getString("flameCrypto", "keyNotExist"));
 			
-			if (otherPartyPublicParameters.keySize != _keySize)
+			if (otherPartyPublicKey.keySize != _keySize)
 				throw new CryptoError(_resourceManager.getString("flameCrypto", "eccKeySizeMismatch"));
 			
-			var x:BigInteger = new BigInteger(otherPartyPublicParameters.x, true);
-			var y:BigInteger = new BigInteger(otherPartyPublicParameters.y, true);
+			var x:BigInteger = new BigInteger(otherPartyPublicKey.x, true);
+			var y:BigInteger = new BigInteger(otherPartyPublicKey.y, true);
 			
 			return CryptoUtil.ensureLength(_curve.createPoint(x, y).multiply(_d).x.toBigInteger().toByteArray(), (_keySize + 7) / 8);
 		}
@@ -141,12 +141,15 @@ package flame.crypto
 		 * @param includePrivateParameters <code>true</code> to include private parameters;
 		 * otherwise, <code>false</code>.
 		 * 
-		 * @return The key parameters for ECDiffieHellman.
+		 * @return The key pair for ECDiffieHellman.
 		 * 
 		 * @throws flame.crypto.CryptoError The key cannot be exported.
 		 */
 		public function exportParameters(includePrivateParameters:Boolean):ECCParameters
 		{
+			if (!_isKeyPairGenerated)
+				generateKeyPair();
+			
 			var keySizeInBytes:int = (_keySize + 7) / 8;
 			var parameters:ECCParameters = new ECCParameters();
 			
@@ -185,7 +188,7 @@ package flame.crypto
 		/**
 		 * Imports the key from the specified ECCParameters.
 		 * 
-		 * @param parameters The key parameters for ECDiffieHellman.
+		 * @param parameters The key pair for ECDiffieHellman.
 		 * 
 		 * @throws ArgumentError <code>parameters</code> parameter is <code>null</code>.
 		 * 
@@ -215,6 +218,8 @@ package flame.crypto
 			
 			_x = new BigInteger(parameters.x, true);
 			_y = new BigInteger(parameters.y, true);
+			
+			_isKeyPairGenerated = true;
 		}
 		
 		/**
@@ -223,14 +228,9 @@ package flame.crypto
 		 * @param includePrivateParameters <code>true</code> to include private parameters; otherwise, <code>false</code>.
 		 * 
 		 * @return A string object that contains the key information, serialized to an XML string.
-		 * 
-		 * @throws flame.crypto.CryptoError Private parameters serialization is not supported.
 		 */
 		public override function toXMLString(includePrivateParameters:Boolean):String
 		{
-			if (includePrivateParameters)
-				throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidOperation"));
-			
 			return RFC4050KeyFormatter.toXMLString(exportParameters(includePrivateParameters));
 		}
 		
@@ -257,7 +257,7 @@ package flame.crypto
 		//
 		//--------------------------------------------------------------------------
 		
-		private function generateKeyParameters():void
+		private function generateKeyPair():void
 		{
 			_domainParameters = ECDomainParametersCache.getParametersByKeySize(_keySize);
 			_curve = new PrimeEllipticCurve(_domainParameters.q, _domainParameters.a, _domainParameters.b);
@@ -268,6 +268,8 @@ package flame.crypto
 			
 			_x = point.x.toBigInteger();
 			_y = point.y.toBigInteger();
+			
+			_isKeyPairGenerated = true;
 		}
 		
 		private function setKeySize(value:int):void

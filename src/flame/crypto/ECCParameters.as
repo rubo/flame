@@ -115,7 +115,7 @@ package flame.crypto
 		 * @param format A string that specifies the format of the key BLOB.
 		 * See KeyBLOBFormat enumeration for a description of specific formats.
 		 * 
-		 * @return An object that contains the ECC key parameters that is specified in the byte array.
+		 * @return An object that contains the ECC key pair that is specified in the byte array.
 		 * 
 		 * @throws ArgumentError Thrown in the following situations:<ul>
 		 * <li><code>data</code> parameter is <code>null</code>.</li>
@@ -149,8 +149,36 @@ package flame.crypto
 					
 					var magic:uint = buffer.readUnsignedInt();
 					
-					if (isPrivateBLOB(magic) != includesPrivateParameter)
-						throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidParameter"));
+					switch (magic)
+					{
+						case ECDH_PRIVATE_P256_MAGIC:
+						case ECDH_PRIVATE_P384_MAGIC:
+						case ECDH_PRIVATE_P521_MAGIC:
+						case ECDSA_PRIVATE_P256_MAGIC:
+						case ECDSA_PRIVATE_P384_MAGIC:
+						case ECDSA_PRIVATE_P521_MAGIC:
+							
+							if (!includesPrivateParameter)
+								throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidParameter"));
+							
+							break;
+							
+						case ECDH_PUBLIC_P256_MAGIC:
+						case ECDH_PUBLIC_P384_MAGIC:
+						case ECDH_PUBLIC_P521_MAGIC:
+						case ECDSA_PUBLIC_P256_MAGIC:
+						case ECDSA_PUBLIC_P384_MAGIC:
+						case ECDSA_PUBLIC_P521_MAGIC:
+							
+							if (includesPrivateParameter)
+								throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidParameter"));
+							
+							break;
+							
+						default:
+							
+							throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidParameter"));
+					}
 					
 					parameters = new ECCParameters();
 					parameters.algorithmName = getAlgorithmNameByMagic(magic);
@@ -541,34 +569,6 @@ package flame.crypto
 				}
 					
 			throw new CryptoError(_resourceManager.getString("flameCrypto", "unknownECAlgorithm"));
-		}
-		
-		private static function isPrivateBLOB(magic:uint):Boolean
-		{
-			switch (magic)
-			{
-				case ECDH_PRIVATE_P256_MAGIC:
-				case ECDH_PRIVATE_P384_MAGIC:
-				case ECDH_PRIVATE_P521_MAGIC:
-				case ECDSA_PRIVATE_P256_MAGIC:
-				case ECDSA_PRIVATE_P384_MAGIC:
-				case ECDSA_PRIVATE_P521_MAGIC:
-					
-					return true;
-				
-				case ECDH_PUBLIC_P256_MAGIC:
-				case ECDH_PUBLIC_P384_MAGIC:
-				case ECDH_PUBLIC_P521_MAGIC:
-				case ECDSA_PUBLIC_P256_MAGIC:
-				case ECDSA_PUBLIC_P384_MAGIC:
-				case ECDSA_PUBLIC_P521_MAGIC:
-				
-					return false;
-				
-				default:
-					
-					throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidParameter"));
-			}
 		}
 	}
 }

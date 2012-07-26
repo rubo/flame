@@ -14,6 +14,7 @@ package flame.crypto
 	import mx.resources.ResourceManager;
 	
 	[ResourceBundle("flameCore")]
+	[ResourceBundle("flameCrypto")]
 	
 	/**
 	 * Represents the abstract base class from which all implementations of asymmetric algorithms must inherit.

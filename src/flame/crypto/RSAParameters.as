@@ -169,7 +169,7 @@ package flame.crypto
 		 * @param format A string that specifies the format of the key BLOB.
 		 * See KeyBLOBFormat enumeration for a description of specific formats.
 		 * 
-		 * @return An object that contains the RSA key parameters that is specified in the byte array.
+		 * @return An object that contains the RSA key pair that is specified in the byte array.
 		 * 
 		 * @throws ArgumentError Thrown in the following situations:<ul>
 		 * <li><code>data</code> parameter is <code>null</code>.</li>

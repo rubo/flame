@@ -81,7 +81,7 @@ package flame.crypto
 			var hashSize:int = _hashAlgorithm.hashSize >> 3;
 			var modulusSize:int = _key.keySize >> 3;
 			
-			if (modulusSize < (hashSize << 1) + 2)
+			if ((hashSize << 1) + 2 > modulusSize)
 				throw new CryptoError(_resourceManager.getString("flameCrypto", "paddingDecryptDataTooLong", [ modulusSize ]));
 			
 			var db:ByteArray = new ByteArray();
@@ -106,17 +106,15 @@ package flame.crypto
 				if (db[i] != _label[i])
 					throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidPadding"));
 			
-			i = hashSize;
-			
 			while (db[i] == 0)
 				i++;
 			
-			if (db[i] != 1)
+			if (db[i] != 1 || ++i > db.length - 1)
 				throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidPadding"));
 			
 			var output:ByteArray = new ByteArray();
 			
-			output.writeBytes(db, ++i);
+			output.writeBytes(db, i);
 			
 			output.position = 0;
 			

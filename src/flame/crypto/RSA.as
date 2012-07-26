@@ -17,7 +17,7 @@ package flame.crypto
 	/**
 	 * Performs asymmetric encryption and decryption using the RSA algorithm.
 	 * This class cannot be inherited.
-	 * <p>The RSA supports key lengths from 384 bits to 1024 bits in increments of 8 bits.</p>
+	 * <p>The RSA supports key lengths from 384 bits to 4096 bits in increments of 8 bits.</p>
 	 */
 	public final class RSA extends AsymmetricAlgorithm
 	{
@@ -47,10 +47,10 @@ package flame.crypto
 		
 		/**
 		 * Initializes a new instance of the RSA class
-		 * with the specified key size or key parameters.
+		 * with the specified key size or key pair.
 		 * 
 		 * @param key If the parameter type is int, it specifies the size of the key to use, in bits.
-		 * If the parameter type is RSAParameters, it specifies the key parameters to be passed.
+		 * If the parameter type is RSAParameters, it specifies the key pair to be passed.
 		 * 
 		 * @throws flame.crypto.CryptoError <code>key</code> parameter specifies an invalid length.
 		 * 
@@ -94,7 +94,7 @@ package flame.crypto
 				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "data" ]));
 			
 			if (!_isKeyParametersGenerated)
-				generateKeyParameters();
+				generateKeyPair();
 			
 			if (publicOnly)
 				throw new CryptoError(_resourceManager.getString("flameCrypto", "keyNotExist"));
@@ -141,7 +141,7 @@ package flame.crypto
 				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "data" ]));
 			
 			if (!_isKeyParametersGenerated)
-				generateKeyParameters();
+				generateKeyPair();
 			
 	    	return CryptoUtil.ensureLength(new BigInteger(data, true).flame_internal::modPowInt(_exponent, _modulus).toByteArray(), _keySize >> 3);
 	    }
@@ -152,7 +152,7 @@ package flame.crypto
 		 * @param includePrivateParameters <code>true</code> to include private parameters;
 		 * otherwise, <code>false</code>.
 		 * 
-		 * @return The key parameters for RSA.
+		 * @return The key pair for RSA.
 		 * 
 		 * @throws flame.crypto.CryptoError The key cannot be exported.
 		 */
@@ -162,7 +162,7 @@ package flame.crypto
 	    	var parameters:RSAParameters = new RSAParameters();
 			
 			if (!_isKeyParametersGenerated)
-				generateKeyParameters();
+				generateKeyPair();
 			
 	    	parameters.exponent = _exponent.toByteArray();
 	    	parameters.modulus = CryptoUtil.ensureLength(_modulus.toByteArray(), length);
@@ -244,7 +244,7 @@ package flame.crypto
 		/**
 		 * Imports the key from the the specified RSAParameters.
 		 * 
-		 * @param parameters The key parameters for RSA.
+		 * @param parameters The key pair for RSA.
 		 * 
 		 * @throws ArgumentError <code>parameters</code> parameter is <code>null</code>.
 		 * 
@@ -420,7 +420,7 @@ package flame.crypto
 	    //
 	    //--------------------------------------------------------------------------
 	    
-	    private function generateKeyParameters():void
+	    private function generateKeyPair():void
 	    {
 	    	var p:BigInteger;
 			var primeSize:int = _keySize >> 1;
@@ -429,21 +429,26 @@ package flame.crypto
 			
 			do
 			{
-		    	do
-		    	{
-		    		p = new BigInteger(RandomNumberGenerator.getNonZeroBytes(primeSizeInBytes), true).flame_internal::findNextProbablePrime(primeSize);
-		    	}
-				while (p.flame_internal::bitLength != primeSize || p.greatestCommonDivisor(_exponent).compareTo(BigInteger.ONE) != 0);
-		    	
+				p = new BigInteger(RandomNumberGenerator.getNonZeroBytes(primeSizeInBytes), true).flame_internal::findNextProbablePrime(primeSize);
+			}
+			while (p.flame_internal::bitLength != primeSize || !p.greatestCommonDivisor(_exponent).equals(BigInteger.ONE));
+			
+			while (true)
+			{
 		    	do
 		    	{
 		    		q = new BigInteger(RandomNumberGenerator.getNonZeroBytes(primeSizeInBytes), true).flame_internal::findNextProbablePrime(primeSize);
 		    	}
-				while (q.flame_internal::bitLength != primeSize || q.greatestCommonDivisor(_exponent).compareTo(BigInteger.ONE) != 0);
+				while (q.flame_internal::bitLength != primeSize || !q.greatestCommonDivisor(_exponent).equals(BigInteger.ONE));
 			
 				_modulus = p.multiply(q);
+				
+				if (_modulus.flame_internal::bitLength == _keySize && !p.equals(q))
+					break;
+				
+				if (p.compareTo(q) < 0)
+					p = q;
 			}
-			while (_modulus.flame_internal::bitLength != _keySize);
 			
 			if (p.compareTo(q) < 0)
 			{

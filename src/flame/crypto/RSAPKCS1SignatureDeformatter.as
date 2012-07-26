@@ -8,7 +8,11 @@
 
 package flame.crypto
 {
+	import flame.crypto.asn1.ASN1Null;
+	import flame.crypto.asn1.ASN1Object;
 	import flame.crypto.asn1.ASN1ObjectIdentifier;
+	import flame.crypto.asn1.ASN1OctetString;
+	import flame.crypto.asn1.ASN1Sequence;
 	import flame.utils.ByteArrayUtil;
 	
 	import flash.utils.ByteArray;
@@ -57,9 +61,9 @@ package flame.crypto
 		//--------------------------------------------------------------------------
 		
 		/**
-		 * Verifies the RSA PKCS#1 signature for the specified data.
+		 * Verifies the RSA PKCS #1 signature for the specified hash.
 		 * 
-		 * @param hash The data signed with <code>signature</code>.
+		 * @param hash The hash value of the data signed with <code>signature</code>.
 		 * 
 		 * @param signature The signature to be verified for <code>hash</code>.
 		 * 
@@ -82,7 +86,7 @@ package flame.crypto
 				throw new CryptoError(_resourceManager.getString("flameCrypto", "missingKey"));
 			
 			if (_oid == null)
-				throw new CryptoError(_resourceManager.getString("flameCrypto", "missingOID"));
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "missingHashAlgorithm"));
 			
 			if (hash == null)
 				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "hash" ]));
@@ -90,24 +94,24 @@ package flame.crypto
 			if (signature == null)
 				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "signature" ]));
 			
-			var buffer:ByteArray = new ByteArray();
-			var encodedOID:ByteArray = new ASN1ObjectIdentifier(_oid).toByteArray();
 			var modulusSize:int = _key.keySize >> 3;
+			var sequence:ASN1Sequence = new ASN1Sequence();
+			
+			sequence.addElement(new ASN1Sequence(new <ASN1Object>[ new ASN1ObjectIdentifier(_oid), ASN1Null.NULL ]));
+			sequence.addElement(new ASN1OctetString(hash));
+			
+			var digestData:ByteArray = sequence.toByteArray();
+			
+			if (digestData.length + 3 > modulusSize)
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "paddingSignatureHashTooLong", [ modulusSize ]));
+			
+			var buffer:ByteArray = new ByteArray();
 			
 			buffer.writeByte(0);
 			buffer.writeByte(1);
-			buffer.writeBytes(ByteArrayUtil.repeat(255, modulusSize - encodedOID.length - hash.length - 11));
+			buffer.writeBytes(ByteArrayUtil.repeat(255, modulusSize - digestData.length - 3));
 			buffer.writeByte(0);
-			buffer.writeByte(48);
-			buffer.writeByte(encodedOID.length + hash.length + 6);
-			buffer.writeByte(48);
-			buffer.writeByte(encodedOID.length + 2);
-			buffer.writeBytes(encodedOID);
-			buffer.writeByte(5);
-			buffer.writeByte(0);
-			buffer.writeByte(4);
-			buffer.writeByte(hash.length);
-			buffer.writeBytes(hash);
+			buffer.writeBytes(digestData);
 			
 			var temp:ByteArray = _key.encrypt(signature);
 			

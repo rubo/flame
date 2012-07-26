@@ -38,6 +38,7 @@ package flame.crypto
 		private var _curve:EllipticCurve;
 		private var _d:BigInteger;
 		private var _domainParameters:ECDomainParameters;
+		private var _isKeyPairGenerated:Boolean;
 		private var _x:BigInteger;
 		private var _y:BigInteger;
 		
@@ -49,10 +50,10 @@ package flame.crypto
 		
 		/**
 		 * Initializes a new instance of the ECDSA class
-		 * with the specified key size or key parameters.
+		 * with the specified key size or key pair.
 		 * 
 		 * @param key If the parameter type is int, it specifies the size of the key to use, in bits.
-		 * If the parameter type is ECCParameters, it specifies the key parameters to be passed.
+		 * If the parameter type is ECCParameters, it specifies the key pair to be passed.
 		 * 
 		 * @throws flame.crypto.CryptoError <code>keySize</code> parameter specifies an invalid length.
 		 * 
@@ -66,11 +67,7 @@ package flame.crypto
 			_legalKeySizes.fixed = true;
 			
 			if (key is int)
-			{
 				setKeySize(key);
-				
-				generateKeyParameters();
-			}
 			else if (key is ECCParameters)
 				importParameters(key);
 			else
@@ -89,12 +86,15 @@ package flame.crypto
 		 * @param includePrivateParameters <code>true</code> to include private parameters;
 		 * otherwise, <code>false</code>.
 		 * 
-		 * @return The key parameters for ECDSA.
+		 * @return The key pair for ECDSA.
 		 * 
 		 * @throws flame.crypto.CryptoError The key cannot be exported.
 		 */
 		public function exportParameters(includePrivateParameters:Boolean):ECCParameters
 		{
+			if (!_isKeyPairGenerated)
+				generateKeyPair();
+			
 			var keySizeInBytes:int = (_keySize + 7) / 8;
 			var parameters:ECCParameters = new ECCParameters();
 			
@@ -133,7 +133,7 @@ package flame.crypto
 		/**
 		 * Imports the key from the specified ECCParameters.
 		 * 
-		 * @param parameters The key parameters for ECDSA.
+		 * @param parameters The key pair for ECDSA.
 		 * 
 		 * @throws ArgumentError <code>parameters</code> parameter is <code>null</code>.
 		 * 
@@ -163,6 +163,8 @@ package flame.crypto
 			
 			_x = new BigInteger(parameters.x, true);
 			_y = new BigInteger(parameters.y, true);
+			
+			_isKeyPairGenerated = true;
 		}
 		
 		/**
@@ -184,12 +186,14 @@ package flame.crypto
 			if (publicOnly)
 				throw new CryptoError(_resourceManager.getString("flameCrypto", "keyNotExist"));
 			
+			if (!_isKeyPairGenerated)
+				generateKeyPair();
+			
 			var buffer:ByteArray = new ByteArray();
 			
 			buffer.writeBytes(hash, 0, Math.min(hash.length, int((_domainParameters.n.flame_internal::bitLength + 7) / 8)));
 			
 			var e:BigInteger = new BigInteger(buffer);
-			
 			var k:BigInteger = new BigInteger(RandomNumberGenerator.getNonZeroBytes(_domainParameters.n.flame_internal::bitLength), true)
 				.mod(_domainParameters.n.subtract(BigInteger.ONE)).add(BigInteger.ONE);
 			var r:BigInteger = _curve.createPoint(_domainParameters.x, _domainParameters.y).multiply(k).x.toBigInteger().mod(_domainParameters.n);
@@ -211,14 +215,9 @@ package flame.crypto
 		 * @param includePrivateParameters <code>true</code> to include private parameters; otherwise, <code>false</code>.
 		 * 
 		 * @return A string object that contains the key information, serialized to an XML string.
-		 * 
-		 * @throws flame.crypto.CryptoError Private parameters serialization is not supported.
 		 */
 		public override function toXMLString(includePrivateParameters:Boolean):String
 		{
-			if (includePrivateParameters)
-				throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidOperation"));
-			
 			return RFC4050KeyFormatter.toXMLString(exportParameters(includePrivateParameters));
 		}
 		
@@ -241,6 +240,9 @@ package flame.crypto
 			
 			if (signature.length != _keySize >> 2)
 				throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidParameter"));
+			
+			if (!_isKeyPairGenerated)
+				generateKeyPair();
 			
 			var buffer:ByteArray = new ByteArray();
 			var keySizeInBytes:int = (_keySize + 7) / 8;
@@ -300,7 +302,7 @@ package flame.crypto
 		//
 		//--------------------------------------------------------------------------
 		
-		private function generateKeyParameters():void
+		private function generateKeyPair():void
 		{
 			_domainParameters = ECDomainParametersCache.getParametersByKeySize(_keySize);
 			_curve = new PrimeEllipticCurve(_domainParameters.q, _domainParameters.a, _domainParameters.b);
@@ -311,6 +313,8 @@ package flame.crypto
 			
 			_x = point.x.toBigInteger();
 			_y = point.y.toBigInteger();
+			
+			_isKeyPairGenerated = true;
 		}
 		
 		private function setKeySize(value:int):void
