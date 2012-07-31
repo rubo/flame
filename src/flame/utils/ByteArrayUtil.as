@@ -96,13 +96,8 @@ package flame.utils
 				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "byteArray" ]));
 			
 			var buffer:ByteArray = new ByteArray();
-			var position:uint = byteArray.position;
 			
-			byteArray.position = 0;
-			
-			byteArray.readBytes(buffer);
-			
-			byteArray.position = position;
+			buffer.writeBytes(byteArray);
 			
 			buffer.endian = byteArray.endian;
 			buffer.position = 0;
@@ -273,7 +268,7 @@ package flame.utils
 				
 				byteArray.length -= count;
 				
-				byteArray.position = position > byteArray.length ? byteArray.length : position;
+				byteArray.position = Math.min(position, byteArray.length);
 			}
 		}
 		
