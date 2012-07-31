@@ -101,6 +101,7 @@ package flame.tests.crypto
 			_aes.mode = CipherMode.CTS;
 		}
 		
+		[Ignore]
 		[Test(order=10, expects="flame.crypto.CryptoError")]
 		public function testModeWithOFB():void
 		{
