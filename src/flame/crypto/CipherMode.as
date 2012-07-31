@@ -43,7 +43,7 @@ package flame.crypto
 		 * it is feasible for the cipher text to be broken one block at a time.
 		 * It is also possible to use block analysis to determine the encryption key.
 		 * Also, an active adversary can substitute and exchange individual blocks without detection,
-		 * which allows blocks to be saved and inserted into the stream at other points without detection. 
+		 * which allows blocks to be saved and inserted into the stream at other points without detection.
 		 */
 		public static const ECB:uint = 2;
 		
@@ -52,7 +52,7 @@ package flame.crypto
 		 * processing an entire block at a time. This mode is similar to CFB; the only difference between the two modes
 		 * is the way that the shift register is filled. If a bit in the cipher text is mangled,
 		 * the corresponding bit of plain text will be mangled.
-		 * However, if there are extra or missing bits from the cipher text, the plain text will be mangled from that point on. 
+		 * However, if there are extra or missing bits from the cipher text, the plain text will be mangled from that point on.
 		 */
 		public static const OFB:uint = 3;
 		
@@ -67,15 +67,23 @@ package flame.crypto
 		 * the shift register. The default feedback size can vary by algorithm,
 		 * but is typically either 8 bits or the number of bits of the block size.
 		 * You can alter the number of feedback bits by using the <code>feedbackSize</code> property.
-		 * Algorithms that support CFB use this property to set the feedback.  
+		 * Algorithms that support CFB use this property to set the feedback.
 		 */
 		public static const CFB:uint = 4;
 		
 		/**
 		 * The Cipher Text Stealing (CTS) mode handles any length of plain text
 		 * and produces cipher text whose length matches the plain text length.
-		 * This mode behaves like the CBC mode for all but the last two blocks of the plain text.  
+		 * This mode behaves like the CBC mode for all but the last two blocks of the plain text.
 		 */
 		public static const CTS:uint = 5;
+		
+		/**
+		 * The Counter (CTR) mode encrypts a set of input blocks, called counters,
+		 * to produce a sequence of output blocks that are exclusive-ORed with the plaintext
+		 * to produce the ciphertext, and vice versa. The sequence of counters must have the property
+		 * that each block in the sequence is different from every other block.
+		 */
+		public static const CTR:uint = 6;
 	}
 }

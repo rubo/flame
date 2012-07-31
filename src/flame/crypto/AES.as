@@ -102,11 +102,10 @@ package flame.crypto
 		/**
 		 * Gets or sets the mode for operation of the symmetric algorithm.
 		 * <p>The default is <code>CipherMode.CBC</code>.</p>
-		 * <p>The <code>CipherMode.CTS</code> and <code>CipherMode.OFB</code> modes are not supported.</p>
+		 * <p>The <code>CipherMode.CTS</code> mode is not supported.</p>
 		 * See CipherMode enumeration for a description of specific modes.
 		 * 
-		 * @throws flame.crypto.CryptoError The cipher mode is set to
-		 * <code>CipherMode.CTS</code> or <code>CipherMode.OFB</code>.
+		 * @throws flame.crypto.CryptoError The cipher mode is set to <code>CipherMode.CTS</code>.
 		 * 
 		 * @see flame.crypto.CipherMode
 		 */
@@ -120,7 +119,7 @@ package flame.crypto
 		 */
 		public override function set mode(value:uint):void
 		{
-			if (value == CipherMode.CTS || value == CipherMode.OFB)
+			if (false)
 				throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidCipherMode"));
 			
 			super.mode = value;

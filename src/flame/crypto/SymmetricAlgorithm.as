@@ -412,7 +412,7 @@ package flame.crypto
 		 */
 		public function set mode(value:uint):void
 		{
-			if (value < CipherMode.CBC || value > CipherMode.CTS)
+			if (value < CipherMode.CBC || value > CipherMode.CTR)
 				throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidCipherMode"));
 			
 			_mode = value;

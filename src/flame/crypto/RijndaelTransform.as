@@ -41,6 +41,9 @@ package flame.crypto
 		private static var _resourceManager:IResourceManager = ResourceManager.getInstance();
 		
 		private var _blockSize:int;
+		private var _blockSizeInDwords:int;
+		private var _blockSizeInWords:int;
+		private var _blockSizeRoundCount:int;
 		private var _decIndex:Vector.<int> = new Vector.<int>();
 		private var _decKeyExpansion:Vector.<int> = new Vector.<int>();
 		private var _depadBuffer:ByteArray;
@@ -51,13 +54,9 @@ package flame.crypto
 		private var _iv:ByteArray;
 		private var _key:ByteArray;
 		private var _mode:uint;
-		private var _nb:int;
-		private var _nbDouble:int;
-		private var _nbnr:int;
-		private var _nk:int;
-		private var _nr:int;
 		private var _outputBlockSize:int;
 		private var _padding:uint;
+		private var _roundCount:int;
 		private var _state:ByteArray;
 		private var _useEncryptMode:Boolean;
 		
@@ -116,19 +115,16 @@ package flame.crypto
 				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "key" ]));
 			
 			_blockSize = _inputBlockSize = _outputBlockSize = blockSize >> 3;
+			_blockSizeInDwords = blockSize >> 5;
+			_blockSizeInWords = _blockSizeInDwords << 1;
 			_feedbackSize = feedbackSize >> 3;
-		    
 			_key = ByteArrayUtil.copy(key);
 		    _key.endian = Endian.LITTLE_ENDIAN;
-		    
 		    _mode = mode;
-		    _nb = blockSize >> 5;
-		    _nbDouble = _nb << 1;
-		    _nk = key.length >> 2;
 		    _padding = padding;
 			_useEncryptMode = useEncryptMode;
 		    
-			if (mode == CipherMode.CBC || mode == CipherMode.CFB)
+			if (mode == CipherMode.CBC || mode == CipherMode.CFB || mode == CipherMode.CTR || mode == CipherMode.OFB)
 			{
 				if (iv == null)
 					throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "iv" ]));
@@ -142,20 +138,20 @@ package flame.crypto
 				_state = ByteArrayUtil.copy(iv);
 				_state.endian = Endian.LITTLE_ENDIAN;
 			}
-			else if (mode != CipherMode.ECB)
+			else if (mode == CipherMode.CTS)
 				throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidCipherMode"));
 			
-		    _decIndex.length = _encIndex.length = _nb * 3;
+		    _decIndex.length = _encIndex.length = _blockSizeInDwords * 3;
 		    _decIndex.fixed = _encIndex.fixed = true;
 		    
-		    for (var i:int = 0, n1:int = _nb > 6 ? 3 : 2, n2:int = _nb > 6 ? 4 : 3; i < _nb; i++)
+		    for (var i:int = 0, n1:int = _blockSizeInDwords > 6 ? 3 : 2, n2:int = _blockSizeInDwords > 6 ? 4 : 3; i < _blockSizeInDwords; i++)
 		    {
-		        _decIndex[i] = (i - 1 + _nb) % _nb;
-		        _decIndex[i + _nb] = (i - n1 + _nb) % _nb;
-		        _decIndex[i + _nbDouble] = (i - n2 + _nb) % _nb;
-		        _encIndex[i] = (i + 1) % _nb;
-		        _encIndex[i + _nb] = (i + n1) % _nb;
-		        _encIndex[i + _nbDouble] = (i + n2) % _nb;
+		        _decIndex[i] = (i - 1 + _blockSizeInDwords) % _blockSizeInDwords;
+		        _decIndex[i + _blockSizeInDwords] = (i - n1 + _blockSizeInDwords) % _blockSizeInDwords;
+		        _decIndex[i + _blockSizeInWords] = (i - n2 + _blockSizeInDwords) % _blockSizeInDwords;
+		        _encIndex[i] = (i + 1) % _blockSizeInDwords;
+		        _encIndex[i + _blockSizeInDwords] = (i + n1) % _blockSizeInDwords;
+		        _encIndex[i + _blockSizeInWords] = (i + n2) % _blockSizeInDwords;
 		    }
 		    
 		    generateKeyExpansion();
@@ -208,7 +204,7 @@ package flame.crypto
 			if (inputOffset < 0)
 				throw new RangeError(_resourceManager.getString("flameCore", "argOutOfRangeNonNegative", [ "inputOffset" ]));
 			
-			if (inputCount <= 0 || inputCount % _inputBlockSize != 0 ||  inputCount > inputBuffer.length)
+			if (inputCount <= 0 || inputCount % _inputBlockSize != 0 || inputCount > inputBuffer.length)
 				throw new RangeError(_resourceManager.getString("flameCore", "argInvalidValue", [ "inputCount" ]));
 			
 			if (inputBuffer.length - inputCount < inputOffset)
@@ -218,7 +214,6 @@ package flame.crypto
 			var inputEndian:String = inputBuffer.endian;
 			var inputPosition:uint = inputBuffer.position;
 			var outputEndian:String = outputBuffer.endian;
-			var inputToProcess:int;
 			
 			inputBuffer.endian = outputBuffer.endian = Endian.LITTLE_ENDIAN;
 			
@@ -231,24 +226,23 @@ package flame.crypto
 				_depadBuffer = new ByteArray();
 				_depadBuffer.endian = Endian.LITTLE_ENDIAN;
 				
-				inputToProcess = inputCount - _inputBlockSize;
+				inputCount -= _inputBlockSize;
 				
-				_depadBuffer.writeBytes(inputBuffer, inputOffset + inputToProcess, _inputBlockSize);
+				_depadBuffer.writeBytes(inputBuffer, inputOffset + inputCount, _inputBlockSize);
 				
-				count = decryptBlock(inputBuffer, inputOffset, inputToProcess, outputBuffer, outputOffset, false);
+				count = decryptBlock(inputBuffer, inputOffset, inputCount, outputBuffer, outputOffset, false);
 			}
 			else
 			{
 				decryptBlock(_depadBuffer, 0, _depadBuffer.length, outputBuffer, outputOffset, false);
 				
 				outputOffset += _outputBlockSize;
-				
-				inputToProcess = inputCount - _inputBlockSize;
+				inputCount -= _inputBlockSize;
 				
 				_depadBuffer.clear();
-				_depadBuffer.writeBytes(inputBuffer, inputOffset + inputToProcess, _inputBlockSize);
+				_depadBuffer.writeBytes(inputBuffer, inputOffset + inputCount, _inputBlockSize);
 				
-				count = decryptBlock(inputBuffer, inputOffset, inputToProcess, outputBuffer, outputOffset, false) + _outputBlockSize;
+				count = decryptBlock(inputBuffer, inputOffset, inputCount, outputBuffer, outputOffset, false) + _outputBlockSize;
 			}
 			
 			inputBuffer.endian = inputEndian;
@@ -413,6 +407,9 @@ package flame.crypto
 		{
 			var isCBCMode:Boolean = _mode == CipherMode.CBC;
 			var isCFBMode:Boolean = _mode == CipherMode.CFB;
+			var isCTRMode:Boolean = _mode == CipherMode.CTR;
+			var isOFBMode:Boolean = _mode == CipherMode.OFB;
+			var isFeedbackMode:Boolean = isCFBMode || isOFBMode;
 			var shiftSize:int;
             var state:Vector.<int> = new Vector.<int>();
             var temp:Vector.<int> = new Vector.<int>();
@@ -420,53 +417,99 @@ package flame.crypto
 	        inputBuffer.position = inputOffset;
 			outputBuffer.position = outputOffset;
 	        
-			if (isCFBMode)
+			if (isFeedbackMode)
 				shiftSize = _blockSize - _feedbackSize;
 			
-	        for (var i:int = 0, j:int, offset:int = inputOffset, count:int = inputCount / (isCFBMode ? _feedbackSize : _inputBlockSize); i < count; i++)
+	        for (var i:int = 0, j:int, offset:int = inputOffset, count:int = inputCount / (isFeedbackMode ? _feedbackSize : _inputBlockSize); i < count; i++)
 	        {
-				if (isCFBMode)
+				if (isCTRMode || isFeedbackMode)
 					_state.position = 0;
 				
-	            for (j = 0; j < _nb; j++)
-					state[j] = isCFBMode ? _state.readInt() : inputBuffer.readInt();
+	            for (j = 0; j < _blockSizeInDwords; j++)
+					state[j] = isCTRMode || isFeedbackMode ? _state.readInt() : inputBuffer.readInt();
 	            
-				if (isCFBMode)
+				if (isFeedbackMode)
 				{
 					temp = encryptState(state);
 					
 					inputBuffer.position = offset;
 					_state.position = 0;
 					
-					for (j = 0; j < _nb; j++)
-					{
-						if (inputBuffer.position >= offset + _feedbackSize)
-							break;
-						
-						outputBuffer.writeByte(temp[j] & 0xFF ^ inputBuffer.readByte());
-						
-						if (inputBuffer.position >= offset + _feedbackSize)
-							break;
-						
-						outputBuffer.writeByte(temp[j] >>> 8 & 0xFF ^ inputBuffer.readByte());
-						
-						if (inputBuffer.position >= offset + _feedbackSize)
-							break;
-						
-						outputBuffer.writeByte(temp[j] >>> 16 & 0xFF ^ inputBuffer.readByte());
-						
-						if (inputBuffer.position >= offset + _feedbackSize)
-							break;
-						
-						outputBuffer.writeByte(temp[j] >>> 24 & 0xFF ^ inputBuffer.readByte());
-					}
-					
 					for (j = 0; j < shiftSize; j++)
 						_state.writeByte(_state[j + _feedbackSize]);
 					
-					_state.writeBytes(inputBuffer, offset, _feedbackSize);
+					if (isCFBMode)
+					{
+						for (j = 0; j < _blockSizeInDwords; j++)
+						{
+							if (inputBuffer.position >= offset + _feedbackSize)
+								break;
+							
+							outputBuffer.writeByte(temp[j] & 0xFF ^ inputBuffer.readByte());
+							
+							if (inputBuffer.position >= offset + _feedbackSize)
+								break;
+							
+							outputBuffer.writeByte(temp[j] >>> 8 & 0xFF ^ inputBuffer.readByte());
+							
+							if (inputBuffer.position >= offset + _feedbackSize)
+								break;
+							
+							outputBuffer.writeByte(temp[j] >>> 16 & 0xFF ^ inputBuffer.readByte());
+							
+							if (inputBuffer.position >= offset + _feedbackSize)
+								break;
+							
+							outputBuffer.writeByte(temp[j] >>> 24 & 0xFF ^ inputBuffer.readByte());
+						}
+						
+						_state.writeBytes(inputBuffer, offset, _feedbackSize);
+					}
+					else
+						for (j = 0; j < _blockSizeInDwords; j++)
+						{
+							if (inputBuffer.position >= offset + _feedbackSize)
+								break;
+							
+							_state.writeByte(temp[j] & 0xFF);
+							
+							outputBuffer.writeByte(temp[j] & 0xFF ^ inputBuffer.readByte());
+							
+							if (inputBuffer.position >= offset + _feedbackSize)
+								break;
+							
+							_state.writeByte(temp[j] >>> 8 & 0xFF);
+							
+							outputBuffer.writeByte(temp[j] >>> 8 & 0xFF ^ inputBuffer.readByte());
+							
+							if (inputBuffer.position >= offset + _feedbackSize)
+								break;
+							
+							_state.writeByte(temp[j] >>> 16 & 0xFF);
+							
+							outputBuffer.writeByte(temp[j] >>> 16 & 0xFF ^ inputBuffer.readByte());
+							
+							if (inputBuffer.position >= offset + _feedbackSize)
+								break;
+							
+							_state.writeByte(temp[j] >>> 24 & 0xFF);
+							
+							outputBuffer.writeByte(temp[j] >>> 24 & 0xFF ^ inputBuffer.readByte());
+						}
 					
 					offset += _feedbackSize;
+				}
+				else if (isCTRMode)
+				{
+					temp = encryptState(state);
+					
+					for (j = 0; j < _blockSizeInDwords; j++)
+						outputBuffer.writeInt(temp[j] ^ inputBuffer.readInt());
+					
+					j = _state.length - 1;
+					
+					while (j >= 0 && ++_state[j] == 0)
+						j--;
 				}
 				else
 				{
@@ -474,11 +517,11 @@ package flame.crypto
 					
 					if (isCBCMode)
 					{
+						inputBuffer.position -= _blockSizeInDwords << 2;
 						_state.position = 0;
-						inputBuffer.position -= _nb << 2;
 					}
 					
-					for (j = 0; j < _nb; j++)
+					for (j = 0; j < _blockSizeInDwords; j++)
 					{
 						if (isCBCMode)
 						{
@@ -519,24 +562,24 @@ package flame.crypto
 		{
 			var i:int;
 			var j:int;
-			var n:int = _nbnr;
+			var n:int = _blockSizeRoundCount;
 			var temp:Vector.<int> = new Vector.<int>();
 			
-			for (i = 0; i < _nb; i++, n++)
+			for (i = 0; i < _blockSizeInDwords; i++, n++)
 				state[i] ^= _decKeyExpansion[n];
 			
-			for (i = 1; i < _nr; i++)
+			for (i = 1; i < _roundCount; i++)
 			{
-				n -= _nbDouble;
+				n -= _blockSizeInWords;
 				
-				for (var k:int = j = 0; j < _nb; j++, k++, n++)
-					temp[j] = _it[state[j] & 0xFF] ^ _it[256 + (state[_decIndex[k]] >> 8 & 0xFF)] ^ _it[512 + (state[_decIndex[k + _nb]] >> 16 & 0xFF)] ^ _it[768 + (state[_decIndex[k + _nbDouble]] >> 24 & 0xFF)] ^ _decKeyExpansion[n];
+				for (var k:int = j = 0; j < _blockSizeInDwords; j++, k++, n++)
+					temp[j] = _it[state[j] & 0xFF] ^ _it[256 + (state[_decIndex[k]] >> 8 & 0xFF)] ^ _it[512 + (state[_decIndex[k + _blockSizeInDwords]] >> 16 & 0xFF)] ^ _it[768 + (state[_decIndex[k + _blockSizeInWords]] >> 24 & 0xFF)] ^ _decKeyExpansion[n];
 				
 				state = temp.slice();
 			}
 			
-			for (i = 0, j = 0, n = 0; i < _nb; i++, j++, n++)
-				temp[i] = _itf[state[i] & 0xFF] ^ _itf[256 + (state[_decIndex[j]] >> 8 & 0xFF)] ^ _itf[512 + (state[_decIndex[j + _nb]] >> 16 & 0xFF)] ^ _itf[768 + (state[_decIndex[j + _nbDouble]] >> 24 & 0xFF)] ^ _decKeyExpansion[n];
+			for (i = 0, j = 0, n = 0; i < _blockSizeInDwords; i++, j++, n++)
+				temp[i] = _itf[state[i] & 0xFF] ^ _itf[256 + (state[_decIndex[j]] >> 8 & 0xFF)] ^ _itf[512 + (state[_decIndex[j + _blockSizeInDwords]] >> 16 & 0xFF)] ^ _itf[768 + (state[_decIndex[j + _blockSizeInWords]] >> 24 & 0xFF)] ^ _decKeyExpansion[n];
 			
 			return temp;
 		}
@@ -545,70 +588,81 @@ package flame.crypto
 		{
 			var isCBCMode:Boolean = _mode == CipherMode.CBC;
 			var isCFBMode:Boolean = _mode == CipherMode.CFB;
+			var isCTRMode:Boolean = _mode == CipherMode.CTR;
+			var isOFBMode:Boolean = _mode == CipherMode.OFB;
+			var isFeedbackMode:Boolean = isCFBMode || isOFBMode;
 			var padSize:int = 0;
 			var shiftSize:int;
             var state:Vector.<int> = new Vector.<int>();
             var temp:Vector.<int> = new Vector.<int>();
             
 			if (finalize)
-		        switch (_padding)
-		        {
-		            case PaddingMode.ANSIX923:
-		                
-		                padSize = _inputBlockSize - inputCount % _inputBlockSize;
-		                
-		                inputBuffer.length += padSize - 1;
-		                inputBuffer[inputBuffer.length] = padSize;
-		                break;
-		                
-		            case PaddingMode.ISO10126:
-		                
-		                padSize = _inputBlockSize - inputCount % _inputBlockSize;
-		                
-						var rng:ByteArray =  RandomNumberGenerator.getBytes(padSize - 1);
+			{
+				var buffer:ByteArray = new ByteArray();
+				
+				buffer.endian = Endian.LITTLE_ENDIAN;
+				
+				buffer.writeBytes(inputBuffer, inputOffset, inputCount);
+				
+				switch (_padding)
+				{
+					case PaddingMode.ANSIX923:
 						
-						if (rng != null)
-		                	ByteArrayUtil.addBytes(inputBuffer, rng);
-		                
-						inputBuffer[inputBuffer.length] = padSize;
-		                break;
-		                
-		            case PaddingMode.NONE:
-		                
-		                if (inputCount % _inputBlockSize == 0)
-		                    break;
-		                
-		                throw new CryptoError(_resourceManager.getString("flameCrypto", "encryptInvalidDataSize"));
-		            
-		            case PaddingMode.PKCS7:
-		                
-		                padSize = _inputBlockSize - inputCount % _inputBlockSize;
-		                
-		                ByteArrayUtil.addBytes(inputBuffer, ByteArrayUtil.repeat(padSize, padSize));
-		                break;
-		                
-		            case PaddingMode.ZEROS:
-		                
-		                if (inputCount % _inputBlockSize != 0)
-		                    inputBuffer.length += _inputBlockSize - inputCount % _inputBlockSize;
-		                    
-		                break;
-		        }
+						padSize = _inputBlockSize - inputCount % _inputBlockSize;
+						
+						buffer.position = buffer.length + padSize - 1;
+						
+						buffer.writeByte(padSize);
+						break;
+					
+					case PaddingMode.ISO10126:
+						
+						padSize = _inputBlockSize - inputCount % _inputBlockSize;
+						
+						buffer.writeBytes(RandomNumberGenerator.getBytes(padSize - 1));
+						buffer.writeByte(padSize);
+						break;
+					
+					case PaddingMode.NONE:
+						
+						if (inputCount % _inputBlockSize == 0)
+							break;
+						
+						throw new CryptoError(_resourceManager.getString("flameCrypto", "encryptInvalidDataSize"));
+						
+					case PaddingMode.PKCS7:
+						
+						padSize = _inputBlockSize - inputCount % _inputBlockSize;
+						
+						buffer.writeBytes(ByteArrayUtil.repeat(padSize, padSize));
+						break;
+					
+					case PaddingMode.ZEROS:
+						
+						if (inputCount % _inputBlockSize != 0)
+							buffer.length += _inputBlockSize - inputCount % _inputBlockSize;
+						
+						break;
+				}
+				
+				inputBuffer = buffer;
+				inputOffset = 0;
+			}
 	        
 	        inputBuffer.position = inputOffset;
 			outputBuffer.position = outputOffset;
 			
-			if (isCFBMode)
+			if (isFeedbackMode)
 				shiftSize = _blockSize - _feedbackSize;
 			
-	        for (var i:int = 0, j:int, offset:int = inputOffset, count:int = (inputCount + padSize) / (isCFBMode ? _feedbackSize : _inputBlockSize); i < count; i++)
+	        for (var i:int = 0, j:int, offset:int = inputOffset, count:int = (inputCount + padSize) / (isFeedbackMode ? _feedbackSize : _inputBlockSize); i < count; i++)
 	        {
-				if (isCBCMode || isCFBMode)
+				if (isCBCMode || isCTRMode || isFeedbackMode)
 					_state.position = 0;
 	        	
-	            for (j = 0; j < _nb; j++)
+	            for (j = 0; j < _blockSizeInDwords; j++)
 				{
-                    state[j] = isCFBMode ? _state.readInt() : inputBuffer.readInt();
+                    state[j] = isCTRMode || isFeedbackMode ? _state.readInt() : inputBuffer.readInt();
 						
 					if (isCBCMode)
 						state[j] ^= _state.readInt();
@@ -616,47 +670,91 @@ package flame.crypto
 	            
 	            temp = encryptState(state);
 	            
-				if (isCFBMode)
+				if (isFeedbackMode)
 				{
 					inputBuffer.position = offset;
 					_state.position = 0;
 					
-					for (j = 0; j < _nb; j++)
-					{
-						if (inputBuffer.position >= offset + _feedbackSize)
-							break;
-						
-						outputBuffer.writeByte(temp[j] & 0xFF ^ inputBuffer.readByte());
-						
-						if (inputBuffer.position >= offset + _feedbackSize)
-							break;
-						
-						outputBuffer.writeByte(temp[j] >>> 8 & 0xFF ^ inputBuffer.readByte());
-						
-						if (inputBuffer.position >= offset + _feedbackSize)
-							break;
-						
-						outputBuffer.writeByte(temp[j] >>> 16 & 0xFF ^ inputBuffer.readByte());
-						
-						if (inputBuffer.position >= offset + _feedbackSize)
-							break;
-						
-						outputBuffer.writeByte(temp[j] >>> 24 & 0xFF ^ inputBuffer.readByte());
-					}
-					
 					for (j = 0; j < shiftSize; j++)
 						_state.writeByte(_state[j + _feedbackSize]);
 					
-					_state.writeBytes(outputBuffer, i * _feedbackSize, _feedbackSize);
+					if (isCFBMode)
+					{
+						for (j = 0; j < _blockSizeInDwords; j++)
+						{
+							if (inputBuffer.position >= offset + _feedbackSize)
+								break;
+							
+							outputBuffer.writeByte(temp[j] & 0xFF ^ inputBuffer.readByte());
+							
+							if (inputBuffer.position >= offset + _feedbackSize)
+								break;
+							
+							outputBuffer.writeByte(temp[j] >>> 8 & 0xFF ^ inputBuffer.readByte());
+							
+							if (inputBuffer.position >= offset + _feedbackSize)
+								break;
+							
+							outputBuffer.writeByte(temp[j] >>> 16 & 0xFF ^ inputBuffer.readByte());
+							
+							if (inputBuffer.position >= offset + _feedbackSize)
+								break;
+							
+							outputBuffer.writeByte(temp[j] >>> 24 & 0xFF ^ inputBuffer.readByte());
+						}
+						
+						_state.writeBytes(outputBuffer, i * _feedbackSize, _feedbackSize);
+					}
+					else
+						for (j = 0; j < _blockSizeInDwords; j++)
+						{
+							if (inputBuffer.position >= offset + _feedbackSize)
+								break;
+							
+							_state.writeByte(temp[j] & 0xFF);
+							
+							outputBuffer.writeByte(temp[j] & 0xFF ^ inputBuffer.readByte());
+							
+							if (inputBuffer.position >= offset + _feedbackSize)
+								break;
+							
+							_state.writeByte(temp[j] >>> 8 & 0xFF);
+							
+							outputBuffer.writeByte(temp[j] >>> 8 & 0xFF ^ inputBuffer.readByte());
+							
+							if (inputBuffer.position >= offset + _feedbackSize)
+								break;
+							
+							_state.writeByte(temp[j] >>> 16 & 0xFF);
+							
+							outputBuffer.writeByte(temp[j] >>> 16 & 0xFF ^ inputBuffer.readByte());
+							
+							if (inputBuffer.position >= offset + _feedbackSize)
+								break;
+							
+							_state.writeByte(temp[j] >>> 24 & 0xFF);
+							
+							outputBuffer.writeByte(temp[j] >>> 24 & 0xFF ^ inputBuffer.readByte());
+						}
 					
 					offset += _feedbackSize;
+				}
+				else if (isCTRMode)
+				{
+					for (j = 0; j < _blockSizeInDwords; j++)
+						outputBuffer.writeInt(temp[j] ^ inputBuffer.readInt());
+					
+					j = _state.length - 1;
+					
+					while (j >= 0 && ++_state[j] == 0)
+						j--;
 				}
 				else
 				{
 					if (isCBCMode)
 						_state.position = 0;
 					
-					for (j = 0; j < _nb; j++)
+					for (j = 0; j < _blockSizeInDwords; j++)
 					{
 						if (isCBCMode)
 							_state.writeInt(temp[j]);
@@ -676,64 +774,45 @@ package flame.crypto
 			var n:int = 0;
 			var temp:Vector.<int> = new Vector.<int>();
 			
-			for (i = 0; i < _nb; i++)
+			for (i = 0; i < _blockSizeInDwords; i++)
 				state[i] ^= _encKeyExpansion[i];
 			
-			for (i = 1; i < _nr; i++)
+			for (i = 1; i < _roundCount; i++)
 			{
-				for (var k:int = j = 0; j < _nb; j++, k++, n++)
-					temp[j] = _t[state[j] & 0xFF] ^ _t[256 + (state[_encIndex[k]] >> 8 & 0xFF)] ^ _t[512 + (state[_encIndex[k + _nb]] >> 16 & 0xFF)] ^ _t[768 + (state[_encIndex[k + _nbDouble]] >> 24 & 0xFF)] ^ _encKeyExpansion[n + _nb];
+				for (var k:int = j = 0; j < _blockSizeInDwords; j++, k++, n++)
+					temp[j] = _t[state[j] & 0xFF] ^ _t[256 + (state[_encIndex[k]] >> 8 & 0xFF)] ^ _t[512 + (state[_encIndex[k + _blockSizeInDwords]] >> 16 & 0xFF)] ^ _t[768 + (state[_encIndex[k + _blockSizeInWords]] >> 24 & 0xFF)] ^ _encKeyExpansion[n + _blockSizeInDwords];
 				
 				state = temp.slice();
 			}
 			
-			for (i = 0, j = 0; i < _nb; i++, j++, n++)
-				temp[i] = _tf[state[i] & 0xFF] ^ _tf[256 + (state[_encIndex[j]] >> 8 & 0xFF)] ^ _tf[512 + (state[_encIndex[j + _nb]] >> 16 & 0xFF)] ^ _tf[768 + (state[_encIndex[j + _nbDouble]] >> 24 & 0xFF)] ^ _encKeyExpansion[n + _nb];
+			for (i = 0, j = 0; i < _blockSizeInDwords; i++, j++, n++)
+				temp[i] = _tf[state[i] & 0xFF] ^ _tf[256 + (state[_encIndex[j]] >> 8 & 0xFF)] ^ _tf[512 + (state[_encIndex[j + _blockSizeInDwords]] >> 16 & 0xFF)] ^ _tf[768 + (state[_encIndex[j + _blockSizeInWords]] >> 24 & 0xFF)] ^ _encKeyExpansion[n + _blockSizeInDwords];
 			
 			return temp;
 		}
 		
 		private function generateKeyExpansion():void
 		{
-	        switch (Math.max(_blockSize, _key.length) << 3)
-	        {
-	            case 128:
-	                
-	                _nr = 10;
-	                break;
-	                
-	            case 192:
-	                
-	                _nr = 12;
-	                break;
-	                
-	            case 256:
-	                
-	                _nr = 14;
-	                break;
-	                
-	            default:
-	                
-	                throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidKeySize"));
-	        }
-	        
-	        _nbnr = _nb * _nr;
-	        
-	        for (var i:int = 0, j:int = 0; i < _nk; i++)
+			var count:int;
+			var i:int;
+			var keySizeInDwords:int = _key.length >> 2;
+			
+			_roundCount = Math.max(_blockSizeInDwords, keySizeInDwords) + 6;
+	        _blockSizeRoundCount = _blockSizeInDwords * _roundCount;
+			
+	        for (i = 0; i < keySizeInDwords; i++)
 	            _encKeyExpansion[i] = _key.readInt();
 	            
-            var count:int;
-	            
-	        for (i = _nk, count = _nb * (_nr + 1); i < count; i++)
+	        for (i = keySizeInDwords, count = _blockSizeRoundCount + _blockSizeInDwords; i < count; i++)
 	        {
 	            var temp:int = _encKeyExpansion[i - 1];
 	            
-	            if (i % _nk == 0)
-	                temp = subWord(rot3(temp)) ^ _rCon[i / _nk - 1];
-	            else if (_nk > 6 && i % _nk == 4)
+	            if (i % keySizeInDwords == 0)
+	                temp = subWord(rot3(temp)) ^ _rCon[i / keySizeInDwords - 1];
+	            else if (keySizeInDwords > 6 && i % keySizeInDwords == 4)
 	                temp = subWord(temp);
 	                
-	            _encKeyExpansion[i] = _encKeyExpansion[i - _nk] ^ temp;
+	            _encKeyExpansion[i] = _encKeyExpansion[i - keySizeInDwords] ^ temp;
 	        }
 	        
 	        for (i = 0, count = _encKeyExpansion.length; i < count; i++)
@@ -745,7 +824,7 @@ package flame.crypto
             var t4:int;
             var t5:int;
 	        
-	        for (i = _nb; i < _nbnr; i++)
+	        for (i = _blockSizeInDwords; i < _blockSizeRoundCount; i++)
 	        {
 	            t1 = _encKeyExpansion[i];
 	            t2 = mulX(t1);
