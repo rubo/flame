@@ -8,6 +8,8 @@
 
 package flame.config
 {
+	import flash.utils.getQualifiedClassName;
+
 	/**
 	 * The error that is thrown when a configuration error has occurred.
 	 */
@@ -30,7 +32,7 @@ package flame.config
 		{
 			super(message, id);
 			
-			name = "ConfigError";
+			name = getQualifiedClassName(this);
 		}
 	}
 }
