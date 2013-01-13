@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<actionScriptProperties analytics="false" mainApplicationPath="flame.as" projectUUID="da726761-04d2-455b-8a96-5c916b4dbdb9" version="10">
-  <compiler additionalCompilerArguments="-allow-source-path-overlap=true -include-file=assets.swf,../assets/flash/assets.swf -include-file=defaults.css,../assets/css/defaults.css -include-namespaces+=library://flame -include-namespaces+=library://flame/mx -include-namespaces+=library://flame/spark -locale=en_US -namespace+=library://flame,build/manifest.xml -namespace+=library://flame/mx,build/mx-manifest.xml, -namespace+=library://flame/spark,build/spark-manifest.xml -source-path=assets/resources/invariants,assets/resources/locales/{locale}" autoRSLOrdering="true" copyDependentFiles="false" flexSDK="Flex 4.6.0" fteInMXComponents="false" generateAccessible="false" htmlExpressInstall="true" htmlGenerate="false" htmlHistoryManagement="false" htmlPlayerVersionCheck="true" includeNetmonSwc="false" outputFolderPath="bin" removeUnusedRSL="true" sourceFolderPath="src" strict="true" targetPlayerVersion="0.0.0" useApolloConfig="false" useDebugRSLSwfs="true" verifyDigests="true" warn="true">
+<actionScriptProperties analytics="false" mainApplicationPath="flame.as" projectUUID="da726761-04d2-455b-8a96-5c916b4dbdb9" version="11">
+  <compiler additionalCompilerArguments="-allow-source-path-overlap=true -include-file=assets.swf,../assets/flash/assets.swf -include-file=defaults.css,../assets/css/defaults.css -include-namespaces+=library://flame -include-namespaces+=library://flame/mx -include-namespaces+=library://flame/spark -locale=en_US -namespace+=library://flame,build/manifest.xml -namespace+=library://flame/mx,build/mx-manifest.xml, -namespace+=library://flame/spark,build/spark-manifest.xml -source-path=assets/resources/invariants,assets/resources/locales/{locale}" autoRSLOrdering="true" copyDependentFiles="false" fteInMXComponents="true" generateAccessible="false" htmlExpressInstall="true" htmlGenerate="false" htmlHistoryManagement="false" htmlPlayerVersionCheck="true" includeNetmonSwc="false" outputFolderPath="bin" removeUnusedRSL="true" sourceFolderPath="src" strict="true" targetPlayerVersion="0.0.0" useApolloConfig="false" useDebugRSLSwfs="true" useFlashSDK="false" verifyDigests="true" warn="true">
     <compilerSourcePath>
       <compilerSourcePathEntry kind="1" linkType="1" path="src"/>
       <compilerSourcePathEntry kind="1" linkType="1" path="src-test"/>
@@ -17,6 +17,7 @@
     <application path="Test1.mxml"/>
   </applications>
   <modules/>
+  <workers/>
   <buildCSSFiles/>
   <flashCatalyst validateFlashCatalystCompatibility="false"/>
 </actionScriptProperties>

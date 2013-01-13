@@ -82,9 +82,8 @@ package flame.utils
 			if (vector == null)
 				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "vector" ]));
 			
-			if (!(vector is Vector.<*> || vector is Vector.<Number> || vector is Vector.<int> || vector is Vector.<uint>))
-				throw new TypeError(_resourceManager.getString("flameCore", "argTypeMismatch",
-					[ "vector", getQualifiedClassName(Vector.<*>) ]));
+			if (!isVector(vector))
+				throw new TypeError(_resourceManager.getString("flameCore", "argTypeMismatch", [ "vector", getQualifiedClassName(Vector.<*>) ]));
 			
 			if (comparer == null)
 				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "comparer" ]));
@@ -116,6 +115,18 @@ package flame.utils
 		}
 		
 		/**
+		 * Indicates whether the object is an instance of Vector.
+		 * 
+		 * @param object The object to test.
+		 * 
+		 * @return <code>true</code> if the <code>object</code> parameter is an instance of Vector; otherwise, <code>false</code>.
+		 */
+		public static function isVector(object:*):Boolean
+		{
+			return object is Vector.<*> || object is Vector.<Number> || object is Vector.<int> || object is Vector.<uint>;
+		}
+		
+		/**
 		 * Converts Vector to Array.
 		 * 
 		 * @param vector The Vector to convert.
@@ -131,9 +142,8 @@ package flame.utils
 			if (vector == null)
 				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "vector" ]));
 			
-			if (!(vector is Vector.<*> || vector is Vector.<Number> || vector is Vector.<int> || vector is Vector.<uint>))
-				throw new TypeError(_resourceManager.getString("flameCore", "argTypeMismatch",
-					[ "vector", getQualifiedClassName(Vector.<*>) ]));
+			if (!isVector(vector))
+				throw new TypeError(_resourceManager.getString("flameCore", "argTypeMismatch", [ "vector", getQualifiedClassName(Vector.<*>) ]));
 			
 			var array:Array = [];
 		

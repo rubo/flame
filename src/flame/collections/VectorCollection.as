@@ -17,6 +17,8 @@ package flame.collections
 	import mx.resources.IResourceManager;
 	import mx.resources.ResourceManager;
 	
+	import flame.utils.VectorUtil;
+	
 	[DefaultProperty("source")]
 	[ResourceBundle("flameCore")]
 	
@@ -82,9 +84,8 @@ package flame.collections
 		{
 			super();
 			
-			if (source != null && !(source is Vector.<*> || source is Vector.<Number> || source is Vector.<int> || source is Vector.<uint>))
-				throw new TypeError(_resourceManager.getString("flameCore", "argTypeMismatch",
-					[ "source", getQualifiedClassName(Vector.<*>) ]));
+			if (source != null && !VectorUtil.isVector(source))
+				throw new TypeError(_resourceManager.getString("flameCore", "argTypeMismatch", [ "source", getQualifiedClassName(Vector.<*>) ]));
 			
 			this.source = source;
 		}
@@ -146,7 +147,7 @@ package flame.collections
 		 */
 		public function set source(value:*):void
 		{
-			if (value != null && !(value is Vector.<*> || value is Vector.<Number> || value is Vector.<int> || value is Vector.<uint>))
+			if (value != null && !VectorUtil.isVector(source))
 				throw new TypeError(_resourceManager.getString("flameCore", "argTypeMismatch",
 					[ "value", getQualifiedClassName(Vector.<*>) ]));
 			

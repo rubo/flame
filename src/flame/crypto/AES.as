@@ -119,7 +119,7 @@ package flame.crypto
 		 */
 		public override function set mode(value:uint):void
 		{
-			if (false)
+			if (value == CipherMode.CTS)
 				throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidCipherMode"));
 			
 			super.mode = value;
