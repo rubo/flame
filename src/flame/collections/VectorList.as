@@ -428,7 +428,7 @@ package flame.collections
 		 */
 		public function set source(value:*):void
 		{
-			if (value != null && !VectorUtil.isVector(source))
+			if (value != null && !VectorUtil.isVector(value))
 				throw new TypeError(_resourceManager.getString("flameCore", "argTypeMismatch", [ "value", getQualifiedClassName(Vector.<*>) ]));
 		
 			var item:Object;
