@@ -293,7 +293,7 @@ package flame.crypto
 		 */
 		public function get publicOnly():Boolean
 		{
-			return _d == null;
+			return _isKeyPairGenerated && _d == null;
 		}
 		
 		//--------------------------------------------------------------------------
