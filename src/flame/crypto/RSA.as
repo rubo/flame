@@ -96,9 +96,6 @@ package flame.crypto
 			if (!_isKeyParametersGenerated)
 				generateKeyPair();
 			
-			if (publicOnly)
-				throw new CryptoError(_resourceManager.getString("flameCrypto", "keyNotExist"));
-	    	
 			var r:BigInteger;
 			var t:BigInteger = new BigInteger(data, true);
 			
@@ -117,6 +114,8 @@ package flame.crypto
 					? tQ.add(_q.multiply(_p.subtract(tQ.subtract(tP).multiply(_inverseQ).mod(_p))))
 					: tQ.add(_q.multiply(tP.subtract(tQ).multiply(_inverseQ).mod(_p)));
 			}
+			else if (publicOnly)
+				throw new CryptoError(_resourceManager.getString("flameCrypto", "keyNotExist"));
 			else
 				t = t.modPow(_d, _modulus);
 	    	
@@ -211,34 +210,34 @@ package flame.crypto
 	    	if (value == null)
 	    		throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "value" ]));
 	    	
-	    	var paremeters:RSAParameters = new RSAParameters();
+	    	var parameters:RSAParameters = new RSAParameters();
 	    	var xml:XML = new XML(value);
 	    	
 			if (xml.D.text().toString())
-	    		paremeters.d = Convert.fromBase64String(xml.D.text().toString());
+	    		parameters.d = Convert.fromBase64String(xml.D.text().toString());
 			
 			if (xml.DP.text().toString())
-	    		paremeters.dP = Convert.fromBase64String(xml.DP.text().toString());
+	    		parameters.dP = Convert.fromBase64String(xml.DP.text().toString());
 	    	
 			if (xml.DQ.text().toString())
-				paremeters.dQ = Convert.fromBase64String(xml.DQ.text().toString());
+				parameters.dQ = Convert.fromBase64String(xml.DQ.text().toString());
 	    	
 			if (xml.Exponent.text().toString())
-				paremeters.exponent = Convert.fromBase64String(xml.Exponent.text().toString());
+				parameters.exponent = Convert.fromBase64String(xml.Exponent.text().toString());
 	    	
 			if (xml.InverseQ.text().toString())
-				paremeters.inverseQ = Convert.fromBase64String(xml.InverseQ.text().toString());
+				parameters.inverseQ = Convert.fromBase64String(xml.InverseQ.text().toString());
 	    	
 			if (xml.Modulus.text().toString())
-				paremeters.modulus = Convert.fromBase64String(xml.Modulus.text().toString());
+				parameters.modulus = Convert.fromBase64String(xml.Modulus.text().toString());
 	    	
 			if (xml.P.text().toString())
-				paremeters.p = Convert.fromBase64String(xml.P.text().toString());
+				parameters.p = Convert.fromBase64String(xml.P.text().toString());
 	    	
 			if (xml.Q.text().toString())
-				paremeters.q = Convert.fromBase64String(xml.Q.text().toString());
+				parameters.q = Convert.fromBase64String(xml.Q.text().toString());
 	    	
-	    	importParameters(paremeters);
+	    	importParameters(parameters);
 	    }
 	    
 		/**
@@ -274,7 +273,7 @@ package flame.crypto
 			_q = parameters.q == null ? null : new BigInteger(parameters.q, true);
 			_useCRT = _p != null && _q != null;
 			
-			_isKeyParametersGenerated = _d != null || _useCRT;
+			_isKeyParametersGenerated = true;
 			
 			if (_useCRT)
 			{
@@ -392,7 +391,7 @@ package flame.crypto
 		 */
 	    public function get publicOnly():Boolean
 	    {
-	    	return !_useCRT && (_d == null || _modulus == null);
+	    	return _isKeyParametersGenerated && (_d == null || _modulus == null);
 	    }
 		
 		/**
