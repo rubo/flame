@@ -474,15 +474,15 @@ package flame.crypto
 				case ECDH_PRIVATE_P256_MAGIC:
 				case ECDH_PRIVATE_P384_MAGIC:
 				case ECDH_PRIVATE_P521_MAGIC:
-				case ECDSA_PRIVATE_P256_MAGIC:
-				case ECDSA_PRIVATE_P384_MAGIC:
-				case ECDSA_PRIVATE_P521_MAGIC:
-					
-					return getQualifiedClassName(ECDiffieHellman);
-					
 				case ECDH_PUBLIC_P256_MAGIC:
 				case ECDH_PUBLIC_P384_MAGIC:
 				case ECDH_PUBLIC_P521_MAGIC:
+					
+					return getQualifiedClassName(ECDiffieHellman);
+					
+				case ECDSA_PRIVATE_P256_MAGIC:
+				case ECDSA_PRIVATE_P384_MAGIC:
+				case ECDSA_PRIVATE_P521_MAGIC:
 				case ECDSA_PUBLIC_P256_MAGIC:
 				case ECDSA_PUBLIC_P384_MAGIC:
 				case ECDSA_PUBLIC_P521_MAGIC:
