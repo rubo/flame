@@ -193,7 +193,7 @@ package flame.crypto
 			
 			buffer.writeBytes(hash, 0, Math.min(hash.length, int((_domainParameters.n.flame_internal::bitLength + 7) / 8)));
 			
-			var e:BigInteger = new BigInteger(buffer);
+			var e:BigInteger = new BigInteger(buffer, true);
 			var k:BigInteger = new BigInteger(RandomNumberGenerator.getNonZeroBytes(_domainParameters.n.flame_internal::bitLength), true)
 				.mod(_domainParameters.n.subtract(BigInteger.ONE)).add(BigInteger.ONE);
 			var r:BigInteger = _curve.createPoint(_domainParameters.x, _domainParameters.y).multiply(k).x.toBigInteger().mod(_domainParameters.n);
