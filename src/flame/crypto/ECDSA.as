@@ -304,8 +304,6 @@ package flame.crypto
 		
 		private function generateKeyPair():void
 		{
-			_domainParameters = ECDomainParametersCache.getParametersByKeySize(_keySize);
-			_curve = new PrimeEllipticCurve(_domainParameters.q, _domainParameters.a, _domainParameters.b);
 			_d = new BigInteger(RandomNumberGenerator.getNonZeroBytes(_domainParameters.n.flame_internal::bitLength))
 				.mod(_domainParameters.n.subtract(BigInteger.ONE)).add(BigInteger.ONE);
 			
@@ -323,6 +321,8 @@ package flame.crypto
 				throw new CryptoError(_resourceManager.getString("flameCrypto", "invalidKeySize"));
 			
 			_keySize = value;
+			_domainParameters = ECDomainParametersCache.getParametersByKeySize(_keySize);
+			_curve = new PrimeEllipticCurve(_domainParameters.q, _domainParameters.a, _domainParameters.b);
 		}
 	}
 }
