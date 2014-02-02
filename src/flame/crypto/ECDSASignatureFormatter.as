@@ -8,8 +8,6 @@
 
 package flame.crypto
 {
-	import flame.utils.ByteArrayUtil;
-	
 	import flash.utils.ByteArray;
 	
 	/**
@@ -56,12 +54,12 @@ package flame.crypto
 		//--------------------------------------------------------------------------
 		
 		/**
-		 * Creates the signature for the specified hash.
+		 * Creates the signature for the provided data.
 		 * <p>You must specify a key and a hash algorithm before calling this method.</p>
 		 * 
-		 * @param hash The hash value of the data to be signed.
+		 * @param data The data to be signed.
 		 * 
-		 * @return The digital signature for <code>hash</code>.
+		 * @return The digital signature for <code>data</code>.
 		 * 
 		 * @throws flame.crypto.CryptoError Thrown in the following situations:<ul>
 		 * <li>The private key is missing.</li>
@@ -70,7 +68,7 @@ package flame.crypto
 		 * 
 		 *  @throws ArgumentError <code>data</code> parameter is <code>null</code>.
 		 */
-		public override function createSignature(hash:ByteArray):ByteArray
+		public override function createSignature(data:ByteArray):ByteArray
 		{
 			if (_key == null)
 				throw new CryptoError(_resourceManager.getString("flameCrypto", "missingKey"));
@@ -78,10 +76,10 @@ package flame.crypto
 			if (_hashAlgorithm == null)
 				throw new CryptoError(_resourceManager.getString("flameCrypto", "missingHashAlgorithm"));
 			
-			if (hash == null)
-				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "hash" ]));
+			if (data == null)
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "data" ]));
 			
-			return _key.signHash(_hashAlgorithm.computeHash(hash));
+			return _key.signHash(_hashAlgorithm.computeHash(data));
 		}
 		
 		/**
