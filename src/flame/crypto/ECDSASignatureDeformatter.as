@@ -8,8 +8,6 @@
 
 package flame.crypto
 {
-	import flame.utils.ByteArrayUtil;
-	
 	import flash.utils.ByteArray;
 	
 	/**
@@ -60,7 +58,7 @@ package flame.crypto
 		 * and comparing it to the hash value of the provided data.
 		 * <p>You must specify a key and a hash algorithm before calling this method.</p>
 		 * 
-		 * @param hash The hash value of the data signed with <code>signature</code>.
+		 * @param data The data signed with <code>signature</code>.
 		 * 
 		 * @param signature The signature to be verified for <code>hash</code>.
 		 * 
@@ -73,11 +71,11 @@ package flame.crypto
 		 * </ul>
 		 * 
 		 * @throws ArgumentError Thrown in the following situations:<ul>
-		 * <li><code>hash</code> parameter is <code>null</code>.</li>
+		 * <li><code>data</code> parameter is <code>null</code>.</li>
 		 * <li><code>signature</code> parameter is <code>null</code>.</li>
 		 * </ul>
 		 */
-		public override function verifySignature(hash:ByteArray, signature:ByteArray):Boolean
+		public override function verifySignature(data:ByteArray, signature:ByteArray):Boolean
 		{
 			if (_key == null)
 				throw new CryptoError(_resourceManager.getString("flameCrypto", "missingKey"));
@@ -85,13 +83,13 @@ package flame.crypto
 			if (_hashAlgorithm == null)
 				throw new CryptoError(_resourceManager.getString("flameCrypto", "missingHashAlgorithm"));
 			
-			if (hash == null)
-				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "hash" ]));
+			if (data == null)
+				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "data" ]));
 			
 			if (signature == null)
 				throw new ArgumentError(_resourceManager.getString("flameCore", "argNullGeneric", [ "signature" ]));
 			
-			return _key.verifyHash(hash, signature);
+			return _key.verifyHash(_hashAlgorithm.computeHash(data), signature);
 		}
 		
 		/**
