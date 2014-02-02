@@ -34,5 +34,5 @@ The library can be compiled using Ant:
 Note that it is required to define an environment variable FLEX_HOME pointing to the Flex SDK directory.
 
 ## Downloads
-- [Flame 2.9.4 binary (SWC)](http://flame.blob.core.windows.net/flame/flame-2.9.4.swc)
-- [Flame 2.9.0 documentation](http://flame.blob.core.windows.net/flame/flame-2.9.0.docs.zip)
+- [Flame 2.9.5 binary (SWC)](http://flame.blob.core.windows.net/flame/flame-2.9.5.swc)
+- [Flame 2.9.5 documentation](http://flame.blob.core.windows.net/flame/flame-2.9.5.docs.zip)
