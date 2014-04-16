@@ -19,7 +19,7 @@
 	<property name="source.dir" value="src" />
 	
 	<taskdef classpath="${FLEX_HOME}${file.separator}ant${file.separator}lib${file.separator}flexTasks.jar" resource="flexTasks.tasks" />
-	<taskdef classpath="build${file.separator}flexUnitTasks-4.1.0-8.jar" resource="flexUnitTasks.tasks" />
+	<taskdef classpath="build${file.separator}flexUnitTasks-4.2.0-20140410.jar" resource="flexUnitTasks.tasks" />
 	
 	<target depends="cleanup, docs" name="build" />
 	
