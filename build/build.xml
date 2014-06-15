@@ -13,7 +13,7 @@
 	<property name="docs.output.dir" value="asdoc-output" />
 	<property name="FLEX_HOME" value="${env.FLEX_HOME}" />
 	<property name="flex.libs.dir" value="${FLEX_HOME}${file.separator}frameworks${file.separator}libs" />
-	<property name="flex.player.dir" value="${flex.libs.dir}${file.separator}player${file.separator}12.0" />
+	<property name="flex.player.dir" value="${flex.libs.dir}${file.separator}player${file.separator}14.0" />
 	<property name="jvm.args" value="-Xmx1024m" />
 	<property name="reports.output.dir" value="reports-output" />
 	<property name="source.dir" value="src" />
