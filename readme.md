@@ -34,4 +34,4 @@ The library can be compiled using Ant:
 Note that it is required to define an environment variable FLEX_HOME pointing to the Flex SDK directory.
 
 ## Downloads
-For binaries and docs, please refer to the [Releases](https://github.com/rubo/flame/releases) section.
+The binaries and documentation are available in the [Releases](https://github.com/rubo/flame/releases) section.
