@@ -2,8 +2,6 @@
 //
 //  Copyright 2010 Ruben Buniatyan. All rights reserved.
 //
-//  Portions Copyright 2009 Tom Wu. All rights reserved.
-//
 //  This source is subject to the license agreement accompanying it.
 //
 ////////////////////////////////////////////////////////////////////////////////

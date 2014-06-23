@@ -3,7 +3,7 @@ Flame is an ActionScript library that provides a number of useful UI controls, c
 The API is heavily inspired by .NET Framework.
 
 ## License
-The code is released under the [Microsoft Public License (MS-PL)](http://opensource.org/licenses/MS-PL).
+The code is released under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).
 
 ## Features
 #### Collections
